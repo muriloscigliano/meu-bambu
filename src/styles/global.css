@@ -1,0 +1,69 @@
+@import "@fontsource-variable/inter/index.css";
+
+:root {
+	/* Typography */
+	--font-sans: InterVariable, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+		Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+	--font-display: "Rumiko Sans", InterVariable, ui-sans-serif, system-ui;
+
+	/* Colors */
+	--color-brand: #0e7a45;
+	--color-brand-foreground: #ffffff;
+	--color-accent: #d4a351;
+	--color-beige: #f4efe7;
+	--color-dark: #0f1310;
+	--color-dark-1: #0f1b12;
+	--color-dark-2: #0f1310;
+	--color-line: #e7dfd2;
+
+	/* Layout */
+	--radius-full: 9999px;
+	--spacing-section: clamp(3rem, 6vw, 6rem);
+	--container-max: 1360px;
+	--section-gap: 12px;
+
+	color-scheme: light;
+}
+
+html,
+body {
+	height: 100%;
+	font-family: var(--font-sans);
+}
+.heading {
+	font-family: var(--font-display);
+}
+
+h1, h2, h3, .font-display {
+	font-family: var(--font-display);
+}
+
+/* Utility replacements */
+.container { max-width: var(--container-max); margin-inline: auto; padding-inline: 1.5rem; }
+.btn-primary { display: inline-block; border-radius: 9999px; background: var(--color-brand); color: #fff; padding: .75rem 1.5rem; transition: opacity .15s ease; }
+.btn-primary:hover { opacity: .9; }
+
+/* Pills / chips consistent with Figma */
+.pill { display: inline-flex; align-items: center; border-radius: 9999px; border: 1px solid var(--color-line); padding: .375rem .75rem; text-transform: uppercase; font-size: 11px; letter-spacing: 0.14em; background: color-mix(in oklab, var(--color-beige) 70%, white 30%); }
+
+.chip-option { border-radius: 9999px; border: 1px solid var(--color-line); padding: .375rem .75rem; font-size: .95rem; background: #fff; }
+
+.chip-option[aria-pressed="true"] { background: color-mix(in oklab, var(--color-accent) 15%, white 85%); border-color: var(--color-accent); }
+
+/* Figma rails overlay (container left/right hairlines) */
+.page-rails { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+.page-rails::before,
+.page-rails::after {
+	content: "";
+	position: absolute;
+	top: 0; bottom: 0; width: 1px; background: var(--color-line);
+}
+.page-rails::before { left: calc((100vw - var(--container-max)) / 2); }
+.page-rails::after { left: calc((100vw + var(--container-max)) / 2); }
+
+/* Section hairlines */
+.section-hairline { border-top: 1px solid var(--color-line); }
+.section-hairline-bottom { border-bottom: 1px solid var(--color-line); }
+
+/* Small gap around sections to form a framed rectangle */
+.section-frame { margin-block: var(--section-gap); }

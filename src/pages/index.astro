@@ -1,16 +1,30 @@
 ---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import ProductPanels from "../components/sections/ProductPanels.astro";
+import ProductSheets from "../components/sections/ProductSheets.astro";
+import PerfectFor from "../components/sections/PerfectFor.astro";
+import WhyChoose from "../components/sections/WhyChoose.astro";
+import FooterCTA from "../components/sections/FooterCTA.astro";
 
+const page = {
+	title: 'Meu Bambu — Tábuas de bambu premium',
+	description: 'Tábuas de corte em bambu sustentáveis, resistentes e lindas. Compre online no Brasil.',
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title={page.title} description={page.description}>
+	<Header />
+	<Hero
+		title="Tábuas de bambu premium para sua cozinha"
+		subtitle="Sustentáveis, resistentes e lindas. Produzidas no Brasil."
+		ctaHref="#comprar"
+		ctaLabel="Comprar agora"
+	/>
+	<ProductPanels />
+	<ProductSheets />
+	<PerfectFor />
+	<WhyChoose />
+	<FooterCTA />
+</Base>

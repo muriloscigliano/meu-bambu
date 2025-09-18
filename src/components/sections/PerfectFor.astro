@@ -1,0 +1,39 @@
+---
+---
+
+<section class="pf">
+	<div class="pf__container" data-reveal>
+		<p class="pf__eyebrow">painés de bambu</p>
+		<h2 class="pf__title">Perfeito para qualquer projeto</h2>
+		<p class="pf__desc">Do móvel sob medida ao detalhe arquitetônico sofisticado. O bambu transforma qualquer ideia em realidade.</p>
+		<a href="#comprar" class="pf__cta" data-hover-scale>comece seu projeto agora</a>
+
+		<div class="pf__grid">
+			<div>Fabricantes de móveis</div>
+			<div>Arquitetos e construtores</div>
+			<div>artesanato e presentes</div>
+			<div>Design de interiores</div>
+			<div>marcenaria fina</div>
+			<div>skate e longboards</div>
+		</div>
+
+		<div class="pf__image">
+			<img src="/images/projetos.png" alt="Projetos com bambu" loading="lazy" />
+		</div>
+	</div>
+</section>
+
+<style>
+.pf { background: var(--color-beige); border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); margin-block: var(--section-gap); padding-block: var(--spacing-section); text-align: center; }
+.pf__container { max-width: var(--container-max); margin-inline: auto; padding-inline: 1.5rem; }
+.pf__eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .85rem; color: var(--color-brand); }
+.pf__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.875rem, 2.5vw, 2.5rem); margin-top: .5rem; }
+.pf__desc { margin: 1rem auto 0; max-width: 56ch; color: #4b5563; }
+.pf__cta { display: inline-block; margin-top: 1.25rem; background: var(--color-brand); color: #fff; padding: .75rem 1.5rem; border-radius: 9999px; }
+.pf__grid { margin-top: 2.5rem; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1.5rem; }
+@media (min-width: 768px) { .pf__grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+.pf__image { margin-top: 2.5rem; overflow: hidden; border-radius: 0.75rem; border: 1px solid var(--color-line); }
+.pf__image img { width: 100%; height: auto; display: block; }
+</style>
+
+

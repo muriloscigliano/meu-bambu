@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://meubambu.vercel.app/sitemap.xml

@@ -1,0 +1,84 @@
+---
+---
+
+<section class="product product--beige">
+	<div class="product__container">
+		<div class="product__details" data-reveal>
+			<h2 class="product__title">Painéis de Bambu premium</h2>
+			<p class="product__desc">
+				Painéis de bambu com núcleo vertical, mais resistentes que os tradicionais horizontais. Perfeitos para móveis, marcenaria e design.
+			</p>
+			<div class="product__divider"></div>
+			<p class="product__price">R$199,00</p>
+
+			<div class="product__options">
+				<div class="product__group" data-group="espessura">
+					<p class="product__groupLabel">Espessura</p>
+					<div class="product__chips">
+						<button class="chip" aria-pressed="true" data-value="3mm">3mm</button>
+						<button class="chip" aria-pressed="false" data-value="5mm">5mm</button>
+						<button class="chip" aria-pressed="false" data-value="15mm">15mm</button>
+					</div>
+				</div>
+				<div class="product__group" data-group="tamanho">
+					<p class="product__groupLabel">Tamanho</p>
+					<div class="product__chips">
+						{['200x60cm','130x28cm','125x28cm','115x28cm','105x28cm','95x28cm','90x28cm','80x28cm'].map((s, i) => (
+							<button class="chip" aria-pressed={i===0 ? 'true' : 'false'} data-value={s}>{s}</button>
+						))}
+					</div>
+				</div>
+			</div>
+
+			<ul class="product__bullets">
+				<li>Resistência estrutural superior</li>
+				<li>Sustentável &amp; ecológico</li>
+				<li>Fácil de cortar e aplicar</li>
+			</ul>
+
+			<a href="#comprar" class="product__cta" data-hover-scale>COMPRAR agora</a>
+		</div>
+
+		<div class="product__media" data-reveal>
+			<img src="/images/paineis.png" alt="Painéis de Bambu" loading="lazy" />
+		</div>
+	</div>
+
+	<script is:inline>
+		const root = document.currentScript.closest('.product');
+		root?.addEventListener('click', (e) => {
+			const target = e.target;
+			if (!(target instanceof HTMLElement)) return;
+			const btn = target.closest('button.chip');
+			if (!btn) return;
+			const group = btn.closest('[data-group]');
+			if (!group) return;
+			group.querySelectorAll('button.chip').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+			btn.setAttribute('aria-pressed', 'true');
+			const detail = { group: group.dataset.group, value: btn.dataset.value };
+			root.dispatchEvent(new CustomEvent('product:change', { detail }));
+		});
+	</script>
+
+	<style>
+	.product { position: relative; isolation: isolate; background: var(--color-beige); padding-block: var(--spacing-section); margin-block: var(--section-gap); border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
+	.product__container { max-width: var(--container-max); margin-inline: auto; display: grid; gap: 3rem; align-items: center; grid-template-columns: 1fr; padding-inline: 1.5rem; }
+	@media (min-width: 768px) { .product__container { grid-template-columns: 1fr 1fr; } }
+	.product__details { order: 2; }
+	@media (min-width: 768px) { .product__details { order: 1; } }
+	.product__title { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 1.1; font-size: clamp(1.875rem, 2.5vw, 2.5rem); }
+	.product__desc { margin-top: 1rem; color: #4b5563; max-width: 52ch; }
+	.product__divider { margin-top: 1rem; height: 1px; width: min(100%,520px); background: var(--color-line); }
+	.product__price { margin-top: .75rem; font-weight: 600; }
+	.product__options { margin-top: 1.5rem; display: grid; gap: 1.5rem; }
+	.product__groupLabel { font-size: .9rem; font-weight: 600; }
+	.product__chips { margin-top: .5rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+	.chip { border: 1px solid var(--color-line); border-radius: 9999px; padding: .375rem .75rem; background: #fff; font-size: .925rem; }
+	.chip[aria-pressed="true"] { background: color-mix(in oklab, var(--color-accent) 15%, white 85%); border-color: var(--color-accent); }
+	.product__bullets { margin-top: 1.5rem; display: grid; gap: .5rem; color: #4b5563; font-size: .9rem; }
+	.product__cta { display: inline-block; margin-top: 2rem; background: var(--color-brand); color: #fff; padding: .75rem 1.5rem; border-radius: 9999px; }
+	.product__media { order: 1; text-align: center; }
+	@media (min-width: 768px) { .product__media { order: 2; } }
+	.product__media img { max-width: 28rem; width: 100%; height: auto; }
+	</style>
+</section>

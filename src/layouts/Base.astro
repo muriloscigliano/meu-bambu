@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import clientInit from '../scripts/client-init.ts?url';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	canonical?: string;
+	noIndex?: boolean;
+}
+
+const {
+	title = 'Meu Bambu — Tábuas de bambu premium',
+	description = 'Tábuas de corte em bambu sustentáveis, resistentes e lindas. Compre online no Brasil.',
+	image = '/og-image.jpg',
+	canonical,
+	noIndex = false,
+} = Astro.props as Props;
+
+const url = canonical ?? (typeof Astro.url !== 'undefined' ? Astro.url.toString() : undefined);
+---
+
+<html lang="pt-BR" prefix="og: http://ogp.me/ns#">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="color-scheme" content="light dark" />
+		{url && <link rel="canonical" href={url} />}
+		{noIndex && <meta name="robots" content="noindex,nofollow" />}
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		{url && <meta property="og:url" content={url} />}
+		<meta property="og:image" content={image} />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+
+		<link rel="stylesheet" href="/fonts/rumiko-sans.css" />
+
+		<!-- JSON-LD for SEO -->
+		<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Meu Bambu",
+  "url": {url ? `"${url}"` : '"https://meubambu.vercel.app"'},
+  "description": "Tábuas de corte em bambu sustentáveis, resistentes e lindas. Compre online no Brasil.",
+  "inLanguage": "pt-BR"
+}
+		</script>
+
+		<!-- Vercel Web Analytics & Speed Insights -->
+		<script defer src="https://vercel.com/analytics/script.js"></script>
+		<script defer src="https://vercel.com/insights/script.js"></script>
+
+		<!-- Client init: GSAP + Lenis -->
+		<script type="module" src={clientInit} defer></script>
+	</head>
+	<body>
+		<!-- Figma rails overlay -->
+		<div class="page-rails"></div>
+		<slot />
+	</body>
+</html>
