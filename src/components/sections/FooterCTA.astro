@@ -198,3 +198,52 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 	}
 }
 </style>
+
+<script>
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+function initFooterParallax() {
+	const el = document.querySelector('[data-footer-parallax]');
+	
+	if (!el) return;
+	
+	const tl = gsap.timeline({
+		scrollTrigger: {
+			trigger: el,
+			start: 'clamp(top bottom)',
+			end: 'clamp(top top)',
+			scrub: true
+		}
+	});
+
+	const inner = el.querySelector('[data-footer-parallax-inner]');
+	const dark = el.querySelector('[data-footer-parallax-dark]');
+
+	if (inner) {
+		tl.from(inner, {
+			yPercent: -25,
+			ease: 'linear'
+		});
+	}
+
+	if (dark) {
+		tl.from(dark, {
+			opacity: 0.5,
+			ease: 'linear'
+		}, '<');
+	}
+}
+
+// Initialize
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', initFooterParallax);
+} else {
+	initFooterParallax();
+}
+
+// Re-initialize on view transitions
+document.addEventListener('astro:after-swap', initFooterParallax);
+</script>
