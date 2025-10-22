@@ -1,5 +1,6 @@
 import { initLenis } from '../utils/lenis';
 import { initSplitTextReveal } from '../utils/splitText';
+import { initImageTrail } from '../utils/imageTrail';
 
 // Initialize all animations when DOM is ready
 function initAnimations() {
@@ -10,6 +11,14 @@ function initAnimations() {
   
   // Initialize smooth scroll
   initLenis();
+  
+  // Initialize image trail effect
+  initImageTrail({
+    minWidth: 992,
+    moveDistance: 15,
+    stopDuration: 350,
+    trailLength: 6
+  });
 }
 
 // Initialize when DOM is ready

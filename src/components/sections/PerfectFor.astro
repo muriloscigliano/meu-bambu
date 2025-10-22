@@ -13,7 +13,7 @@ interface Props {
 const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props as Props;
 ---
 
-<section class="perfect-for">
+<section class="perfect-for" data-trail="wrapper">
 	<div class="perfect-for__container" data-reveal>
 		<div class="perfect-for__header">
 			<div class="perfect-for__line"></div>
@@ -41,7 +41,20 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 				</>
 			))}
 		</div>
+	</div>
 
+	<!-- Image Trail Effect -->
+	<div class="trail-wrap">
+		<div class="trail-list">
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-1.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-2.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-3.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-4.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-5.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-6.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-7.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/trail/bambu-8.jpg" alt="Bambu" class="trail-item__img" loading="lazy"></div>
+		</div>
 	</div>
 </section>
 
@@ -63,7 +76,11 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 	margin-inline: auto;
 	width: 100%;
 	padding-inline: 2.25rem;
-	padding-block: 14rem;
+	padding-block: 16rem;
+	display: flex;
+	flex-direction: column;
+    align-items: center;
+	/* gap: 24px; */
 }
 
 .perfect-for__header {
@@ -137,6 +154,7 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 	padding-inline: 36px;
 	margin-bottom: 24px;
 	gap: 36px;
+	max-width: 1210px;
 }
 
 .perfect-for__icon-item {
@@ -215,6 +233,46 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 	
 	.perfect-for__icons {
 		padding-inline: 0;
+	}
+}
+
+/* Image Trail Effect */
+.trail-wrap {
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.trail-list {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.trail-item {
+	opacity: 0;
+	border-radius: 12px;
+	width: 200px;
+	height: 280px;
+	position: absolute;
+	overflow: hidden;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+	pointer-events: none;
+}
+
+.trail-item__img {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+@media (max-width: 992px) {
+	.trail-wrap {
+		display: none;
 	}
 }
 </style>
