@@ -59,6 +59,40 @@ document.querySelectorAll('[data-hover-scale]').forEach((el) => {
 	});
 });
 
+// Footer Parallax Effect
+function initFooterParallax() {
+	document.querySelectorAll('[data-footer-parallax]').forEach((el) => {
+		const tl = gsap.timeline({
+			scrollTrigger: {
+				trigger: el,
+				start: 'clamp(top bottom)',
+				end: 'clamp(top top)',
+				scrub: true
+			}
+		});
+
+		const inner = el.querySelector('[data-footer-parallax-inner]');
+		const dark = el.querySelector('[data-footer-parallax-dark]');
+
+		if (inner) {
+			tl.from(inner, {
+				yPercent: -25,
+				ease: 'linear'
+			});
+		}
+
+		if (dark) {
+			tl.from(dark, {
+				opacity: 0.5,
+				ease: 'linear'
+			}, '<');
+		}
+	});
+}
+
+// Initialize Footer Parallax
+initFooterParallax();
+
 // Expose minimal API for debugging
 (window as any).__gsap = gsap;
 (window as any).__lenis = lenis;
