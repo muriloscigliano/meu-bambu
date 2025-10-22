@@ -1,51 +1,49 @@
-/* Client-side initialization for GSAP, ScrollTrigger and Lenis */
+/**
+ * Client-side initialization
+ * GSAP ScrollTrigger + Lenis Smooth Scroll
+ */
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 
-// Register plugins
+// ============================================
+// GSAP Setup
+// ============================================
 gsap.registerPlugin(ScrollTrigger);
 
-const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Check for reduced motion preference
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Initialize Lenis smooth scroll
+// ============================================
+// Lenis Smooth Scroll Setup
+// ============================================
 const lenis = new Lenis({
-	duration: 1.2,
-	easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
-	orientation: 'vertical',
-	gestureOrientation: 'vertical',
-	smoothWheel: true,
-	wheelMultiplier: 1,
-	touchMultiplier: 2,
-	infinite: false,
-	autoResize: true,
+	autoRaf: true,
 });
 
-// Sync Lenis with GSAP ScrollTrigger
+// Sync Lenis with ScrollTrigger
 lenis.on('scroll', ScrollTrigger.update);
 
-// Add Lenis's raf method to GSAP ticker
-gsap.ticker.add((time) => {
-	lenis.raf(time * 1000);
-});
-
-// Disable lag smoothing to prevent animation jumps
-gsap.ticker.lagSmoothing(0);
-
-// Basic reveal-on-view animation utility
+// ============================================
+// Scroll Reveal Animations
+// ============================================
 if (!prefersReducedMotion) {
-	const elements = document.querySelectorAll('[data-reveal]');
-	elements.forEach((el) => {
+	const revealElements = document.querySelectorAll('[data-reveal]');
+	
+	revealElements.forEach((element) => {
 		gsap.fromTo(
-			el,
-			{ autoAlpha: 0, y: 24 },
+			element,
+			{ 
+				autoAlpha: 0, 
+				y: 24 
+			},
 			{
 				autoAlpha: 1,
 				y: 0,
 				duration: 0.8,
 				ease: 'power2.out',
 				scrollTrigger: {
-					trigger: el as Element,
+					trigger: element,
 					start: 'top 85%',
 					once: true,
 				},
@@ -54,24 +52,50 @@ if (!prefersReducedMotion) {
 	});
 }
 
-// Micro interaction: subtle scale on hover for elements with [data-hover-scale]
-document.querySelectorAll('[data-hover-scale]').forEach((el) => {
+// ============================================
+// Hover Scale Micro-interactions
+// ============================================
+const hoverElements = document.querySelectorAll('[data-hover-scale]');
+
+hoverElements.forEach((element) => {
 	let tween: gsap.core.Tween | null = null;
-	(el as HTMLElement).addEventListener('mouseenter', () => {
+	
+	const handleMouseEnter = () => {
 		tween?.kill();
-		tween = gsap.to(el, { scale: 1.03, duration: 0.2, ease: 'power2.out' });
-	});
-	(el as HTMLElement).addEventListener('mouseleave', () => {
+		tween = gsap.to(element, { 
+			scale: 1.03, 
+			duration: 0.2, 
+			ease: 'power2.out' 
+		});
+	};
+	
+	const handleMouseLeave = () => {
 		tween?.kill();
-		tween = gsap.to(el, { scale: 1, duration: 0.2, ease: 'power2.inOut' });
-	});
+		tween = gsap.to(element, { 
+			scale: 1, 
+			duration: 0.2, 
+			ease: 'power2.inOut' 
+		});
+	};
+	
+	element.addEventListener('mouseenter', handleMouseEnter);
+	element.addEventListener('mouseleave', handleMouseLeave);
 });
 
-// Expose Lenis API for scroll control
-// Usage: window.lenis.stop() / window.lenis.start() / window.lenis.scrollTo(target)
-(window as any).lenis = lenis;
+// ============================================
+// Expose Global APIs
+// ============================================
+declare global {
+	interface Window {
+		lenis: Lenis;
+		gsap: typeof gsap;
+	}
+}
 
-// Expose minimal API for debugging
-(window as any).__gsap = gsap;
+// Expose Lenis for external control
+window.lenis = lenis;
+
+// Expose GSAP for debugging
+window.gsap = gsap;
 
 
