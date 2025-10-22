@@ -37,14 +37,11 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 						</div>
 						<p class="perfect-for__icon-label" set:html={useCase.replace(' e ', '<br>e ')}></p>
 					</div>
-					{index < useCases.length - 1 && <div class="perfect-for__icon-divider"></div>}
+					{index < useCases.length - 1 && (index + 1) % 4 !== 0 && <div class="perfect-for__icon-divider"></div>}
 				</>
 			))}
 		</div>
 
-		<div class="perfect-for__image">
-			<img src="/images/projetos.png" alt="Projetos com bambu" loading="lazy" />
-		</div>
 	</div>
 </section>
 
@@ -66,6 +63,7 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 	margin-inline: auto;
 	width: 100%;
 	padding-inline: 2.25rem;
+	padding-block: 14rem;
 }
 
 .perfect-for__header {
@@ -134,10 +132,11 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 .perfect-for__icons {
 	display: flex;
 	align-items: flex-end;
-	justify-content: space-between;
+	justify-content: center;
+	flex-wrap: wrap;
 	padding-inline: 36px;
 	margin-bottom: 24px;
-	gap: 12px;
+	gap: 36px;
 }
 
 .perfect-for__icon-item {
