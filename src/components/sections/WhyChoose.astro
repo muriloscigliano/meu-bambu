@@ -15,6 +15,9 @@ const rightFeatures = features.slice(midPoint);
 ---
 
 <section class="why-choose">
+	<!-- Parallax Background Image -->
+	<div class="why-choose__bg-image" data-parallax-bg></div>
+	
 	<div class="why-choose__container" data-reveal>
 		<div class="why-choose__content">
 			<h2 class="why-choose__title" data-split="heading">{title}</h2>
@@ -59,6 +62,37 @@ const rightFeatures = features.slice(midPoint);
 	</div>
 </section>
 
+<script>
+	import { gsap, ScrollTrigger } from '../../utils/gsap';
+	
+	gsap.registerPlugin(ScrollTrigger);
+	
+	function initParallax() {
+		const bgImage = document.querySelector('[data-parallax-bg]');
+		
+		if (!bgImage) return;
+		
+		// Smooth parallax effect - moves 10% of scroll distance
+		gsap.to(bgImage, {
+			yPercent: 15,
+			ease: 'none',
+			scrollTrigger: {
+				trigger: '.why-choose',
+				start: 'top bottom',
+				end: 'bottom top',
+				scrub: 1.5, // Smooth scrubbing (higher = smoother)
+			}
+		});
+	}
+	
+	// Initialize on load
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initParallax);
+	} else {
+		initParallax();
+	}
+</script>
+
 <style>
 .why-choose { 
 	position: relative; 
@@ -71,10 +105,20 @@ const rightFeatures = features.slice(midPoint);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
 	padding-block: 90px;
 	overflow: hidden;
+}
+
+/* Parallax Background Image */
+.why-choose__bg-image {
+	position: absolute;
+	inset: -10% 0; /* Extra height for parallax movement */
+	width: 100%;
+	height: 120%;
 	background-image: url("/images/floresta-bambu.jpg");
-	background-size: 100% 100%;
+	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
+	will-change: transform;
+	z-index: 0;
 }
 
 .why-choose::before,
