@@ -1,12 +1,26 @@
 ---
+interface Props {
+	title: string;
+	ctaLabel: string;
+	ctaHref: string;
+	description: string;
+	cnpj: string;
+	address: {
+		street: string;
+		city: string;
+		zipCode: string;
+	};
+}
+
+const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as Props;
 ---
 
 <section class="footer-cta">
 	<div class="footer-cta__container">
 		<div class="footer-cta__content">
 			<div class="footer-cta__left" data-reveal>
-				<h2 class="footer-cta__title">Transforme seu projeto com o poder do bambu.</h2>
-				<a href="#comprar" class="footer-cta__button btn-accent" data-hover-scale>comprar agora</a>
+				<h2 class="footer-cta__title">{title}</h2>
+				<a href={ctaHref} class="footer-cta__button btn-accent" data-hover-scale>{ctaLabel}</a>
 			</div>
 
 			<div class="footer-cta__center">
@@ -21,16 +35,14 @@
 			</div>
 
 			<div class="footer-cta__right" data-reveal>
-				<p class="footer-cta__text">
-					Uma marca Flowing Boards. Trazendo a mesma expertise em bambu, antes aplicada em longboards, agora dedicada a painéis e lâminas premium para marcenaria e design sustentável.
-				</p>
+				<p class="footer-cta__text">{description}</p>
 				<div class="footer-cta__divider"></div>
-				<p class="footer-cta__info">CNPJ 12.641.824.0001/20</p>
+				<p class="footer-cta__info">{cnpj}</p>
 				<div class="footer-cta__divider"></div>
 				<p class="footer-cta__info">
-					Rua joaquim antônio de lima, 454<br>
-					joanóspolis - sp<br>
-					12980-000
+					{address.street}<br>
+					{address.city}<br>
+					{address.zipCode}
 				</p>
 			</div>
 		</div>

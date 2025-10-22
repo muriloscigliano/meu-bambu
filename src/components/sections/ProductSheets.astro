@@ -1,43 +1,39 @@
 ---
+interface Props {
+	title: string;
+	price: string;
+	description: string;
+	features: string[];
+	ctaLabel: string;
+	ctaHref: string;
+}
+
+const { title, price, description, features, ctaLabel, ctaHref } = Astro.props as Props;
 ---
 
 <section class="product-sheets">
 	<div class="product-sheets__container">
 		<div class="product-sheets__media" data-reveal>
 			<div class="product-sheets__image-wrap">
-				<img src="/images/laminas.png" alt="Lâminas de Bambu Flexíveis" loading="lazy" />
+				<img src="/images/laminas.png" alt={title} loading="lazy" />
 			</div>
 		</div>
 
 		<div class="product-sheets__details" data-reveal>
-			<h2 class="product-sheets__title">Lâminas de Bambu Flexíveis</h2>
-			<p class="product-sheets__price">R$349,00</p>
-			<p class="product-sheets__desc">
-				Bambu ultrafino e flexível, ideal para curvas, detalhes sofisticados e acabamentos criativos em móveis e marcenaria.
-			</p>
+			<h2 class="product-sheets__title">{title}</h2>
+			<p class="product-sheets__price">{price}</p>
+			<p class="product-sheets__desc">{description}</p>
 			
 			<ul class="product-sheets__bullets">
-				<li>
-					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					Flexível e fácil de moldar
-				</li>
-				<li>
-					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					Acabamento natural elegante
-				</li>
-				<li>
-					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					Liberdade criativa para projetos
-				</li>
+				{features.map((feature) => (
+					<li>
+						<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
+							<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						{feature}
+					</li>
+				))}
 			</ul>
 
 			<div class="product-sheets__options">
@@ -60,7 +56,7 @@
 				<div class="product-sheets__divider"></div>
 			</div>
 
-			<a href="#comprar" class="product-sheets__cta btn-primary" data-hover-scale>COMPRAR agora</a>
+			<a href={ctaHref} class="product-sheets__cta btn-primary" data-hover-scale>{ctaLabel}</a>
 		</div>
 	</div>
 

@@ -1,60 +1,59 @@
 ---
+interface Props {
+	title: string;
+	description: string;
+	features: Array<{
+		title: string;
+		description: string;
+	}>;
+}
+
+const { title, description, features } = Astro.props as Props;
+const midPoint = Math.ceil(features.length / 2);
+const leftFeatures = features.slice(0, midPoint);
+const rightFeatures = features.slice(midPoint);
 ---
 
 <section class="why-choose">
 	<div class="why-choose__container" data-reveal>
 		<div class="why-choose__content">
-			<h2 class="why-choose__title">por que escolher o meubambu?</h2>
-			<p class="why-choose__description">
-				Somos o único fornecedor no Brasil com painéis de núcleo vertical, mais fortes e estáveis que os tradicionais horizontais. Nascemos da experiência Flowing Boards, referência em bambu para longboards, agora aplicando a mesma expertise em marcenaria e design.
-			</p>
+			<h2 class="why-choose__title">{title}</h2>
+			<p class="why-choose__description">{description}</p>
 		</div>
 
 		<div class="why-choose__features">
 			<div class="why-choose__feature-col">
-				<div class="why-choose__feature">
-					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
-						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					<h3 class="why-choose__feature-title">Sustentável & Renovável</h3>
-					<p class="why-choose__feature-desc">Bambu de origem responsável, aliado ao design ecológico.</p>
-				</div>
-
-				<div class="why-choose__feature-divider"></div>
-
-				<div class="why-choose__feature">
-					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
-						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					<h3 class="why-choose__feature-title">Entrega Rápida em Todo o Brasil</h3>
-					<p class="why-choose__feature-desc">Compra fácil, entrega rápida e segura em qualquer região.</p>
-				</div>
+				{leftFeatures.map((feature, index) => (
+					<>
+						<div class="why-choose__feature">
+							<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
+								<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<h3 class="why-choose__feature-title">{feature.title}</h3>
+							<p class="why-choose__feature-desc">{feature.description}</p>
+						</div>
+						{index < leftFeatures.length - 1 && <div class="why-choose__feature-divider"></div>}
+					</>
+				))}
 			</div>
 
 			<div class="why-choose__col-divider"></div>
 
 			<div class="why-choose__feature-col">
-				<div class="why-choose__feature">
-					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
-						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					<h3 class="why-choose__feature-title">Qualidade Profissional</h3>
-					<p class="why-choose__feature-desc">Acabamento premium para marcenaria, móveis e design.</p>
-				</div>
-
-				<div class="why-choose__feature-divider"></div>
-
-				<div class="why-choose__feature">
-					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
-						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					<h3 class="why-choose__feature-title">Núcleo Vertical Exclusivo</h3>
-					<p class="why-choose__feature-desc">Mais resistente e estável que os comuns painéis horizontais.</p>
-				</div>
+				{rightFeatures.map((feature, index) => (
+					<>
+						<div class="why-choose__feature">
+							<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
+								<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<h3 class="why-choose__feature-title">{feature.title}</h3>
+							<p class="why-choose__feature-desc">{feature.description}</p>
+						</div>
+						{index < rightFeatures.length - 1 && <div class="why-choose__feature-divider"></div>}
+					</>
+				))}
 			</div>
 		</div>
 	</div>

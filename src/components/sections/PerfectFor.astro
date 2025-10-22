@@ -1,4 +1,14 @@
 ---
+interface Props {
+	eyebrow: string;
+	title: string;
+	description: string;
+	ctaLabel: string;
+	ctaHref: string;
+	useCases: string[];
+}
+
+const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props as Props;
 ---
 
 <section class="perfect-for">
@@ -6,98 +16,28 @@
 		<div class="perfect-for__header">
 			<div class="perfect-for__line"></div>
 			<div class="perfect-for__header-content">
-				<p class="perfect-for__eyebrow">painés de bambu</p>
-				<h2 class="perfect-for__title">Perfeito Para Qualquer Projeto</h2>
-				<p class="perfect-for__desc">
-					Do móvel sob medida ao detalhe arquitetônico sofisticado. O bambu transforma qualquer ideia em realidade.
-				</p>
-				<a href="#comprar" class="perfect-for__cta btn-primary" data-hover-scale>comece seu projeto agora</a>
+				<p class="perfect-for__eyebrow">{eyebrow}</p>
+				<h2 class="perfect-for__title">{title}</h2>
+				<p class="perfect-for__desc">{description}</p>
+				<a href={ctaHref} class="perfect-for__cta btn-primary" data-hover-scale>{ctaLabel}</a>
 			</div>
 			<div class="perfect-for__line"></div>
 		</div>
 
 		<div class="perfect-for__icons">
-			<div class="perfect-for__icon-item">
-				<div class="perfect-for__icon">
-					<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Furniture icon placeholder -->
-						<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
-					</svg>
-				</div>
-				<p class="perfect-for__icon-label">Fabricantes de móveis</p>
-			</div>
-
-			<div class="perfect-for__icon-divider"></div>
-
-			<div class="perfect-for__icon-item">
-				<div class="perfect-for__icon">
-					<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Architecture icon placeholder -->
-						<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
-					</svg>
-				</div>
-				<p class="perfect-for__icon-label">Arquitetos e construtores</p>
-			</div>
-
-			<div class="perfect-for__icon-divider"></div>
-
-			<div class="perfect-for__icon-item">
-				<div class="perfect-for__icon">
-					<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Craft icon placeholder -->
-						<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
-					</svg>
-				</div>
-				<p class="perfect-for__icon-label">artesanato<br>e presentes</p>
-			</div>
-
-			<div class="perfect-for__icon-divider"></div>
-
-			<div class="perfect-for__icon-item">
-				<div class="perfect-for__icon">
-					<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Interior design icon placeholder -->
-						<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
-					</svg>
-				</div>
-				<p class="perfect-for__icon-label">Design de interiores</p>
-			</div>
-
-			<div class="perfect-for__icon-divider"></div>
-
-			<div class="perfect-for__icon-item">
-				<div class="perfect-for__icon">
-					<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Woodworking icon placeholder -->
-						<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
-					</svg>
-				</div>
-				<p class="perfect-for__icon-label">marcenaria fina</p>
-			</div>
-
-			<div class="perfect-for__icon-divider"></div>
-
-			<div class="perfect-for__icon-item">
-				<div class="perfect-for__icon">
-					<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Skateboard icon placeholder -->
-						<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
-					</svg>
-				</div>
-				<p class="perfect-for__icon-label">skate e longboards</p>
-			</div>
-
-			<div class="perfect-for__icon-divider"></div>
-
-			<div class="perfect-for__icon-item">
-				<div class="perfect-for__icon">
-					<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Gifts icon placeholder -->
-						<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
-					</svg>
-				</div>
-				<p class="perfect-for__icon-label">brindes promocionais</p>
-			</div>
+			{useCases.map((useCase, index) => (
+				<>
+					<div class="perfect-for__icon-item">
+						<div class="perfect-for__icon">
+							<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
+							</svg>
+						</div>
+						<p class="perfect-for__icon-label" set:html={useCase.replace(' e ', '<br>e ')}></p>
+					</div>
+					{index < useCases.length - 1 && <div class="perfect-for__icon-divider"></div>}
+				</>
+			))}
 		</div>
 
 		<div class="perfect-for__image">

@@ -8,23 +8,148 @@ import PerfectFor from "../components/sections/PerfectFor.astro";
 import WhyChoose from "../components/sections/WhyChoose.astro";
 import FooterCTA from "../components/sections/FooterCTA.astro";
 
+// Page metadata
 const page = {
-	title: 'Meu Bambu — Tábuas de bambu premium',
-	description: 'Tábuas de corte em bambu sustentáveis, resistentes e lindas. Compre online no Brasil.',
+	title: 'Meu Bambu — Painéis de bambu premium',
+	description: 'Os únicos painéis de bambu no Brasil com núcleo vertical. Mais fortes, estáveis e duradouros que os tradicionais painéis horizontais.',
+};
+
+// Hero section
+const hero = {
+	title: 'Painéis de Bambu Premium',
+	subtitle: 'Os únicos painéis de bambu no Brasil com núcleo vertical. Mais fortes, estáveis e duradouros que os tradicionais painéis horizontais. O material ideal para móveis, marcenaria e design sustentável.',
+	ctaLabel: 'Escolher meu painel',
+	ctaHref: '#comprar',
+};
+
+// Product Panels section
+const productPanels = {
+	title: 'Painéis de Bambu premium',
+	price: 'R$199,00',
+	description: 'Painéis de bambu com núcleo vertical, mais resistentes que os tradicionais horizontais. Perfeitos para móveis, marcenaria e design.',
+	features: [
+		'Resistência estrutural superior',
+		'Sustentável & ecológico',
+		'Fácil de cortar e aplicar'
+	],
+	ctaLabel: 'COMPRAR agora',
+	ctaHref: '#comprar',
+};
+
+// Product Sheets section
+const productSheets = {
+	title: 'Lâminas de Bambu Flexíveis',
+	price: 'R$349,00',
+	description: 'Bambu ultrafino e flexível, ideal para curvas, detalhes sofisticados e acabamentos criativos em móveis e marcenaria.',
+	features: [
+		'Flexível e fácil de moldar',
+		'Acabamento natural elegante',
+		'Liberdade criativa para projetos'
+	],
+	ctaLabel: 'COMPRAR agora',
+	ctaHref: '#comprar',
+};
+
+// Perfect For section
+const perfectFor = {
+	eyebrow: 'painés de bambu',
+	title: 'Perfeito Para Qualquer Projeto',
+	description: 'Do móvel sob medida ao detalhe arquitetônico sofisticado. O bambu transforma qualquer ideia em realidade.',
+	ctaLabel: 'comece seu projeto agora',
+	ctaHref: '#comprar',
+	useCases: [
+		'Fabricantes de móveis',
+		'Arquitetos e construtores',
+		'artesanato e presentes',
+		'Design de interiores',
+		'marcenaria fina',
+		'skate e longboards',
+		'brindes promocionais'
+	]
+};
+
+// Why Choose section
+const whyChoose = {
+	title: 'por que escolher o meubambu?',
+	description: 'Somos o único fornecedor no Brasil com painéis de núcleo vertical, mais fortes e estáveis que os tradicionais horizontais. Nascemos da experiência Flowing Boards, referência em bambu para longboards, agora aplicando a mesma expertise em marcenaria e design.',
+	features: [
+		{
+			title: 'Sustentável & Renovável',
+			description: 'Bambu de origem responsável, aliado ao design ecológico.'
+		},
+		{
+			title: 'Entrega Rápida em Todo o Brasil',
+			description: 'Compra fácil, entrega rápida e segura em qualquer região.'
+		},
+		{
+			title: 'Qualidade Profissional',
+			description: 'Acabamento premium para marcenaria, móveis e design.'
+		},
+		{
+			title: 'Núcleo Vertical Exclusivo',
+			description: 'Mais resistente e estável que os comuns painéis horizontais.'
+		}
+	]
+};
+
+// Footer CTA section
+const footerCTA = {
+	title: 'Transforme seu projeto com o poder do bambu.',
+	ctaLabel: 'comprar agora',
+	ctaHref: '#comprar',
+	description: 'Uma marca Flowing Boards. Trazendo a mesma expertise em bambu, antes aplicada em longboards, agora dedicada a painéis e lâminas premium para marcenaria e design sustentável.',
+	cnpj: 'CNPJ 12.641.824.0001/20',
+	address: {
+		street: 'Rua joaquim antônio de lima, 454',
+		city: 'joanóspolis - sp',
+		zipCode: '12980-000'
+	}
 };
 ---
 
 <Base title={page.title} description={page.description}>
 	<Header />
-	<Hero
-		title="Tábuas de bambu premium para sua cozinha"
-		subtitle="Sustentáveis, resistentes e lindas. Produzidas no Brasil."
-		ctaHref="#comprar"
-		ctaLabel="Comprar agora"
+	<Hero 
+		title={hero.title}
+		subtitle={hero.subtitle}
+		ctaLabel={hero.ctaLabel}
+		ctaHref={hero.ctaHref}
 	/>
-	<ProductPanels />
-	<ProductSheets />
-	<PerfectFor />
-	<WhyChoose />
-	<FooterCTA />
+	<ProductPanels 
+		title={productPanels.title}
+		price={productPanels.price}
+		description={productPanels.description}
+		features={productPanels.features}
+		ctaLabel={productPanels.ctaLabel}
+		ctaHref={productPanels.ctaHref}
+	/>
+	<ProductSheets 
+		title={productSheets.title}
+		price={productSheets.price}
+		description={productSheets.description}
+		features={productSheets.features}
+		ctaLabel={productSheets.ctaLabel}
+		ctaHref={productSheets.ctaHref}
+	/>
+	<PerfectFor 
+		eyebrow={perfectFor.eyebrow}
+		title={perfectFor.title}
+		description={perfectFor.description}
+		ctaLabel={perfectFor.ctaLabel}
+		ctaHref={perfectFor.ctaHref}
+		useCases={perfectFor.useCases}
+	/>
+	<WhyChoose 
+		title={whyChoose.title}
+		description={whyChoose.description}
+		features={whyChoose.features}
+	/>
+	<FooterCTA 
+		title={footerCTA.title}
+		ctaLabel={footerCTA.ctaLabel}
+		ctaHref={footerCTA.ctaHref}
+		description={footerCTA.description}
+		cnpj={footerCTA.cnpj}
+		address={footerCTA.address}
+	/>
 </Base>

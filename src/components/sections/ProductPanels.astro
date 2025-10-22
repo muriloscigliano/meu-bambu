@@ -1,37 +1,33 @@
 ---
+interface Props {
+	title: string;
+	price: string;
+	description: string;
+	features: string[];
+	ctaLabel: string;
+	ctaHref: string;
+}
+
+const { title, price, description, features, ctaLabel, ctaHref } = Astro.props as Props;
 ---
 
 <section class="product-panels">
 	<div class="product-panels__container">
 		<div class="product-panels__details" data-reveal>
-			<h2 class="product-panels__title">Painéis<br>de Bambu premium</h2>
-			<p class="product-panels__price">R$199,00</p>
-			<p class="product-panels__desc">
-				Painéis de bambu com núcleo vertical, mais resistentes que os tradicionais horizontais. Perfeitos para móveis, marcenaria e design.
-			</p>
+			<h2 class="product-panels__title" set:html={title.replace(' ', '<br>')}></h2>
+			<p class="product-panels__price">{price}</p>
+			<p class="product-panels__desc">{description}</p>
 			
 			<ul class="product-panels__bullets">
-				<li>
-					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					Resistência estrutural superior
-				</li>
-				<li>
-					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					Sustentável & ecológico
-				</li>
-				<li>
-					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					Fácil de cortar e aplicar
-				</li>
+				{features.map((feature) => (
+					<li>
+						<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
+							<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						{feature}
+					</li>
+				))}
 			</ul>
 
 			<div class="product-panels__options">
@@ -62,7 +58,7 @@
 
 			<div class="product-panels__divider"></div>
 
-			<a href="#comprar" class="product-panels__cta btn-primary" data-hover-scale>COMPRAR agora</a>
+			<a href={ctaHref} class="product-panels__cta btn-primary" data-hover-scale>{ctaLabel}</a>
 		</div>
 
 		<div class="product-panels__media" data-reveal>

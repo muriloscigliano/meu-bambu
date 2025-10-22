@@ -12,9 +12,9 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 <section class="hero">
 	<div class="hero__bg-pattern"></div>
 	<div class="hero__container" data-reveal>
-		<h1 class="hero__title">Painéis de Bambu Premium</h1>
-		<p class="hero__desc">Os únicos painéis de bambu no Brasil com núcleo vertical. Mais fortes, estáveis e duradouros que os tradicionais painéis horizontais. O material ideal para móveis, marcenaria e design sustentável.</p>
-		<a href={ctaHref} class="hero__cta" data-hover-scale>Escolher meu painel</a>
+		<h1 class="hero__title">{title}</h1>
+		{subtitle && <p class="hero__desc">{subtitle}</p>}
+		<a href={ctaHref} class="hero__cta" data-hover-scale>{ctaLabel}</a>
 		<div class="hero__pills">
 			<span class="pill">
 				<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,7 +84,7 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 	font-weight: 900;
 	font-style: italic;
 	text-transform: uppercase; 
-	line-height: 1.1;
+	line-height: 0.9;
 	letter-spacing: -0.02em; 
 	font-size: clamp(3.5rem, 8vw, 8rem);
 	color: var(--color-text-secondary);
