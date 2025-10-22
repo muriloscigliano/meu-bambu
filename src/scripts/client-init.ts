@@ -8,19 +8,28 @@ gsap.registerPlugin(ScrollTrigger);
 
 const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Smooth scrolling with Lenis (integrated with GSAP)
+// Initialize Lenis smooth scroll
 const lenis = new Lenis({
-	lerp: 0.08,
+	duration: 1.2,
+	easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+	orientation: 'vertical',
+	gestureOrientation: 'vertical',
 	smoothWheel: true,
+	wheelMultiplier: 1,
+	touchMultiplier: 2,
+	infinite: false,
+	autoResize: true,
 });
 
 // Sync Lenis with GSAP ScrollTrigger
 lenis.on('scroll', ScrollTrigger.update);
 
+// Add Lenis's raf method to GSAP ticker
 gsap.ticker.add((time) => {
 	lenis.raf(time * 1000);
 });
 
+// Disable lag smoothing to prevent animation jumps
 gsap.ticker.lagSmoothing(0);
 
 // Basic reveal-on-view animation utility
