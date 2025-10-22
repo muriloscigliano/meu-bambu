@@ -10,8 +10,7 @@ export default defineConfig({
   site: 'https://meubambu.com.br',
   output: 'static',
   adapter: vercel({
-    // Enable edge functions for better performance
-    edgeMiddleware: true,
+    // Static site configuration for Vercel
     includeFiles: []
   }),
 
