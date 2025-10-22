@@ -8,21 +8,21 @@ gsap.registerPlugin(ScrollTrigger);
 
 const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Smooth scrolling with Lenis
+// Smooth scrolling with Lenis (integrated with GSAP)
 const lenis = new Lenis({
-	// Keep motion subtle for performance and comfort
 	lerp: 0.08,
 	smoothWheel: true,
 	smoothTouch: false,
 });
 
-function raf(time: number) {
-	lenis.raf(time);
-	ScrollTrigger.update();
-	requestAnimationFrame(raf);
-}
+// Sync Lenis with GSAP ScrollTrigger
+lenis.on('scroll', ScrollTrigger.update);
 
-requestAnimationFrame(raf);
+gsap.ticker.add((time) => {
+	lenis.raf(time * 1000);
+});
+
+gsap.ticker.lagSmoothing(0);
 
 // Basic reveal-on-view animation utility
 if (!prefersReducedMotion) {
@@ -93,8 +93,11 @@ function initFooterParallax() {
 // Initialize Footer Parallax
 initFooterParallax();
 
+// Expose Lenis API for scroll control
+// Usage: window.lenis.stop() / window.lenis.start() / window.lenis.scrollTo(target)
+(window as any).lenis = lenis;
+
 // Expose minimal API for debugging
 (window as any).__gsap = gsap;
-(window as any).__lenis = lenis;
 
 
