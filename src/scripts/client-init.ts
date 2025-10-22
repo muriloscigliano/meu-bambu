@@ -12,7 +12,6 @@ const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia(
 const lenis = new Lenis({
 	lerp: 0.08,
 	smoothWheel: true,
-	smoothTouch: false,
 });
 
 // Sync Lenis with GSAP ScrollTrigger
