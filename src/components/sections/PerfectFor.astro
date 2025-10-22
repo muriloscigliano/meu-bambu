@@ -1,4 +1,6 @@
 ---
+import Button from '../Button.astro';
+
 interface Props {
 	eyebrow: string;
 	title: string;
@@ -19,7 +21,7 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 				<p class="perfect-for__eyebrow">{eyebrow}</p>
 				<h2 class="perfect-for__title">{title}</h2>
 				<p class="perfect-for__desc">{description}</p>
-				<a href={ctaHref} class="perfect-for__cta btn-primary" data-hover-scale>{ctaLabel}</a>
+				<Button text={ctaLabel} href={ctaHref} theme="dark" />
 			</div>
 			<div class="perfect-for__line"></div>
 		</div>

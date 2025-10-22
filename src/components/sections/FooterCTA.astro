@@ -1,4 +1,6 @@
 ---
+import Button from '../Button.astro';
+
 interface Props {
 	title: string;
 	ctaLabel: string;
@@ -20,7 +22,7 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 		<div class="footer-cta__content">
 			<div class="footer-cta__left" data-reveal>
 				<h2 class="footer-cta__title">{title}</h2>
-				<a href={ctaHref} class="footer-cta__button btn-accent" data-hover-scale>{ctaLabel}</a>
+				<Button text={ctaLabel} href={ctaHref} theme="primary" />
 			</div>
 
 			<div class="footer-cta__center">

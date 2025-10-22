@@ -1,4 +1,6 @@
 ---
+import Button from './Button.astro';
+
 interface Props {
 	title: string;
 	subtitle?: string;
@@ -14,7 +16,7 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 	<div class="hero__container" data-reveal>
 		<h1 class="hero__title">{title}</h1>
 		{subtitle && <p class="hero__desc">{subtitle}</p>}
-		<a href={ctaHref} class="hero__cta" data-hover-scale>{ctaLabel}</a>
+		<Button text={ctaLabel} href={ctaHref} theme="primary" />
 		<div class="hero__pills">
 			<span class="pill">
 				<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,26 +104,6 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 	margin: 0;
 }
 
-.hero__cta { 
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-	padding: 16px 24px;
-	height: 56px;
-	background: var(--color-button-dark);
-	color: var(--color-text-light);
-	border-radius: var(--radius-full);
-	font-family: var(--font-display);
-	font-weight: 900;
-	font-style: italic;
-	text-transform: uppercase;
-	font-size: 16px;
-	text-decoration: none;
-	transition: opacity .15s ease;
-}
-
-.hero__cta:hover { opacity: .9; }
 
 .hero__pills { 
 	display: flex;
