@@ -17,22 +17,17 @@ interface Props {
 const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as Props;
 ---
 
-<div data-footer-parallax class="footer-wrap">
-	<footer data-footer-parallax-inner class="footer-cta">
+<div data-footer-parallax class="footer__wrap">
+	<footer data-footer-parallax-inner class="footer">
 		<div class="footer-cta__content">
 			<div class="footer-cta__left" data-reveal>
-				<h2 class="footer-cta__title">{title}</h2>
+				<h2 class="footer-cta__title" data-split="heading">{title}</h2>
 				<Button text={ctaLabel} href={ctaHref} theme="primary" class="footer-cta__button" />
 			</div>
 
 			<div class="footer-cta__center">
 				<div class="footer-cta__logo">
-					<svg width="201" height="201" viewBox="0 0 201 201" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<!-- Logo placeholder - Flowing Boards circular logo -->
-						<circle cx="100.5" cy="100.5" r="99.5" stroke="#eee8db" stroke-width="2"/>
-						<text x="100.5" y="110" text-anchor="middle" font-family="Rumiko Sans" font-size="16" font-weight="500" fill="#eee8db">MAKING</text>
-						<text x="100.5" y="130" text-anchor="middle" font-family="Rumiko Sans" font-size="16" font-weight="500" fill="#eee8db">BETTER LIFE</text>
-					</svg>
+					<img src="/images/flowing-boards-badge.jpg" alt="Flowing Boards" />
 				</div>
 			</div>
 
@@ -49,17 +44,18 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 			</div>
 		</div>
 	</footer>
-	<div data-footer-parallax-dark class="footer-wrap__dark"></div>
-</div>
+	<div data-footer-parallax-dark class="footer__dark"></div>
+  </div>
 
 <style>
-.footer-wrap {
+.footer__wrap {
 	position: relative;
-	overflow: clip;
+	overflow: hidden;
+	background: var(--color-bg-dark);
 
 }
 
-.footer-wrap__dark {
+.footer__dark {
 	opacity: 0;
 	pointer-events: none;
 	background-color: var(--color-bg-dark);
@@ -70,7 +66,7 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 	left: 0;
 }
 
-.footer-cta { 
+.footer { 
 	position: relative; 
 	isolation: isolate; 
 	min-height: var(--section-min-height);
@@ -126,6 +122,13 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 .footer-cta__logo {
 	width: 201px;
 	height: 201px;
+	overflow: hidden;
+}
+.footer-cta__logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 100%;
 }
 
 .footer-cta__right {
@@ -189,53 +192,71 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 		height: 150px;
 	}
 }
+
+[data-underline-link] {
+  text-decoration: none;
+  position: relative;
+}
+
+[data-underline-link]::before {
+  content: "";
+  position: absolute;
+  bottom: -0.0625em;
+  left: 0;
+  width: 100%;
+  height: 0.1em;
+  background-color: var(--color-accent);
+  transition: transform 0.735s cubic-bezier(0.625, 0.05, 0, 1);
+  transform-origin: right;
+  transform: scaleX(0) rotate(0.001deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-hover]:hover [data-underline-link]::before,
+  [data-underline-link]:hover::before {
+    transform-origin: left;
+    transform: scaleX(1) rotate(0.001deg);
+  }  
+}
 </style>
 
 <script>
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from '../../utils/gsap.ts';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function initFooterParallax() {
-	const el = document.querySelector('[data-footer-parallax]');
-	
-	if (!el) return;
-	
-	const tl = gsap.timeline({
-		scrollTrigger: {
+	function initFooterParallax(){
+	  document.querySelectorAll('[data-footer-parallax]').forEach(el => {
+		const tl = gsap.timeline({
+		  scrollTrigger: {
 			trigger: el,
 			start: 'clamp(top bottom)',
 			end: 'clamp(top top)',
 			scrub: true
-		}
-	});
-
-	const inner = el.querySelector('[data-footer-parallax-inner]');
-	const dark = el.querySelector('[data-footer-parallax-dark]');
-
-	if (inner) {
-		tl.from(inner, {
-			yPercent: -25,
-			ease: 'linear'
+		  }
 		});
-	}
-
-	if (dark) {
-		tl.from(dark, {
-			opacity: 0.5,
+	  
+		const inner = el.querySelector('[data-footer-parallax-inner]');
+		const dark  = el.querySelector('[data-footer-parallax-dark]');
+	  
+		if (inner) {
+		  tl.from(inner, {
+			yPercent: -75,
+			scale: 0.95,
 			ease: 'linear'
-		}, '<');
+		  });
+		}
+	  
+		if (dark) {
+		  tl.from(dark, {
+			opacity: 1,
+			ease: 'linear'
+		  }, '<');
+		}
+	  });
 	}
-}
-
-// Initialize
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', initFooterParallax);
-} else {
-	initFooterParallax();
-}
-
-// Re-initialize on view transitions
-document.addEventListener('astro:after-swap', initFooterParallax);
+	// Initialize Footer with Parallax Effect
+	document.addEventListener('DOMContentLoaded', () => {
+	  initFooterParallax();
+	});
 </script>

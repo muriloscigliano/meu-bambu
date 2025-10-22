@@ -16,7 +16,7 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 <section class="product-panels">
 	<div class="product-panels__container">
 		<div class="product-panels__details" data-reveal>
-			<h2 class="product-panels__title" set:html={title.replace(' ', '<br>')}></h2>
+			<h2 class="product-panels__title" data-split="heading" set:html={title.replace(' ', '<br>')}></h2>
 			<p class="product-panels__price">{price}</p>
 			<p class="product-panels__desc">{description}</p>
 			

@@ -19,8 +19,8 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 			<div class="perfect-for__line"></div>
 			<div class="perfect-for__header-content">
 				<p class="perfect-for__eyebrow">{eyebrow}</p>
-				<h2 class="perfect-for__title">{title}</h2>
-				<p class="perfect-for__desc">{description}</p>
+				<h2 class="perfect-for__title" data-split="heading">{title}</h2>
+				<p class="perfect-for__desc" data-split="heading">{description}</p>
 				<Button text={ctaLabel} href={ctaHref} theme="dark" />
 			</div>
 			<div class="perfect-for__line"></div>

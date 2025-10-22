@@ -17,6 +17,8 @@
 	--color-button-primary: #62533e;
 	--color-accent: #d28f3d;
 	--color-border: #E2D9C8;
+	--color-border-pill: #A0927A;
+	--color-border-dark: #474637;
 	--color-selected: #c2b497;
 	--color-line: #e7dfd2;
 	--color-beige: #eee8db;
@@ -41,6 +43,44 @@ body {
 	background: var(--color-bg-primary);
 	margin: 0;
 	padding: 0;
+}
+
+main {
+	overflow: clip;
+	position: relative;
+	z-index: 1;
+	background: var(--color-bg-primary);
+}
+
+/* SplitText Animation Setup */
+/* Hide headings until they're split to prevent FOUC */
+[data-split="heading"] {
+	visibility: hidden;
+}
+
+/* Better font rendering for animations */
+[data-split="heading"] {
+	-webkit-text-rendering: optimizeSpeed;
+	text-rendering: optimizeSpeed;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+	font-kerning: none;
+}
+
+/* Custom SplitText masking that preserves accents */
+.split-line-mask {
+	display: block;
+	overflow: hidden;
+	/* Use padding to give space for accents without affecting line height visually */
+	padding-top: 0.15em;
+	padding-bottom: 0.12em;
+	margin-top: -0.15em;
+	margin-bottom: -0.12em;
+}
+
+.split-line {
+	display: block;
+	will-change: transform;
 }
 
 .heading {
@@ -121,11 +161,11 @@ h1, h2, h3, .font-display {
 }
 
 .chip-option { 
-	border-radius: 8px;
-	border: 1.5px solid var(--color-border);
+	border-radius: 500px;
+	border: 2px solid var(--color-border-pill);
 	padding: 12px 18px;
 	font-family: var(--font-display);
-	font-weight: 700;
+	font-weight: 600;
 	font-size: 14px;
 	background: var(--color-bg-primary);
 	color: var(--color-text-dark);
@@ -135,7 +175,7 @@ h1, h2, h3, .font-display {
 
 .chip-option[aria-pressed="true"] { 
 	background: var(--color-selected);
-	border-color: var(--color-border);
+	border-color: var(--color-border-pill);
 }
 
 
