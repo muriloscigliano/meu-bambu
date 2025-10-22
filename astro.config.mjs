@@ -9,7 +9,15 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://meubambu.vercel.app',
-  vite: {},
+  
+  vite: {
+    ssr: {
+      noExternal: ['gsap', 'lenis']
+    },
+    optimizeDeps: {
+      include: ['gsap', 'lenis']
+    }
+  },
 
   adapter: vercel(),
   integrations: [sitemap()]
