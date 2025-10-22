@@ -1,6 +1,7 @@
 import { initLenis } from '../utils/lenis';
 import { initSplitTextReveal } from '../utils/splitText';
 import { initImageTrail } from '../utils/imageTrail';
+import { initMarqueeScrollDirection } from '../utils/marquee';
 
 // Initialize all animations when DOM is ready
 function initAnimations() {
@@ -19,6 +20,9 @@ function initAnimations() {
     stopDuration: 350,
     trailLength: 6
   });
+  
+  // Initialize marquee scroll direction
+  initMarqueeScrollDirection();
 }
 
 // Initialize when DOM is ready

@@ -1,0 +1,121 @@
+---
+interface Props {
+	items: string[];
+	direction?: 'left' | 'right';
+	speed?: number;
+	scrollSpeed?: number;
+	duplicate?: number;
+}
+
+const {
+	items,
+	direction = 'left',
+	speed = 15,
+	scrollSpeed = 10,
+	duplicate = 2
+} = Astro.props as Props;
+---
+
+<section class="marquee-section">
+	<div
+		data-marquee-scroll-direction-target=""
+		data-marquee-direction={direction}
+		data-marquee-status="normal"
+		data-marquee-speed={speed}
+		data-marquee-scroll-speed={scrollSpeed}
+		data-marquee-duplicate={duplicate}
+		class="marquee-advanced"
+	>
+		<div data-marquee-scroll-target="" class="marquee-advanced__scroll">
+			<div data-marquee-collection-target="" class="marquee-advanced__collection">
+				{items.map((item) => (
+					<div class="marquee-advanced__item">
+						<p class="marquee__advanced__p">{item}</p>
+						<svg class="marquee__advanced__arrow-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+				))}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+.marquee-section {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	padding-block: 60px;
+	background: var(--color-bg-primary);
+	border-top: 1px solid var(--color-line);
+	border-bottom: 1px solid var(--color-line);
+}
+
+.marquee-advanced {
+	width: 100vw;
+	position: relative;
+	overflow: hidden;
+}
+
+.marquee-advanced__scroll {
+	will-change: transform;
+	width: 100%;
+	display: flex;
+	position: relative;
+}
+
+.marquee-advanced__collection {
+	will-change: transform;
+	display: flex;
+	position: relative;
+}
+
+.marquee-advanced__item {
+	justify-content: flex-start;
+	align-items: center;
+	font-size: clamp(3rem, 8vw, 6rem);
+	display: flex;
+	font-family: var(--font-display);
+	font-weight: 900;
+	font-style: italic;
+	text-transform: uppercase;
+	color: var(--color-text-secondary);
+}
+
+.marquee__advanced__p {
+	white-space: nowrap;
+	margin-bottom: 0;
+	margin-right: 0.5em;
+	font-size: 1em;
+	line-height: 1;
+}
+
+.marquee__advanced__arrow-svg {
+	color: var(--color-accent);
+	width: 0.6em;
+	height: 0.6em;
+	margin-right: 0.5em;
+	position: relative;
+	flex-shrink: 0;
+	transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+/* Rotating arrow based on scroll direction */
+.marquee__advanced__arrow-svg,
+[data-marquee-direction="right"][data-marquee-status="inverted"] .marquee__advanced__arrow-svg {
+	transform: rotate(-180deg);
+}
+
+[data-marquee-status="inverted"] .marquee__advanced__arrow-svg,
+[data-marquee-direction="right"][data-marquee-status="normal"] .marquee__advanced__arrow-svg {
+	transform: rotate(-359.999deg);
+}
+
+@media (max-width: 768px) {
+	.marquee-section {
+		padding-block: 40px;
+	}
+}
+</style>
+
