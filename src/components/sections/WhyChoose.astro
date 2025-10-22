@@ -1,23 +1,248 @@
 ---
 ---
 
-<section class="why">
-	<div class="why__container" data-reveal>
-		<h2 class="why__title">Por que escolher o MeuBambu?</h2>
-		<div class="why__content">
-			<p>Sustentabilidade, durabilidade e estética. Nosso bambu oferece desempenho superior com impacto ambiental reduzido.</p>
-			<p>Fornecimento confiável e qualidade consistente para projetos profissionais e hobby.</p>
-			<p>Atendimento dedicado para ajudar você a especificar o material ideal.</p>
+<section class="why-choose">
+	<div class="why-choose__container" data-reveal>
+		<div class="why-choose__content">
+			<h2 class="why-choose__title">por que escolher o meubambu?</h2>
+			<p class="why-choose__description">
+				Somos o único fornecedor no Brasil com painéis de núcleo vertical, mais fortes e estáveis que os tradicionais horizontais. Nascemos da experiência Flowing Boards, referência em bambu para longboards, agora aplicando a mesma expertise em marcenaria e design.
+			</p>
+		</div>
+
+		<div class="why-choose__features">
+			<div class="why-choose__feature-col">
+				<div class="why-choose__feature">
+					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
+						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<h3 class="why-choose__feature-title">Sustentável & Renovável</h3>
+					<p class="why-choose__feature-desc">Bambu de origem responsável, aliado ao design ecológico.</p>
+				</div>
+
+				<div class="why-choose__feature-divider"></div>
+
+				<div class="why-choose__feature">
+					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
+						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<h3 class="why-choose__feature-title">Entrega Rápida em Todo o Brasil</h3>
+					<p class="why-choose__feature-desc">Compra fácil, entrega rápida e segura em qualquer região.</p>
+				</div>
+			</div>
+
+			<div class="why-choose__col-divider"></div>
+
+			<div class="why-choose__feature-col">
+				<div class="why-choose__feature">
+					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
+						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<h3 class="why-choose__feature-title">Qualidade Profissional</h3>
+					<p class="why-choose__feature-desc">Acabamento premium para marcenaria, móveis e design.</p>
+				</div>
+
+				<div class="why-choose__feature-divider"></div>
+
+				<div class="why-choose__feature">
+					<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
+						<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<h3 class="why-choose__feature-title">Núcleo Vertical Exclusivo</h3>
+					<p class="why-choose__feature-desc">Mais resistente e estável que os comuns painéis horizontais.</p>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
 
 <style>
-.why { position: relative; isolation: isolate; color: #fff; background: var(--color-dark-1) url('/images/bamboo-bg.jpg') center/cover no-repeat; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); margin-block: var(--section-gap); padding-block: var(--spacing-section); }
-.why__container { max-width: var(--container-max); margin-inline: auto; padding-inline: 1.5rem; display: grid; gap: 2rem; grid-template-columns: 1fr; }
-@media (min-width: 768px) { .why__container { grid-template-columns: 1fr 2fr; } }
-.why__title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 2vw, 2rem); }
-.why__content { display: grid; gap: 1rem; }
+.why-choose { 
+	position: relative; 
+	isolation: isolate; 
+	min-height: var(--section-min-height);
+	display: flex;
+	align-items: center;
+	background: #202318;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	padding-block: 90px;
+	overflow: hidden;
+}
+
+.why-choose::before,
+.why-choose::after {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.why-choose::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3CradialGradient id='bamboo-gradient' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' style='stop-color:%234b4234;stop-opacity:0.1'/%3E%3Cstop offset='100%25' style='stop-color:%2324261d;stop-opacity:0.3'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23bamboo-gradient)'/%3E%3C/svg%3E");
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.why-choose::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%),
+				linear-gradient(262.508deg, rgba(75, 66, 52, 0) 16.445%, rgba(36, 36, 29, 0.5) 58.211%);
+	pointer-events: none;
+}
+
+.why-choose__container { 
+	position: relative;
+	z-index: 1;
+	max-width: var(--container-max); 
+	margin-inline: auto;
+	width: 100%;
+	padding-inline: 2.25rem;
+	display: flex;
+	gap: 48px;
+	align-items: center;
+}
+
+.why-choose__content {
+	flex: 0 0 604px;
+	display: flex;
+	flex-direction: column;
+	gap: 36px;
+}
+
+.why-choose__title { 
+	font-family: var(--font-display); 
+	font-weight: 900;
+	text-transform: uppercase; 
+	line-height: 1;
+	font-size: 72px;
+	color: var(--color-white);
+	margin: 0;
+}
+
+.why-choose__description {
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 1.4;
+	color: var(--color-text-gray);
+	margin: 0;
+	max-width: 533px;
+}
+
+.why-choose__features {
+	flex: 1;
+	display: flex;
+	gap: 1px;
+	padding: 48px 24px;
+	backdrop-filter: blur(25px);
+	background: rgba(36, 38, 29, 0.01);
+	border: 1px solid #5a5948;
+	border-radius: 8px;
+}
+
+.why-choose__feature-col {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 52px;
+}
+
+.why-choose__col-divider {
+	width: 398px;
+	height: 0;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	align-self: center;
+	transform: rotate(90deg);
+	flex-shrink: 0;
+	margin-inline: -199px;
+}
+
+.why-choose__feature {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding-inline: 24px;
+}
+
+.why-choose__feature:last-child {
+	padding-left: 36px;
+}
+
+.why-choose__feature-icon {
+	width: 32px;
+	height: 32px;
+	color: white;
+}
+
+.why-choose__feature-title {
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 1.1;
+	text-transform: uppercase;
+	color: white;
+	margin: 0;
+}
+
+.why-choose__feature-desc {
+	font-family: var(--font-sans);
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 1.4;
+	color: var(--color-text-gray);
+	margin: 0;
+}
+
+.why-choose__feature-divider {
+	height: 1px;
+	background: rgba(255, 255, 255, 0.1);
+	margin-inline: 24px;
+}
+
+@media (max-width: 1024px) {
+	.why-choose__container {
+		flex-direction: column;
+	}
+	
+	.why-choose__content {
+		flex: 1;
+	}
+	
+	.why-choose__features {
+		flex-direction: column;
+		width: 100%;
+	}
+	
+	.why-choose__col-divider {
+		transform: rotate(0deg);
+		width: 100%;
+		height: 1px;
+		margin: 0;
+	}
+}
+
+@media (max-width: 768px) {
+	.why-choose__title {
+		font-size: 48px;
+	}
+	
+	.why-choose__features {
+		padding: 24px 16px;
+	}
+	
+	.why-choose__feature {
+		padding-inline: 16px;
+	}
+	
+	.why-choose__feature:last-child {
+		padding-left: 16px;
+	}
+}
 </style>
-
-

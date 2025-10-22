@@ -1,76 +1,263 @@
 ---
 ---
 
-<section class="product product--beige">
-	<div class="product__container">
-		<div class="product__media" data-reveal>
-			<img src="/images/laminas.png" alt="Lâminas de Bambu Flexíveis" loading="lazy" />
+<section class="product-sheets">
+	<div class="product-sheets__container">
+		<div class="product-sheets__media" data-reveal>
+			<div class="product-sheets__image-wrap">
+				<img src="/images/laminas.png" alt="Lâminas de Bambu Flexíveis" loading="lazy" />
+			</div>
 		</div>
 
-		<div class="product__details" data-reveal>
-			<h2 class="product__title">Lâminas de Bambu Flexíveis</h2>
-			<p class="product__price">R$349,00</p>
-			<p class="product__desc">Bambu ultrafino e flexível, ideal para curvas, detalhes sofisticados e acabamentos criativos em móveis e marcenaria.</p>
-			<div class="product__divider"></div>
-
-			<ul class="product__bullets">
-				<li>Flexível e fácil de moldar</li>
-				<li>Acabamento natural elegante</li>
-				<li>Liberdade criativa para projetos</li>
+		<div class="product-sheets__details" data-reveal>
+			<h2 class="product-sheets__title">Lâminas de Bambu Flexíveis</h2>
+			<p class="product-sheets__price">R$349,00</p>
+			<p class="product-sheets__desc">
+				Bambu ultrafino e flexível, ideal para curvas, detalhes sofisticados e acabamentos criativos em móveis e marcenaria.
+			</p>
+			
+			<ul class="product-sheets__bullets">
+				<li>
+					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					Flexível e fácil de moldar
+				</li>
+				<li>
+					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					Acabamento natural elegante
+				</li>
+				<li>
+					<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					Liberdade criativa para projetos
+				</li>
 			</ul>
 
-			<div class="product__options">
-				<div class="product__group" data-group="espessura">
-					<p class="product__groupLabel">Espessura</p>
-					<div class="product__chips">
-						<button class="chip" aria-pressed="true" data-value="0.6mm">0.6mm</button>
+			<div class="product-sheets__options">
+				<div class="product-sheets__divider"></div>
+				<div class="product-sheets__option-row">
+					<div class="product-sheets__option-group">
+						<p class="product-sheets__option-label">Espessura</p>
+						<div class="product-sheets__chips">
+							<button class="chip-option" aria-pressed="true" data-value="0.6mm">0.6mm</button>
+						</div>
+					</div>
+					<div class="product-sheets__row-divider"></div>
+					<div class="product-sheets__option-group">
+						<p class="product-sheets__option-label">Tamanho</p>
+						<div class="product-sheets__chips">
+							<button class="chip-option chip-option--size" aria-pressed="true" data-value="200x60cm">200x60cm</button>
+						</div>
 					</div>
 				</div>
-				<div class="product__group" data-group="tamanho">
-					<p class="product__groupLabel">Tamanho</p>
-					<div class="product__chips">
-						<button class="chip" aria-pressed="true" data-value="200x60cm">200x60cm</button>
-					</div>
-				</div>
+				<div class="product-sheets__divider"></div>
 			</div>
 
-			<a href="#comprar" class="product__cta" data-hover-scale>COMPRAR AGORA</a>
+			<a href="#comprar" class="product-sheets__cta btn-primary" data-hover-scale>COMPRAR agora</a>
 		</div>
 	</div>
 
 	<script is:inline>
-		const root = document.currentScript.closest('.product');
+		const root = document.currentScript.closest('.product-sheets');
 		root?.addEventListener('click', (e) => {
 			const target = e.target;
 			if (!(target instanceof HTMLElement)) return;
-			const btn = target.closest('button.chip');
+			const btn = target.closest('button.chip-option');
 			if (!btn) return;
-			const group = btn.closest('[data-group]');
+			const group = btn.closest('.product-sheets__option-group');
 			if (!group) return;
-			group.querySelectorAll('button.chip').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+			group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-pressed', 'false'));
 			btn.setAttribute('aria-pressed', 'true');
-			const detail = { group: group.dataset.group, value: btn.dataset.value };
-			root.dispatchEvent(new CustomEvent('product:change', { detail }));
 		});
 	</script>
-
-	<style>
-	.product { position: relative; isolation: isolate; background: var(--color-beige); padding-block: var(--spacing-section); margin-block: var(--section-gap); border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
-	.product__container { max-width: var(--container-max); margin-inline: auto; display: grid; gap: 3rem; align-items: center; grid-template-columns: 1fr; padding-inline: 1.5rem; }
-	@media (min-width: 768px) { .product__container { grid-template-columns: 1fr 1fr; } }
-	.product__details { }
-	.product__title { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 1.1; font-size: clamp(1.875rem, 2.5vw, 2.5rem); }
-	.product__desc { margin-top: .5rem; color: #4b5563; max-width: 52ch; }
-	.product__divider { margin-top: 1rem; height: 1px; width: min(100%,520px); background: var(--color-line); }
-	.product__price { margin-top: .5rem; font-weight: 600; }
-	.product__options { margin-top: 1.5rem; display: grid; gap: 1.5rem; }
-	.product__groupLabel { font-size: .9rem; font-weight: 600; }
-	.product__chips { margin-top: .5rem; display: flex; flex-wrap: wrap; gap: .5rem; }
-	.chip { border: 1px solid var(--color-line); border-radius: 9999px; padding: .375rem .75rem; background: #fff; font-size: .925rem; }
-	.chip[aria-pressed="true"] { background: color-mix(in oklab, var(--color-accent) 15%, white 85%); border-color: var(--color-accent); }
-	.product__bullets { margin-top: 1.5rem; display: grid; gap: .5rem; color: #4b5563; font-size: .9rem; }
-	.product__cta { display: inline-block; margin-top: 2rem; background: var(--color-brand); color: #fff; padding: .75rem 1.5rem; border-radius: 9999px; }
-	.product__media { text-align: center; }
-	.product__media img { max-width: 28rem; width: 100%; height: auto; }
-	</style>
 </section>
+
+<style>
+.product-sheets { 
+	position: relative; 
+	isolation: isolate; 
+	min-height: var(--section-min-height);
+	display: flex;
+	align-items: center;
+	background: var(--color-bg-secondary);
+	border-top: 1px solid var(--color-line);
+	border-bottom: 1px solid var(--color-line);
+	padding-block: 90px;
+}
+
+.product-sheets__container { 
+	max-width: var(--container-max); 
+	margin-inline: auto; 
+	display: grid; 
+	gap: 48px; 
+	align-items: center; 
+	grid-template-columns: 1fr 1fr;
+	padding-inline: 2.25rem;
+}
+
+.product-sheets__details { 
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 48px;
+}
+
+.product-sheets__title { 
+	font-family: var(--font-display); 
+	font-weight: 900;
+	text-transform: uppercase; 
+	line-height: 0.9;
+	font-size: 64px;
+	color: var(--color-text-secondary);
+	margin: 0;
+}
+
+.product-sheets__price {
+	font-family: var(--font-display); 
+	font-weight: 900;
+	text-transform: uppercase; 
+	line-height: 0.9;
+	font-size: 36px;
+	color: var(--color-text-secondary);
+	margin: 0;
+}
+
+.product-sheets__desc { 
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 1.3;
+	color: var(--color-text-primary);
+	margin: 0;
+	max-width: 52ch;
+}
+
+.product-sheets__bullets {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.product-sheets__bullets li {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 1.1;
+	color: var(--color-text-primary);
+}
+
+.product-sheets__options {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.product-sheets__option-row {
+	display: flex;
+	gap: 24px;
+	align-items: flex-start;
+}
+
+.product-sheets__row-divider {
+	width: 34px;
+	height: 0;
+	border-top: 1px solid var(--color-border);
+	align-self: center;
+	transform: rotate(90deg);
+}
+
+.product-sheets__divider {
+	height: 1px;
+	width: 100%;
+	background: var(--color-border);
+}
+
+.product-sheets__option-group {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.product-sheets__option-label {
+	font-family: var(--font-sans);
+	font-weight: 700;
+	font-size: 16px;
+	color: var(--color-text-dark);
+	margin: 0;
+	white-space: nowrap;
+}
+
+.product-sheets__chips {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.chip-option--size {
+	min-width: 100px;
+}
+
+.product-sheets__cta {
+	align-self: flex-start;
+	height: 56px;
+}
+
+.product-sheets__media {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.product-sheets__image-wrap {
+	max-width: 728px;
+	width: 100%;
+}
+
+.product-sheets__image-wrap img { 
+	width: 100%; 
+	height: auto;
+	display: block;
+}
+
+@media (max-width: 1024px) {
+	.product-sheets__container {
+		grid-template-columns: 1fr;
+	}
+	
+	.product-sheets__details {
+		padding: 24px;
+	}
+	
+	.product-sheets__option-row {
+		flex-direction: column;
+	}
+	
+	.product-sheets__row-divider {
+		display: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.product-sheets__title {
+		font-size: 48px;
+	}
+	
+	.product-sheets__price {
+		font-size: 28px;
+	}
+}
+</style>

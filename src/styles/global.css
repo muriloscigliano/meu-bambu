@@ -2,25 +2,34 @@
 
 :root {
 	/* Typography */
-	--font-sans: InterVariable, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+	--font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
 		Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-	--font-display: "Rumiko Sans", InterVariable, ui-sans-serif, system-ui;
+	--font-display: "Rumiko Sans", "Noto Sans", ui-sans-serif, system-ui;
 
-	/* Colors */
-	--color-brand: #0e7a45;
-	--color-brand-foreground: #ffffff;
-	--color-accent: #d4a351;
-	--color-beige: #f4efe7;
-	--color-dark: #0f1310;
-	--color-dark-1: #0f1b12;
-	--color-dark-2: #0f1310;
+	/* Colors - Exact from Figma */
+	--color-bg-primary: #eee8db;
+	--color-bg-secondary: #e5dbc8;
+	--color-bg-dark: #24261d;
+	--color-text-primary: #000000;
+	--color-text-secondary: #62533e;
+	--color-text-dark: #4b4234;
+	--color-button-dark: #413f39;
+	--color-button-primary: #62533e;
+	--color-accent: #d28f3d;
+	--color-border: #a0927a;
+	--color-selected: #c2b497;
 	--color-line: #e7dfd2;
+	--color-beige: #eee8db;
+	--color-white: #fffefc;
+	--color-text-light: #eee8db;
+	--color-text-gray: #e6e6e6;
 
 	/* Layout */
-	--radius-full: 9999px;
+	--radius-full: 100px;
 	--spacing-section: clamp(3rem, 6vw, 6rem);
 	--container-max: 1360px;
-	--section-gap: 12px;
+	--section-gap: 0;
+	--section-min-height: 1020px;
 
 	color-scheme: light;
 }
@@ -29,41 +38,115 @@ html,
 body {
 	height: 100%;
 	font-family: var(--font-sans);
+	background: var(--color-bg-primary);
+	margin: 0;
+	padding: 0;
 }
+
 .heading {
 	font-family: var(--font-display);
 }
 
 h1, h2, h3, .font-display {
 	font-family: var(--font-display);
+	font-weight: 900;
+	text-transform: uppercase;
 }
 
 /* Utility replacements */
-.container { max-width: var(--container-max); margin-inline: auto; padding-inline: 1.5rem; }
-.btn-primary { display: inline-block; border-radius: 9999px; background: var(--color-brand); color: #fff; padding: .75rem 1.5rem; transition: opacity .15s ease; }
+.container { max-width: var(--container-max); margin-inline: auto; padding-inline: 2.25rem; }
+
+/* Buttons from Figma */
+.btn-primary { 
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	padding: 16px 24px;
+	background: var(--color-button-dark);
+	color: var(--color-text-light);
+	border-radius: var(--radius-full);
+	font-family: var(--font-display);
+	font-weight: 900;
+	font-style: italic;
+	text-transform: uppercase;
+	font-size: 16px;
+	text-decoration: none;
+	border: none;
+	cursor: pointer;
+	transition: opacity .15s ease;
+}
 .btn-primary:hover { opacity: .9; }
 
-/* Pills / chips consistent with Figma */
-.pill { display: inline-flex; align-items: center; border-radius: 9999px; border: 1px solid var(--color-line); padding: .375rem .75rem; text-transform: uppercase; font-size: 11px; letter-spacing: 0.14em; background: color-mix(in oklab, var(--color-beige) 70%, white 30%); }
-
-.chip-option { border-radius: 9999px; border: 1px solid var(--color-line); padding: .375rem .75rem; font-size: .95rem; background: #fff; }
-
-.chip-option[aria-pressed="true"] { background: color-mix(in oklab, var(--color-accent) 15%, white 85%); border-color: var(--color-accent); }
-
-/* Figma rails overlay (container left/right hairlines) */
-.page-rails { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
-.page-rails::before,
-.page-rails::after {
-	content: "";
-	position: absolute;
-	top: 0; bottom: 0; width: 1px; background: var(--color-line);
+.btn-accent {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	padding: 16px 24px;
+	background: var(--color-accent);
+	color: var(--color-bg-dark);
+	border-radius: var(--radius-full);
+	font-family: var(--font-display);
+	font-weight: 900;
+	font-style: italic;
+	text-transform: uppercase;
+	font-size: 16px;
+	text-decoration: none;
+	border: none;
+	cursor: pointer;
+	transition: opacity .15s ease;
 }
-.page-rails::before { left: calc((100vw - var(--container-max)) / 2); }
-.page-rails::after { left: calc((100vw + var(--container-max)) / 2); }
+.btn-accent:hover { opacity: .9; }
+
+/* Checkmark icon for lists */
+.checkmark-icon {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	flex-shrink: 0;
+}
+
+/* Pills / chips consistent with Figma */
+.pill { 
+	display: inline-flex; 
+	align-items: center; 
+	gap: 6px;
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 1.1;
+	color: var(--color-text-primary);
+	text-transform: none;
+}
+
+.chip-option { 
+	border-radius: 8px;
+	border: 1.5px solid var(--color-border);
+	padding: 12px 18px;
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 14px;
+	background: var(--color-bg-primary);
+	color: var(--color-text-dark);
+	cursor: pointer;
+	transition: all .15s ease;
+}
+
+.chip-option[aria-pressed="true"] { 
+	background: var(--color-selected);
+	border-color: var(--color-border);
+}
+
+
+/* Section defaults */
+section {
+	position: relative;
+	min-height: var(--section-min-height);
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+}
 
 /* Section hairlines */
 .section-hairline { border-top: 1px solid var(--color-line); }
 .section-hairline-bottom { border-bottom: 1px solid var(--color-line); }
-
-/* Small gap around sections to form a framed rectangle */
-.section-frame { margin-block: var(--section-gap); }

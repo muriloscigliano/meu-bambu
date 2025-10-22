@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 // Register plugins
 gsap.registerPlugin(ScrollTrigger);
 
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Smooth scrolling with Lenis
 const lenis = new Lenis({
