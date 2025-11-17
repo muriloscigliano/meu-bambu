@@ -1,93 +1,144 @@
 import { gsap, ScrollTrigger } from './gsap';
+import { getSpeedMultiplier } from './constants';
+import { safeQuerySelector, safeQuerySelectorAll } from './dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function initMarqueeScrollDirection() {
-  const marquees = document.querySelectorAll('[data-marquee-scroll-direction-target]');
-  
-  if (marquees.length === 0) return;
+/**
+ * Initializes marquee components with scroll-based direction changes
+ * Marquees reverse direction based on scroll direction
+ *
+ * @returns void
+ *
+ * @example
+ * ```html
+ * <div data-marquee-scroll-direction-target data-marquee-speed="15">
+ *   <div data-marquee-scroll-target>
+ *     <div data-marquee-collection-target>Content</div>
+ *   </div>
+ * </div>
+ * ```
+ */
+export function initMarqueeScrollDirection(): void {
+	try {
+		const marquees = safeQuerySelectorAll('[data-marquee-scroll-direction-target]');
 
-  marquees.forEach((marquee) => {
-    // Query marquee elements
-    const marqueeContent = marquee.querySelector('[data-marquee-collection-target]') as HTMLElement;
-    const marqueeScroll = marquee.querySelector('[data-marquee-scroll-target]') as HTMLElement;
-    
-    if (!marqueeContent || !marqueeScroll) return;
+		if (marquees.length === 0) {
+			console.info('[Marquee] No marquees found with [data-marquee-scroll-direction-target]');
+			return;
+		}
 
-    // Get data attributes
-    const speed = marquee.getAttribute('data-marquee-speed');
-    const direction = marquee.getAttribute('data-marquee-direction');
-    const duplicate = marquee.getAttribute('data-marquee-duplicate');
-    const scrollSpeed = marquee.getAttribute('data-marquee-scroll-speed');
+		marquees.forEach((marquee) => {
+			try {
+				// Query marquee elements
+				const marqueeContent = safeQuerySelector<HTMLElement>(
+					'[data-marquee-collection-target]',
+					marquee
+				);
+				const marqueeScroll = safeQuerySelector<HTMLElement>(
+					'[data-marquee-scroll-target]',
+					marquee
+				);
 
-    // Convert data attributes to usable types
-    const marqueeSpeedAttr = parseFloat(speed || '15');
-    const marqueeDirectionAttr = direction === 'right' ? 1 : -1; // 1 for right, -1 for left
-    const duplicateAmount = parseInt(duplicate || '0');
-    const scrollSpeedAttr = parseFloat(scrollSpeed || '10');
-    const speedMultiplier = window.innerWidth < 479 ? 0.25 : window.innerWidth < 991 ? 0.5 : 1;
+				if (!marqueeContent || !marqueeScroll) {
+					console.warn('[Marquee] Missing required child elements in marquee:', marquee);
+					return;
+				}
 
-    let marqueeSpeed = marqueeSpeedAttr * (marqueeContent.offsetWidth / window.innerWidth) * speedMultiplier;
+				// Get data attributes
+				const speed = marquee.getAttribute('data-marquee-speed');
+				const direction = marquee.getAttribute('data-marquee-direction');
+				const duplicate = marquee.getAttribute('data-marquee-duplicate');
+				const scrollSpeed = marquee.getAttribute('data-marquee-scroll-speed');
 
-    // Precompute styles for the scroll container
-    marqueeScroll.style.marginLeft = `${scrollSpeedAttr * -1}%`;
-    marqueeScroll.style.width = `${(scrollSpeedAttr * 2) + 100}%`;
+				// Convert data attributes to usable types with defaults
+				const marqueeSpeedAttr = parseFloat(speed || '15');
+				const marqueeDirectionAttr = direction === 'right' ? 1 : -1; // 1 for right, -1 for left
+				const duplicateAmount = parseInt(duplicate || '0', 10);
+				const scrollSpeedAttr = parseFloat(scrollSpeed || '10');
 
-    // Duplicate marquee content
-    if (duplicateAmount > 0) {
-      const fragment = document.createDocumentFragment();
-      for (let i = 0; i < duplicateAmount; i++) {
-        fragment.appendChild(marqueeContent.cloneNode(true));
-      }
-      marqueeScroll.appendChild(fragment);
-    }
+				// Calculate speed based on viewport
+				const speedMultiplier = getSpeedMultiplier(window.innerWidth);
+				let marqueeSpeed =
+					marqueeSpeedAttr * (marqueeContent.offsetWidth / window.innerWidth) * speedMultiplier;
 
-    // GSAP animation for marquee content
-    const marqueeItems = marquee.querySelectorAll('[data-marquee-collection-target]');
-    const animation = gsap.to(marqueeItems, {
-      xPercent: -100,
-      repeat: -1,
-      duration: marqueeSpeed,
-      ease: 'linear'
-    }).totalProgress(0.5);
+				// Precompute styles for the scroll container
+				marqueeScroll.style.marginLeft = `${scrollSpeedAttr * -1}%`;
+				marqueeScroll.style.width = `${scrollSpeedAttr * 2 + 100}%`;
 
-    // Initialize marquee in the correct direction
-    gsap.set(marqueeItems, { xPercent: marqueeDirectionAttr === 1 ? 100 : -100 });
-    animation.timeScale(marqueeDirectionAttr);
-    animation.play();
+				// Duplicate marquee content for seamless loop
+				if (duplicateAmount > 0) {
+					const fragment = document.createDocumentFragment();
+					for (let i = 0; i < duplicateAmount; i++) {
+						const clone = marqueeContent.cloneNode(true);
+						fragment.appendChild(clone);
+					}
+					marqueeScroll.appendChild(fragment);
+				}
 
-    // Set initial marquee status
-    marquee.setAttribute('data-marquee-status', 'normal');
+				// GSAP animation for marquee content
+				const marqueeItems = marquee.querySelectorAll('[data-marquee-collection-target]');
 
-    // ScrollTrigger logic for direction inversion
-    ScrollTrigger.create({
-      trigger: marquee,
-      start: 'top bottom',
-      end: 'bottom top',
-      onUpdate: (self) => {
-        const isInverted = self.direction === 1; // Scrolling down
-        const currentDirection = isInverted ? -marqueeDirectionAttr : marqueeDirectionAttr;
+				if (marqueeItems.length === 0) {
+					console.warn('[Marquee] No items found for animation:', marquee);
+					return;
+				}
 
-        // Update animation direction and marquee status
-        animation.timeScale(currentDirection);
-        marquee.setAttribute('data-marquee-status', isInverted ? 'normal' : 'inverted');
-      }
-    });
+				const animation = gsap
+					.to(marqueeItems, {
+						xPercent: -100,
+						repeat: -1,
+						duration: marqueeSpeed,
+						ease: 'linear',
+					})
+					.totalProgress(0.5);
 
-    // Extra speed effect on scroll
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: marquee,
-        start: '0% 100%',
-        end: '100% 0%',
-        scrub: 0
-      }
-    });
+				// Initialize marquee in the correct direction
+				gsap.set(marqueeItems, { xPercent: marqueeDirectionAttr === 1 ? 100 : -100 });
+				animation.timeScale(marqueeDirectionAttr);
+				animation.play();
 
-    const scrollStart = marqueeDirectionAttr === -1 ? scrollSpeedAttr : -scrollSpeedAttr;
-    const scrollEnd = -scrollStart;
+				// Set initial marquee status
+				marquee.setAttribute('data-marquee-status', 'normal');
 
-    tl.fromTo(marqueeScroll, { x: `${scrollStart}vw` }, { x: `${scrollEnd}vw`, ease: 'none' });
-  });
+				// ScrollTrigger logic for direction inversion
+				ScrollTrigger.create({
+					trigger: marquee,
+					start: 'top bottom',
+					end: 'bottom top',
+					onUpdate: (self) => {
+						const isScrollingDown = self.direction === 1;
+						const currentDirection = isScrollingDown ? -marqueeDirectionAttr : marqueeDirectionAttr;
+
+						// Update animation direction and marquee status
+						animation.timeScale(currentDirection);
+						marquee.setAttribute('data-marquee-status', isScrollingDown ? 'inverted' : 'normal');
+					},
+				});
+
+				// Extra speed effect on scroll
+				const tl = gsap.timeline({
+					scrollTrigger: {
+						trigger: marquee,
+						start: '0% 100%',
+						end: '100% 0%',
+						scrub: 0,
+					},
+				});
+
+				const scrollStart = marqueeDirectionAttr === -1 ? scrollSpeedAttr : -scrollSpeedAttr;
+				const scrollEnd = -scrollStart;
+
+				tl.fromTo(
+					marqueeScroll,
+					{ x: `${scrollStart}vw` },
+					{ x: `${scrollEnd}vw`, ease: 'none' }
+				);
+			} catch (error) {
+				console.error('[Marquee] Failed to initialize marquee:', marquee, error);
+			}
+		});
+	} catch (error) {
+		console.error('[Marquee] Failed to initialize marquee scroll direction:', error);
+	}
 }
-

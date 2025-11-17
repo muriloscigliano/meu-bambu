@@ -11,7 +11,7 @@
   "dependencies": {
     "@astrojs/partytown": "^2.1.4",
     "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/vercel": "^8.2.10",
+    "@astrojs/vercel": "^9.0.0",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource/inter": "^5.2.8",
     "@vercel/analytics": "^1.5.0",
