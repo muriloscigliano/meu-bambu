@@ -1,25 +1,19 @@
 ---
 export const prerender = false;
 
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
+
+// Original code commented out for future use:
+// import Dashboard from '../../layouts/Dashboard.astro';
+// import { getOrders } from '../../services/api';
+// const token = Astro.cookies.get('auth_token')?.value;
+// if (!token) { return Astro.redirect('/entrar?redirect=/minha-conta'); }
+// orders = await getOrders(token);
+
 import Dashboard from '../../layouts/Dashboard.astro';
-import { getOrders } from '../../services/api';
-
-// Check authentication
-const token = Astro.cookies.get('auth_token')?.value;
-if (!token) {
-	return Astro.redirect('/entrar?redirect=/minha-conta');
-}
-
-// Fetch orders from API
 let orders: any[] = [];
 let error = null;
-
-try {
-	orders = await getOrders(token);
-} catch (e) {
-	error = 'Erro ao carregar pedidos. Tente novamente.';
-	console.error('Failed to fetch orders:', e);
-}
 
 const formatDate = (date: string) => {
 	return new Date(date).toLocaleDateString('pt-BR', {

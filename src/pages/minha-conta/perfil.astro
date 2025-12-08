@@ -1,54 +1,14 @@
 ---
 export const prerender = false;
 
-import Dashboard from '../../layouts/Dashboard.astro';
-import { getProfile, updateProfile } from '../../services/api';
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
 
-// Check authentication
-const token = Astro.cookies.get('auth_token')?.value;
-if (!token) {
-	return Astro.redirect('/entrar?redirect=/minha-conta/perfil');
-}
+import Dashboard from '../../layouts/Dashboard.astro';
 
 let profile: any = null;
 let error = null;
 let success = false;
-
-// Handle POST (update profile)
-if (Astro.request.method === 'POST') {
-	const formData = await Astro.request.formData();
-	const data = {
-		name: formData.get('name') as string,
-		email: formData.get('email') as string,
-		phone: formData.get('phone') as string,
-		cpf: formData.get('cpf') as string,
-		address: {
-			street: formData.get('street') as string,
-			number: formData.get('number') as string,
-			complement: formData.get('complement') as string,
-			neighborhood: formData.get('neighborhood') as string,
-			city: formData.get('city') as string,
-			state: formData.get('state') as string,
-			zipCode: formData.get('zipCode') as string,
-		}
-	};
-
-	try {
-		await updateProfile(token, data);
-		success = true;
-	} catch (e) {
-		error = 'Erro ao atualizar perfil. Tente novamente.';
-		console.error('Failed to update profile:', e);
-	}
-}
-
-// Fetch current profile
-try {
-	profile = await getProfile(token);
-} catch (e) {
-	error = 'Erro ao carregar perfil. Tente novamente.';
-	console.error('Failed to fetch profile:', e);
-}
 
 const states = [
 	'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',

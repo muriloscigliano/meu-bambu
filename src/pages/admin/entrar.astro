@@ -1,34 +1,11 @@
 ---
 export const prerender = false;
 
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
+
 import '../../styles/global.css';
-import { adminLogin } from '../../services/api';
-
-const redirect = '/admin';
 let error = '';
-
-if (Astro.request.method === 'POST') {
-	const formData = await Astro.request.formData();
-	const email = formData.get('email') as string;
-	const password = formData.get('password') as string;
-
-	try {
-		const result = await adminLogin({ email, password });
-
-		// Set admin auth cookie
-		Astro.cookies.set('admin_token', result.token, {
-			path: '/',
-			httpOnly: true,
-			secure: import.meta.env.PROD,
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 24, // 1 day
-		});
-
-		return Astro.redirect(redirect);
-	} catch (e: any) {
-		error = e.message || 'E-mail ou senha inválidos';
-	}
-}
 ---
 
 <html lang="pt-BR">

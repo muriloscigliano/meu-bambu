@@ -1,44 +1,14 @@
 ---
 export const prerender = false;
 
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
+
 import Dashboard from '../../../layouts/Dashboard.astro';
-import { getOrder, cancelOrder, requestRefund } from '../../../services/api';
 
 const { id } = Astro.params;
-
-// Check authentication
-const token = Astro.cookies.get('auth_token')?.value;
-if (!token) {
-	return Astro.redirect('/entrar?redirect=/minha-conta/pedidos/' + id);
-}
-
-// Handle POST actions (cancel, refund)
-if (Astro.request.method === 'POST') {
-	const formData = await Astro.request.formData();
-	const action = formData.get('action');
-
-	try {
-		if (action === 'cancel') {
-			await cancelOrder(token, id!);
-		} else if (action === 'refund') {
-			await requestRefund(token, id!);
-		}
-		return Astro.redirect(`/minha-conta/pedidos/${id}?success=${action}`);
-	} catch (e) {
-		console.error(`Failed to ${action} order:`, e);
-	}
-}
-
-// Fetch order details
 let order: any = null;
 let error = null;
-
-try {
-	order = await getOrder(token, id!);
-} catch (e) {
-	error = 'Erro ao carregar pedido. Tente novamente.';
-	console.error('Failed to fetch order:', e);
-}
 
 const formatDate = (date: string) => {
 	return new Date(date).toLocaleDateString('pt-BR', {

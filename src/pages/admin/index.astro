@@ -2,13 +2,14 @@
 export const prerender = false;
 
 import Admin from '../../layouts/Admin.astro';
-import { getAdminUser, getDashboardStats, getRecentOrders, getTopProducts, getLowStockItems } from '../../services/api';
 
-// Check admin authentication
-const token = Astro.cookies.get('admin_token')?.value;
-if (!token) {
-	return Astro.redirect('/admin/entrar');
-}
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
+
+// Original code commented out for future use:
+// import { getAdminUser, getDashboardStats, getRecentOrders, getTopProducts, getLowStockItems } from '../../services/api';
+// const token = Astro.cookies.get('admin_token')?.value;
+// if (!token) { return Astro.redirect('/admin/entrar'); }
 
 let admin = null;
 let stats = null;
@@ -16,21 +17,6 @@ let recentOrders: any[] = [];
 let topProducts: any[] = [];
 let lowStockItems: any[] = [];
 let error = null;
-
-try {
-	admin = await getAdminUser(token);
-	[stats, recentOrders, topProducts, lowStockItems] = await Promise.all([
-		getDashboardStats(token),
-		getRecentOrders(token, 5),
-		getTopProducts(token, 5),
-		getLowStockItems(token),
-	]);
-} catch (e: any) {
-	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
-		return Astro.redirect('/admin/entrar');
-	}
-	error = e.message;
-}
 
 const formatCurrency = (value: number) => {
 	return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);

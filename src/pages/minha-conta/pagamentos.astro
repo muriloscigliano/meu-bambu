@@ -1,42 +1,14 @@
 ---
 export const prerender = false;
 
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
+
 import Dashboard from '../../layouts/Dashboard.astro';
-import { getPaymentMethods, removePaymentMethod } from '../../services/api';
-
-// Check authentication
-const token = Astro.cookies.get('auth_token')?.value;
-if (!token) {
-	return Astro.redirect('/entrar?redirect=/minha-conta/pagamentos');
-}
-
-// Handle POST (remove payment method)
-if (Astro.request.method === 'POST') {
-	const formData = await Astro.request.formData();
-	const action = formData.get('action');
-	const paymentMethodId = formData.get('paymentMethodId') as string;
-
-	if (action === 'remove' && paymentMethodId) {
-		try {
-			await removePaymentMethod(token, paymentMethodId);
-			return Astro.redirect('/minha-conta/pagamentos?success=removed');
-		} catch (e) {
-			console.error('Failed to remove payment method:', e);
-		}
-	}
-}
 
 let paymentMethods: any[] = [];
 let error = null;
-
-try {
-	paymentMethods = await getPaymentMethods(token);
-} catch (e) {
-	error = 'Erro ao carregar métodos de pagamento.';
-	console.error('Failed to fetch payment methods:', e);
-}
-
-const success = Astro.url.searchParams.get('success');
+const success = null;
 
 const getCardBrand = (brand: string) => {
 	const brands: Record<string, string> = {

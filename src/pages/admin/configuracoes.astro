@@ -1,27 +1,14 @@
 ---
 export const prerender = false;
 
-import Admin from '../../layouts/Admin.astro';
-import { getAdminUser } from '../../services/api';
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
 
-// Check admin authentication
-const token = Astro.cookies.get('admin_token')?.value;
-if (!token) {
-	return Astro.redirect('/admin/entrar');
-}
+import Admin from '../../layouts/Admin.astro';
 
 let admin = null;
 let error = null;
 let success = null;
-
-try {
-	admin = await getAdminUser(token);
-} catch (e: any) {
-	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
-		return Astro.redirect('/admin/entrar');
-	}
-	error = e.message;
-}
 ---
 
 <Admin title="Configurações | Meu Bambu Admin" activeTab="configuracoes">

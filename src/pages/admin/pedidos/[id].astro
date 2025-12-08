@@ -1,53 +1,16 @@
 ---
 export const prerender = false;
 
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
+
 import Admin from '../../../layouts/Admin.astro';
-import { getAdminUser, getAdminOrder, updateOrderStatus, addTrackingCode } from '../../../services/api';
 
 const { id } = Astro.params;
-
-// Check admin authentication
-const token = Astro.cookies.get('admin_token')?.value;
-if (!token) {
-	return Astro.redirect('/admin/entrar');
-}
-
 let admin = null;
 let order: any = null;
 let error = null;
 let success = null;
-
-// Handle POST actions
-if (Astro.request.method === 'POST') {
-	const formData = await Astro.request.formData();
-	const action = formData.get('action');
-
-	try {
-		if (action === 'update_status') {
-			const newStatus = formData.get('status') as string;
-			const note = formData.get('note') as string;
-			await updateOrderStatus(token, id!, newStatus, note);
-			success = 'Status atualizado com sucesso!';
-		} else if (action === 'add_tracking') {
-			const trackingCode = formData.get('trackingCode') as string;
-			const trackingUrl = formData.get('trackingUrl') as string;
-			await addTrackingCode(token, id!, trackingCode, trackingUrl);
-			success = 'Código de rastreio adicionado!';
-		}
-	} catch (e: any) {
-		error = e.message;
-	}
-}
-
-try {
-	admin = await getAdminUser(token);
-	order = await getAdminOrder(token, id!);
-} catch (e: any) {
-	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
-		return Astro.redirect('/admin/entrar');
-	}
-	error = e.message;
-}
 
 const formatCurrency = (value: number) => {
 	return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);

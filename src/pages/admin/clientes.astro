@@ -1,14 +1,10 @@
 ---
 export const prerender = false;
 
-import Admin from '../../layouts/Admin.astro';
-import { getAdminUser, getAdminCustomers } from '../../services/api';
+// Temporarily disabled - redirect to coming soon
+return Astro.redirect('/em-breve');
 
-// Check admin authentication
-const token = Astro.cookies.get('admin_token')?.value;
-if (!token) {
-	return Astro.redirect('/admin/entrar');
-}
+import Admin from '../../layouts/Admin.astro';
 
 let admin = null;
 let customers: any[] = [];
@@ -16,28 +12,7 @@ let total = 0;
 let page = 1;
 let totalPages = 1;
 let error = null;
-
-// Get query params
-const searchQuery = Astro.url.searchParams.get('search') || '';
-const pageParam = Astro.url.searchParams.get('page');
-if (pageParam) page = parseInt(pageParam);
-
-try {
-	admin = await getAdminUser(token);
-	const result = await getAdminCustomers(token, {
-		search: searchQuery,
-		page,
-		limit: 10,
-	});
-	customers = result.customers;
-	total = result.total;
-	totalPages = result.totalPages;
-} catch (e: any) {
-	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
-		return Astro.redirect('/admin/entrar');
-	}
-	error = e.message;
-}
+const searchQuery = '';
 
 const formatCurrency = (value: number) => {
 	return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
