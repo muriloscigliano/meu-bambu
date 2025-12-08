@@ -63,23 +63,26 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 
 		<div class="product-panels__media" data-reveal>
 			<div class="product-panels__image-wrap">
-				<img src="/images/paineis.png" alt="Painéis de bambu premium com núcleo vertical - Meu Bambu" loading="lazy" />
+				<img src="/images/floresta-bambu.jpg" alt="Painéis de bambu premium com núcleo vertical - Meu Bambu" loading="lazy" />
 			</div>
 		</div>
 	</div>
 
 	<script is:inline>
-		const root = document.currentScript.closest('.product-panels');
-		root?.addEventListener('click', (e) => {
-			const target = e.target;
-			if (!(target instanceof HTMLElement)) return;
-			const btn = target.closest('button.chip-option');
-			if (!btn) return;
-			const group = btn.closest('.product-panels__option-group');
-			if (!group) return;
-			group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-pressed', 'false'));
-			btn.setAttribute('aria-pressed', 'true');
-		});
+		(function() {
+			const panelsRoot = document.currentScript?.closest('.product-panels');
+			if (!panelsRoot) return;
+			panelsRoot.addEventListener('click', (e) => {
+				const target = e.target;
+				if (!(target instanceof HTMLElement)) return;
+				const btn = target.closest('button.chip-option');
+				if (!btn) return;
+				const group = btn.closest('.product-panels__option-group');
+				if (!group) return;
+				group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+				btn.setAttribute('aria-pressed', 'true');
+			});
+		})();
 	</script>
 </section>
 

@@ -18,7 +18,7 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 	<div class="product-sheets__container">
 		<div class="product-sheets__media" data-reveal>
 			<div class="product-sheets__image-wrap">
-				<img src="/images/laminas.png" alt="Lâminas de bambu flexíveis para móveis e marcenaria - Meu Bambu" loading="lazy" />
+				<img src="/images/floresta-bambu.jpg" alt="Lâminas de bambu flexíveis para móveis e marcenaria - Meu Bambu" loading="lazy" />
 			</div>
 		</div>
 
@@ -61,17 +61,20 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 	</div>
 
 	<script is:inline>
-		const root = document.currentScript.closest('.product-sheets');
-		root?.addEventListener('click', (e) => {
-			const target = e.target;
-			if (!(target instanceof HTMLElement)) return;
-			const btn = target.closest('button.chip-option');
-			if (!btn) return;
-			const group = btn.closest('.product-sheets__option-group');
-			if (!group) return;
-			group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-pressed', 'false'));
-			btn.setAttribute('aria-pressed', 'true');
-		});
+		(function() {
+			const sheetsRoot = document.currentScript?.closest('.product-sheets');
+			if (!sheetsRoot) return;
+			sheetsRoot.addEventListener('click', (e) => {
+				const target = e.target;
+				if (!(target instanceof HTMLElement)) return;
+				const btn = target.closest('button.chip-option');
+				if (!btn) return;
+				const group = btn.closest('.product-sheets__option-group');
+				if (!group) return;
+				group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+				btn.setAttribute('aria-pressed', 'true');
+			});
+		})();
 	</script>
 </section>
 

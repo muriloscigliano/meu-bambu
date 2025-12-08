@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
-import partytown from '@astrojs/partytown';
 import compress from 'astro-compress';
 
 // https://astro.build/config
@@ -71,14 +70,6 @@ export default defineConfig({
       changefreq: 'weekly',
       priority: 0.7,
       lastmod: new Date()
-    }),
-    
-    // Move Google Analytics to Web Worker for performance
-    partytown({
-      config: {
-        forward: ['dataLayer.push'],
-        debug: false
-      }
     }),
     
     // Advanced compression (HTML, CSS, JS, Images)
