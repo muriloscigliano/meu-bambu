@@ -41,12 +41,12 @@ export function initSplitTextReveal() {
 
     if (isInHero) {
       const isTitle = heading.classList.contains('hero__title');
-      const baseDelay = isTitle ? 0.2 : 0.4;
+      const baseDelay = isTitle ? 0.1 : 0.3;
 
       gsap.to(split.lines, {
         yPercent: 0,
-        duration: 0.8,
-        stagger: 0.06,
+        duration: 0.6,
+        stagger: 0.05,
         delay: delay || baseDelay,
         ease: 'power3.out'
       });
@@ -58,8 +58,8 @@ export function initSplitTextReveal() {
         onEnter: () => {
           gsap.to(split.lines, {
             yPercent: 0,
-            duration: 0.7,
-            stagger: 0.05,
+            duration: 0.55,
+            stagger: 0.04,
             delay: delay,
             ease: 'power3.out'
           });

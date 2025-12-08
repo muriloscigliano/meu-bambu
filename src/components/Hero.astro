@@ -16,14 +16,14 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 	<div class="hero__bg-pattern" aria-hidden="true"></div>
 	<div class="hero__container">
 		<h1 id="hero-title" class="hero__title" data-split="heading">{title}</h1>
-		{subtitle && <p class="hero__desc" data-split="heading">{subtitle}</p>}
-		<div data-animate="fade-in" data-delay="0.6">
+		{subtitle && <p class="hero__desc" data-animate="fade-in" data-delay="0.3">{subtitle}</p>}
+		<div data-animate="fade-in" data-delay="0.5">
 			<Button text={ctaLabel} href={ctaHref} theme="primary" />
 		</div>
 
-		<div class="hero__divider" role="separator" data-animate="fade-in" data-delay="0.8" aria-hidden="true"></div>
+		<div class="hero__divider" role="separator" data-animate="fade-in" data-delay="0.6" aria-hidden="true"></div>
 
-		<ul class="hero__pills" data-animate="stagger" data-delay="1" aria-label="Benefícios">
+		<ul class="hero__pills" data-animate="stagger" data-delay="0.7" aria-label="Benefícios">
 			<li class="pill" data-stagger-item>
 				<Icon name="checkmark" size={18} class="checkmark-icon" aria-hidden="true" />
 				<span>Entrega rápida</span>

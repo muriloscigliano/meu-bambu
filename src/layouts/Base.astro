@@ -163,19 +163,37 @@ const siteUrl = 'https://meubambu.com.br';
 				cleanupFunctions.forEach(cleanup => cleanup());
 				cleanupFunctions = [];
 
+				// Initialize smooth scroll
 				initLenis();
 
+				// Don't wait too long for fonts - use a timeout
+				const fontTimeout = setTimeout(() => {
+					runAnimations();
+				}, 300);
+
 				document.fonts.ready.then(() => {
+					clearTimeout(fontTimeout);
+					runAnimations();
+				});
+
+				function runAnimations() {
+					// Prevent running twice
+					if (document.documentElement.classList.contains('animations-ready')) return;
+
+					// Mark animations as ready (removes CSS fallback)
+					document.documentElement.classList.add('animations-ready');
+
 					// Initialize SplitText animations
 					const splitCleanup = initSplitTextReveal();
 					if (splitCleanup) {
 						cleanupFunctions.push(splitCleanup);
 					}
 
-					// Initialize GSAP scroll animations (fade-in, stagger, image-reveal, etc.)
+					// Initialize GSAP scroll animations
 					initGsapAnimations();
-				});
+				}
 
+				// Image trail (desktop only)
 				const trailCleanup = initImageTrail({
 					minWidth: 992,
 					moveDistance: 15,
@@ -186,6 +204,7 @@ const siteUrl = 'https://meubambu.com.br';
 					cleanupFunctions.push(trailCleanup);
 				}
 
+				// Marquee scroll direction
 				initMarqueeScrollDirection();
 			}
 
@@ -195,6 +214,7 @@ const siteUrl = 'https://meubambu.com.br';
 				cleanupAnimations();
 				destroyLenis();
 				ScrollTrigger.killAll();
+				document.documentElement.classList.remove('animations-ready');
 			}
 
 			if (typeof window !== 'undefined') {

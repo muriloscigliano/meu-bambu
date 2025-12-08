@@ -1,6 +1,7 @@
 /**
  * Animation System for Meu Bambu
  * Simple scroll-triggered animations using GSAP
+ * Optimized for smooth performance
  */
 
 import { gsap, ScrollTrigger } from './gsap';
@@ -15,10 +16,11 @@ export function initAnimations() {
   initFadeInAnimations();
   initStaggerAnimations();
   initImageRevealAnimations();
+  initLogoSpinAnimation();
 }
 
 /**
- * Header entrance animation
+ * Header entrance animation - quick and snappy
  */
 function initHeaderAnimations() {
   const headerItems = document.querySelectorAll('[data-header-item]');
@@ -27,10 +29,10 @@ function initHeaderAnimations() {
   gsap.to(headerItems, {
     opacity: 1,
     y: 0,
-    duration: 0.8,
-    stagger: 0.15,
-    delay: 0.1,
-    ease: 'power3.out'
+    duration: 0.5,
+    stagger: 0.08,
+    delay: 0.05,
+    ease: 'power2.out'
   });
 }
 
@@ -48,20 +50,20 @@ function initFadeInAnimations() {
       gsap.to(el, {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 0.6,
         delay: delay,
         ease: 'power2.out'
       });
     } else {
       ScrollTrigger.create({
         trigger: el,
-        start: 'top 85%',
+        start: 'top 88%',
         once: true,
         onEnter: () => {
           gsap.to(el, {
             opacity: 1,
             y: 0,
-            duration: 0.8,
+            duration: 0.6,
             ease: 'power2.out'
           });
         }
@@ -87,22 +89,22 @@ function initStaggerAnimations() {
       gsap.to(items, {
         opacity: 1,
         y: 0,
-        duration: 0.6,
+        duration: 0.5,
         delay: delay,
-        stagger: 0.1,
+        stagger: 0.08,
         ease: 'power2.out'
       });
     } else {
       ScrollTrigger.create({
         trigger: container,
-        start: 'top 80%',
+        start: 'top 85%',
         once: true,
         onEnter: () => {
           gsap.to(items, {
             opacity: 1,
             y: 0,
-            duration: 0.6,
-            stagger: 0.1,
+            duration: 0.5,
+            stagger: 0.08,
             ease: 'power2.out'
           });
         }
@@ -120,13 +122,37 @@ function initImageRevealAnimations() {
   images.forEach((img) => {
     ScrollTrigger.create({
       trigger: img,
-      start: 'top 80%',
+      start: 'top 85%',
       once: true,
       onEnter: () => {
         gsap.to(img, {
           clipPath: 'inset(0 0% 0 0)',
-          duration: 1.2,
-          ease: 'power3.inOut'
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      }
+    });
+  });
+}
+
+/**
+ * Logo spin animation for footer
+ */
+function initLogoSpinAnimation() {
+  const logos = document.querySelectorAll('[data-animate="logo-spin"]');
+
+  logos.forEach((logo) => {
+    ScrollTrigger.create({
+      trigger: logo,
+      start: 'top 90%',
+      once: true,
+      onEnter: () => {
+        gsap.to(logo, {
+          opacity: 1,
+          rotation: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: 'back.out(1.4)'
         });
       }
     });
