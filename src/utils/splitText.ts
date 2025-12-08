@@ -41,14 +41,14 @@ export function initSplitTextReveal() {
 
     if (isInHero) {
       const isTitle = heading.classList.contains('hero__title');
-      const baseDelay = isTitle ? 0.1 : 0.3;
+      const baseDelay = isTitle ? 0.15 : 0.4;
 
       gsap.to(split.lines, {
         yPercent: 0,
-        duration: 0.6,
-        stagger: 0.05,
+        duration: 1,
+        stagger: 0.12,
         delay: delay || baseDelay,
-        ease: 'power3.out'
+        ease: 'power4.out'
       });
     } else {
       const st = ScrollTrigger.create({
@@ -58,10 +58,10 @@ export function initSplitTextReveal() {
         onEnter: () => {
           gsap.to(split.lines, {
             yPercent: 0,
-            duration: 0.55,
-            stagger: 0.04,
+            duration: 0.9,
+            stagger: 0.1,
             delay: delay,
-            ease: 'power3.out'
+            ease: 'power4.out'
           });
         }
       });
