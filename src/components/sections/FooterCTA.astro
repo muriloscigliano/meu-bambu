@@ -18,35 +18,35 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 ---
 
 <div data-footer-parallax class="footer__wrap" data-section>
-	<footer data-footer-parallax-inner class="footer">
+	<footer data-footer-parallax-inner class="footer" aria-labelledby="footer-title">
 		<div class="footer-cta__content">
 			<div class="footer-cta__left">
-				<h2 class="footer-cta__title" data-split="heading">{title}</h2>
+				<h2 id="footer-title" class="footer-cta__title" data-split="heading">{title}</h2>
 				<div data-animate="fade-in" data-delay="0.3">
 					<Button text={ctaLabel} href={ctaHref} theme="primary" class="footer-cta__button" />
 				</div>
 			</div>
 
-			<div class="footer-cta__center" data-animate="fade-in" data-delay="0.4">
-				<div class="footer-cta__logo" data-animate="image-reveal">
+			<figure class="footer-cta__center">
+				<div class="footer-cta__logo" data-animate="logo-spin">
 					<img src="/images/flowing-boards-badge.jpg" alt="Flowing Boards - Marca especialista em produtos de bambu premium" />
 				</div>
-			</div>
+			</figure>
 
-			<div class="footer-cta__right" data-animate="stagger">
+			<address class="footer-cta__right" data-animate="stagger">
 				<p class="footer-cta__text" data-stagger-item>{description}</p>
-				<div class="footer-cta__divider" data-stagger-item></div>
+				<div class="footer-cta__divider" role="separator" data-stagger-item aria-hidden="true"></div>
 				<p class="footer-cta__info" data-stagger-item>{cnpj}</p>
-				<div class="footer-cta__divider" data-stagger-item></div>
+				<div class="footer-cta__divider" role="separator" data-stagger-item aria-hidden="true"></div>
 				<p class="footer-cta__info" data-stagger-item>
 					{address.street}<br>
 					{address.city}<br>
 					{address.zipCode}
 				</p>
-			</div>
+			</address>
 		</div>
 	</footer>
-	<div data-footer-parallax-dark class="footer__dark"></div>
+	<div data-footer-parallax-dark class="footer__dark" aria-hidden="true"></div>
   </div>
 
 <style>
@@ -125,12 +125,19 @@ const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as 
 	width: 201px;
 	height: 201px;
 	overflow: hidden;
+	border-radius: 100%;
 }
 .footer-cta__logo img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 	border-radius: 100%;
+}
+
+/* Initial state for logo spin animation */
+[data-animate="logo-spin"] {
+	opacity: 0;
+	transform: rotate(-180deg) scale(0.8);
 }
 
 .footer-cta__right {
@@ -237,10 +244,10 @@ gsap.registerPlugin(ScrollTrigger);
 			scrub: true
 		  }
 		});
-	  
+
 		const inner = el.querySelector('[data-footer-parallax-inner]');
 		const dark  = el.querySelector('[data-footer-parallax-dark]');
-	  
+
 		if (inner) {
 		  tl.from(inner, {
 			yPercent: -75,
@@ -248,7 +255,7 @@ gsap.registerPlugin(ScrollTrigger);
 			ease: 'linear'
 		  });
 		}
-	  
+
 		if (dark) {
 		  tl.from(dark, {
 			opacity: 1,
@@ -257,8 +264,31 @@ gsap.registerPlugin(ScrollTrigger);
 		}
 	  });
 	}
+
+	function initLogoSpinAnimation() {
+	  const logos = document.querySelectorAll('[data-animate="logo-spin"]');
+
+	  logos.forEach((logo) => {
+		ScrollTrigger.create({
+		  trigger: logo,
+		  start: 'top 85%',
+		  once: true,
+		  onEnter: () => {
+			gsap.to(logo, {
+			  opacity: 1,
+			  rotation: 0,
+			  scale: 1,
+			  duration: 1.2,
+			  ease: 'back.out(1.4)'
+			});
+		  }
+		});
+	  });
+	}
+
 	// Initialize Footer with Parallax Effect
 	document.addEventListener('DOMContentLoaded', () => {
 	  initFooterParallax();
+	  initLogoSpinAnimation();
 	});
 </script>

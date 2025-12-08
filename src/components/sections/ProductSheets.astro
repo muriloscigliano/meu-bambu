@@ -14,50 +14,54 @@ interface Props {
 const { title, price, description, features, ctaLabel, ctaHref } = Astro.props as Props;
 ---
 
-<section class="product-sheets" data-section>
+<section class="product-sheets" data-section aria-labelledby="product-sheets-title">
 	<div class="product-sheets__container">
-		<div class="product-sheets__media">
+		<figure class="product-sheets__media">
 			<div class="product-sheets__image-wrap" data-animate="image-reveal">
 				<img src="/images/floresta-bambu.jpg" alt="Lâminas de bambu flexíveis para móveis e marcenaria - Meu Bambu" loading="lazy" />
 			</div>
-		</div>
+		</figure>
 
-		<div class="product-sheets__details">
-			<h2 class="product-sheets__title" data-split="heading">{title}</h2>
-			<p class="product-sheets__price" data-animate="fade-in">{price}</p>
+		<article class="product-sheets__details">
+			<header>
+				<h2 id="product-sheets-title" class="product-sheets__title" data-split="heading">{title}</h2>
+				<p class="product-sheets__price" data-split="heading">{price}</p>
+			</header>
 			<p class="product-sheets__desc" data-animate="fade-in">{description}</p>
 
-			<ul class="product-sheets__bullets" data-animate="stagger">
+			<ul class="product-sheets__bullets" data-animate="stagger" aria-label="Características do produto">
 				{features.map((feature) => (
 					<li data-stagger-item>
-						<Icon name="checkmark" size={18} class="checkmark-icon" />
-						{feature}
+						<Icon name="checkmark" size={18} class="checkmark-icon" aria-hidden="true" />
+						<span>{feature}</span>
 					</li>
 				))}
 			</ul>
 
-			<div class="product-sheets__options">
-				<div class="product-sheets__divider"></div>
-				<div class="product-sheets__option-row">
-					<div class="product-sheets__option-group">
-						<p class="product-sheets__option-label">Espessura</p>
-						<div class="product-sheets__chips">
-							<button class="chip-option" aria-pressed="true" data-value="0.6mm">0.6mm</button>
+			<div class="product-sheets__options" data-animate="stagger">
+				<div class="product-sheets__divider" role="separator" data-stagger-item></div>
+				<div class="product-sheets__option-row" data-stagger-item>
+					<fieldset class="product-sheets__option-group">
+						<legend class="product-sheets__option-label">Espessura</legend>
+						<div class="product-sheets__chips" role="radiogroup" aria-label="Selecione a espessura">
+							<button type="button" class="chip-option" role="radio" aria-checked="true" data-value="0.6mm">0.6mm</button>
 						</div>
-					</div>
-					<div class="product-sheets__row-divider"></div>
-					<div class="product-sheets__option-group">
-						<p class="product-sheets__option-label">Tamanho</p>
-						<div class="product-sheets__chips">
-							<button class="chip-option chip-option--size" aria-pressed="true" data-value="200x60cm">200x60cm</button>
+					</fieldset>
+					<div class="product-sheets__row-divider" role="separator" aria-hidden="true"></div>
+					<fieldset class="product-sheets__option-group">
+						<legend class="product-sheets__option-label">Tamanho</legend>
+						<div class="product-sheets__chips" role="radiogroup" aria-label="Selecione o tamanho">
+							<button type="button" class="chip-option chip-option--size" role="radio" aria-checked="true" data-value="200x60cm">200x60cm</button>
 						</div>
-					</div>
+					</fieldset>
 				</div>
-				<div class="product-sheets__divider"></div>
+				<div class="product-sheets__divider" role="separator" data-stagger-item></div>
 			</div>
 
-			<Button text={ctaLabel} href={ctaHref} theme="dark" />
-		</div>
+			<div data-animate="fade-in">
+				<Button text={ctaLabel} href={ctaHref} theme="dark" />
+			</div>
+		</article>
 	</div>
 
 	<script is:inline>
@@ -69,10 +73,10 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 				if (!(target instanceof HTMLElement)) return;
 				const btn = target.closest('button.chip-option');
 				if (!btn) return;
-				const group = btn.closest('.product-sheets__option-group');
+				const group = btn.closest('[role="radiogroup"]');
 				if (!group) return;
-				group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-pressed', 'false'));
-				btn.setAttribute('aria-pressed', 'true');
+				group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-checked', 'false'));
+				btn.setAttribute('aria-checked', 'true');
 			});
 		})();
 	</script>
@@ -188,6 +192,9 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 	display: flex;
 	gap: 12px;
 	align-items: center;
+	border: none;
+	padding: 0;
+	margin: 0;
 }
 
 .product-sheets__option-label {

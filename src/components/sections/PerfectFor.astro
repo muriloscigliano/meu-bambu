@@ -13,49 +13,49 @@ interface Props {
 const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props as Props;
 ---
 
-<section class="perfect-for" data-trail="wrapper" data-section>
+<section class="perfect-for" data-trail="wrapper" data-section aria-labelledby="perfect-for-title">
 	<div class="perfect-for__container">
-		<div class="perfect-for__header">
-			<div class="perfect-for__line" data-animate="fade-in"></div>
+		<header class="perfect-for__header">
+			<div class="perfect-for__line" data-animate="fade-in" aria-hidden="true"></div>
 			<div class="perfect-for__header-content">
 				<p class="perfect-for__eyebrow" data-animate="fade-in">{eyebrow}</p>
-				<h2 class="perfect-for__title" data-split="heading">{title}</h2>
+				<h2 id="perfect-for-title" class="perfect-for__title" data-split="heading">{title}</h2>
 				<p class="perfect-for__desc" data-animate="fade-in">{description}</p>
 				<div data-animate="fade-in">
 					<Button text={ctaLabel} href={ctaHref} theme="dark" />
 				</div>
 			</div>
-			<div class="perfect-for__line" data-animate="fade-in"></div>
-		</div>
+			<div class="perfect-for__line" data-animate="fade-in" aria-hidden="true"></div>
+		</header>
 
-		<div class="perfect-for__icons" data-animate="stagger">
+		<ul class="perfect-for__icons" data-animate="stagger" aria-label="Casos de uso do produto">
 			{useCases.map((useCase, index) => (
 				<>
-					<div class="perfect-for__icon-item" data-stagger-item>
-						<div class="perfect-for__icon">
+					<li class="perfect-for__icon-item" data-stagger-item>
+						<div class="perfect-for__icon" aria-hidden="true">
 							<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<rect width="60" height="60" fill="#d28f3d" opacity="0.2"/>
 							</svg>
 						</div>
-						<p class="perfect-for__icon-label" set:html={useCase.replace(' e ', '<br>e ')}></p>
-					</div>
-					{index < useCases.length - 1 && (index + 1) % 4 !== 0 && <div class="perfect-for__icon-divider"></div>}
+						<span class="perfect-for__icon-label" set:html={useCase.replace(' e ', '<br>e ')}></span>
+					</li>
+					{index < useCases.length - 1 && (index + 1) % 4 !== 0 && <li class="perfect-for__icon-divider" aria-hidden="true"></li>}
 				</>
 			))}
-		</div>
+		</ul>
 	</div>
 
 	<!-- Image Trail Effect -->
-	<div class="trail-wrap">
+	<div class="trail-wrap" aria-hidden="true">
 		<div class="trail-list">
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Aplicações de painéis de bambu em móveis e marcenaria" class="trail-item__img" loading="lazy"></div>
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Produtos de bambu premium para design de interiores" class="trail-item__img" loading="lazy"></div>
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Painéis de bambu sustentável para projetos criativos" class="trail-item__img" loading="lazy"></div>
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Lâminas de bambu flexíveis para acabamentos sofisticados" class="trail-item__img" loading="lazy"></div>
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Bambu de núcleo vertical para marcenaria profissional" class="trail-item__img" loading="lazy"></div>
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Material de bambu ecológico para construção sustentável" class="trail-item__img" loading="lazy"></div>
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Painéis de bambu para fabricação de móveis customizados" class="trail-item__img" loading="lazy"></div>
-			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="Bambu premium para projetos de arquitetura e design" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
+			<div data-trail="item" class="trail-item"><img src="/images/floresta-bambu.jpg" alt="" class="trail-item__img" loading="lazy"></div>
 		</div>
 	</div>
 </section>
@@ -158,6 +158,7 @@ const { eyebrow, title, description, ctaLabel, ctaHref, useCases } = Astro.props
 	margin-bottom: 24px;
 	gap: 36px;
 	max-width: 1210px;
+	list-style: none;
 }
 
 .perfect-for__icon-item {

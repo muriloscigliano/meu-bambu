@@ -149,28 +149,31 @@ const siteUrl = 'https://meubambu.com.br';
 		<script>
 			import { initLenis, destroyLenis } from '../utils/lenis';
 			import { initSplitTextReveal } from '../utils/splitText';
+			import { initAnimations as initGsapAnimations, cleanupAnimations } from '../utils/animations';
 			import { initImageTrail } from '../utils/imageTrail';
 			import { initMarqueeScrollDirection } from '../utils/marquee';
 			import { gsap } from 'gsap';
 			import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-			// Register GSAP plugins
 			gsap.registerPlugin(ScrollTrigger);
 
-			// Store cleanup functions
 			let cleanupFunctions: (() => void)[] = [];
 
-			function initAnimations() {
+			function initAllAnimations() {
 				cleanupFunctions.forEach(cleanup => cleanup());
 				cleanupFunctions = [];
 
 				initLenis();
 
 				document.fonts.ready.then(() => {
+					// Initialize SplitText animations
 					const splitCleanup = initSplitTextReveal();
 					if (splitCleanup) {
 						cleanupFunctions.push(splitCleanup);
 					}
+
+					// Initialize GSAP scroll animations (fade-in, stagger, image-reveal, etc.)
+					initGsapAnimations();
 				});
 
 				const trailCleanup = initImageTrail({
@@ -189,16 +192,16 @@ const siteUrl = 'https://meubambu.com.br';
 			function cleanup() {
 				cleanupFunctions.forEach(fn => fn());
 				cleanupFunctions = [];
+				cleanupAnimations();
 				destroyLenis();
 				ScrollTrigger.killAll();
-				gsap.ticker.lagSmoothing(500, 16);
 			}
 
 			if (typeof window !== 'undefined') {
 				if (document.readyState === 'loading') {
-					document.addEventListener('DOMContentLoaded', initAnimations);
+					document.addEventListener('DOMContentLoaded', initAllAnimations);
 				} else {
-					initAnimations();
+					initAllAnimations();
 				}
 
 				document.addEventListener('astro:before-preparation', cleanup);

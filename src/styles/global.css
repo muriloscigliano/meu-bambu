@@ -212,7 +212,7 @@ h1, h2, h3, .font-display {
 	transition: all .15s ease;
 }
 
-.chip-option[aria-pressed="true"] { 
+.chip-option[aria-checked="true"] {
 	background: var(--color-selected);
 	border-color: var(--color-border-pill);
 }

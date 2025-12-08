@@ -12,33 +12,33 @@ interface Props {
 const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = Astro.props as Props;
 ---
 
-<section class="hero" data-section data-hero>
-	<div class="hero__bg-pattern"></div>
+<section class="hero" data-section data-hero aria-labelledby="hero-title">
+	<div class="hero__bg-pattern" aria-hidden="true"></div>
 	<div class="hero__container">
-		<h1 class="hero__title" data-split="heading">{title}</h1>
+		<h1 id="hero-title" class="hero__title" data-split="heading">{title}</h1>
 		{subtitle && <p class="hero__desc" data-split="heading">{subtitle}</p>}
 		<div data-animate="fade-in" data-delay="0.6">
 			<Button text={ctaLabel} href={ctaHref} theme="primary" />
 		</div>
 
-		<div class="hero__divider" data-animate="fade-in" data-delay="0.8"></div>
+		<div class="hero__divider" role="separator" data-animate="fade-in" data-delay="0.8" aria-hidden="true"></div>
 
-		<div class="hero__pills" data-animate="stagger" data-delay="1">
-			<span class="pill" data-stagger-item>
-				<Icon name="checkmark" size={18} class="checkmark-icon" />
-				Entrega rápida
-			</span>
-			<span class="pill-divider" aria-hidden="true"></span>
-			<span class="pill" data-stagger-item>
-				<Icon name="checkmark" size={18} class="checkmark-icon" />
-				Pagamento seguro
-			</span>
-			<span class="pill-divider" aria-hidden="true"></span>
-			<span class="pill" data-stagger-item>
-				<Icon name="checkmark" size={18} class="checkmark-icon" />
-				Qualidade garantida
-			</span>
-		</div>
+		<ul class="hero__pills" data-animate="stagger" data-delay="1" aria-label="Benefícios">
+			<li class="pill" data-stagger-item>
+				<Icon name="checkmark" size={18} class="checkmark-icon" aria-hidden="true" />
+				<span>Entrega rápida</span>
+			</li>
+			<li class="pill-divider" aria-hidden="true"></li>
+			<li class="pill" data-stagger-item>
+				<Icon name="checkmark" size={18} class="checkmark-icon" aria-hidden="true" />
+				<span>Pagamento seguro</span>
+			</li>
+			<li class="pill-divider" aria-hidden="true"></li>
+			<li class="pill" data-stagger-item>
+				<Icon name="checkmark" size={18} class="checkmark-icon" aria-hidden="true" />
+				<span>Qualidade garantida</span>
+			</li>
+		</ul>
 	</div>
 </section>
 
@@ -102,12 +102,15 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 }
 
 
-.hero__pills { 
+.hero__pills {
 	display: flex;
 	gap: 24px;
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
 .hero__pills .pill {
