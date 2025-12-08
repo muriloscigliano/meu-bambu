@@ -18,7 +18,6 @@ export function initAnimations() {
   // Wait for fonts to load for accurate measurements
   document.fonts.ready.then(() => {
     initHeaderAnimations();
-    initHeroAnimations();
     initFadeInAnimations();
     initStaggerAnimations();
     initImageRevealAnimations();
@@ -36,77 +35,20 @@ function initHeaderAnimations() {
   if (!header) return;
 
   const headerItems = header.querySelectorAll('[data-header-item]');
+  if (headerItems.length === 0) return;
 
-  // Set initial state
-  gsap.set(headerItems, { opacity: 0, y: -20 });
-
-  // Animate header items
-  gsap.to(headerItems, {
+  // Animate header items from CSS initial state
+  const anim = gsap.to(headerItems, {
     opacity: 1,
     y: 0,
     duration: 0.8,
     stagger: 0.15,
     delay: 0.1,
-    ease: 'power3.out'
-  });
-}
-
-/**
- * Hero entrance animation - plays immediately on page load
- */
-function initHeroAnimations() {
-  const hero = document.querySelector('.hero');
-  if (!hero) return;
-
-  const heroContainer = hero.querySelector('.hero__container');
-  const heroTitle = hero.querySelector('.hero__title');
-  const heroDesc = hero.querySelector('.hero__desc');
-  const heroButton = hero.querySelector('.btn');
-  const heroPills = hero.querySelectorAll('.pill');
-  const heroDivider = hero.querySelector('.hero__divider');
-
-  // Create timeline for hero entrance
-  const tl = gsap.timeline({
-    defaults: { ease: 'power3.out' }
+    ease: 'power3.out',
+    clearProps: 'transform'
   });
 
-  // Initial state
-  gsap.set([heroTitle, heroDesc, heroButton, heroPills, heroDivider], {
-    opacity: 0,
-    y: 40
-  });
-
-  // Animate in sequence
-  tl.to(heroTitle, {
-    opacity: 1,
-    y: 0,
-    duration: 1,
-    delay: 0.3
-  })
-  .to(heroDesc, {
-    opacity: 1,
-    y: 0,
-    duration: 0.8
-  }, '-=0.5')
-  .to(heroButton, {
-    opacity: 1,
-    y: 0,
-    duration: 0.6
-  }, '-=0.4')
-  .to(heroDivider, {
-    opacity: 1,
-    y: 0,
-    duration: 0.4,
-    scaleX: 1
-  }, '-=0.3')
-  .to(heroPills, {
-    opacity: 1,
-    y: 0,
-    duration: 0.5,
-    stagger: 0.1
-  }, '-=0.2');
-
-  animations.push(tl as unknown as gsap.core.Tween);
+  animations.push(anim);
 }
 
 /**
@@ -120,8 +62,6 @@ function initFadeInAnimations() {
     const delay = parseFloat(el.getAttribute('data-delay') || '0');
     const isInHero = el.closest('[data-hero]') !== null;
 
-    gsap.set(el, { opacity: 0, y: 30 });
-
     // For hero elements, animate immediately with delay
     if (isInHero) {
       const anim = gsap.to(el, {
@@ -129,7 +69,8 @@ function initFadeInAnimations() {
         y: 0,
         duration: 0.8,
         delay: delay,
-        ease: 'power2.out'
+        ease: 'power2.out',
+        clearProps: 'transform'
       });
       animations.push(anim);
       return;
@@ -145,8 +86,8 @@ function initFadeInAnimations() {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          delay: delay,
-          ease: 'power2.out'
+          ease: 'power2.out',
+          clearProps: 'transform'
         });
         animations.push(anim);
       }
@@ -199,8 +140,6 @@ function initStaggerAnimations() {
     const delay = parseFloat(container.getAttribute('data-delay') || '0');
     const isInHero = container.closest('[data-hero]') !== null;
 
-    gsap.set(items, { opacity: 0, y: 40 });
-
     // For hero elements, animate immediately with delay
     if (isInHero) {
       const anim = gsap.to(items, {
@@ -209,7 +148,8 @@ function initStaggerAnimations() {
         duration: 0.6,
         delay: delay,
         stagger: 0.1,
-        ease: 'power2.out'
+        ease: 'power2.out',
+        clearProps: 'transform'
       });
       animations.push(anim);
       return;
@@ -225,9 +165,9 @@ function initStaggerAnimations() {
           opacity: 1,
           y: 0,
           duration: 0.6,
-          delay: delay,
           stagger: 0.1,
-          ease: 'power2.out'
+          ease: 'power2.out',
+          clearProps: 'transform'
         });
         animations.push(anim);
       }
@@ -245,11 +185,6 @@ function initImageRevealAnimations() {
   const images = document.querySelectorAll('[data-animate="image-reveal"]');
 
   images.forEach((img) => {
-    gsap.set(img, {
-      clipPath: 'inset(0 100% 0 0)',
-      opacity: 1
-    });
-
     const trigger = ScrollTrigger.create({
       trigger: img,
       start: 'top 80%',
@@ -258,7 +193,8 @@ function initImageRevealAnimations() {
         const anim = gsap.to(img, {
           clipPath: 'inset(0 0% 0 0)',
           duration: 1.2,
-          ease: 'power3.inOut'
+          ease: 'power3.inOut',
+          clearProps: 'clipPath'
         });
         animations.push(anim);
       }
