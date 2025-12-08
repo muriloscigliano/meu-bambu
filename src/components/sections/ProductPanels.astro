@@ -14,16 +14,16 @@ interface Props {
 const { title, price, description, features, ctaLabel, ctaHref } = Astro.props as Props;
 ---
 
-<section class="product-panels">
+<section class="product-panels" data-section>
 	<div class="product-panels__container">
-		<div class="product-panels__details" data-reveal>
+		<div class="product-panels__details">
 			<h2 class="product-panels__title" data-split="heading" set:html={title.replace(' ', '<br>')}></h2>
-			<p class="product-panels__price">{price}</p>
-			<p class="product-panels__desc">{description}</p>
-			
-			<ul class="product-panels__bullets">
+			<p class="product-panels__price" data-animate="fade-in">{price}</p>
+			<p class="product-panels__desc" data-animate="fade-in">{description}</p>
+
+			<ul class="product-panels__bullets" data-animate="stagger">
 				{features.map((feature) => (
-					<li>
+					<li data-stagger-item>
 						<Icon name="checkmark" size={18} class="checkmark-icon" />
 						{feature}
 					</li>
@@ -61,8 +61,8 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 			<Button text={ctaLabel} href={ctaHref} theme="dark" />
 		</div>
 
-		<div class="product-panels__media" data-reveal>
-			<div class="product-panels__image-wrap">
+		<div class="product-panels__media">
+			<div class="product-panels__image-wrap" data-animate="image-reveal">
 				<img src="/images/floresta-bambu.jpg" alt="Painéis de bambu premium com núcleo vertical - Meu Bambu" loading="lazy" />
 			</div>
 		</div>

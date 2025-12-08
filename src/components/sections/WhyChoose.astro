@@ -16,21 +16,21 @@ const leftFeatures = features.slice(0, midPoint);
 const rightFeatures = features.slice(midPoint);
 ---
 
-<section class="why-choose">
+<section class="why-choose" data-section>
 	<!-- Parallax Background Image -->
 	<div class="why-choose__bg-image" data-parallax-bg></div>
-	
-	<div class="why-choose__container" data-reveal>
+
+	<div class="why-choose__container">
 		<div class="why-choose__content">
 			<h2 class="why-choose__title" data-split="heading">{title}</h2>
-			<p class="why-choose__description" data-split="heading">{description}</p>
+			<p class="why-choose__description" data-animate="fade-in">{description}</p>
 		</div>
 
-		<div class="why-choose__features">
-			<div class="why-choose__feature-col">
+		<div class="why-choose__features" data-animate="fade-in">
+			<div class="why-choose__feature-col" data-animate="stagger">
 				{leftFeatures.map((feature, index) => (
 					<>
-						<div class="why-choose__feature">
+						<div class="why-choose__feature" data-stagger-item>
 							<Icon name="checkmark" size={36} class="why-choose__feature-icon" />
 							<h3 class="why-choose__feature-title">{feature.title}</h3>
 							<p class="why-choose__feature-desc">{feature.description}</p>
@@ -42,10 +42,10 @@ const rightFeatures = features.slice(midPoint);
 
 			<div class="why-choose__col-divider"></div>
 
-			<div class="why-choose__feature-col">
+			<div class="why-choose__feature-col" data-animate="stagger">
 				{rightFeatures.map((feature, index) => (
 					<>
-						<div class="why-choose__feature">
+						<div class="why-choose__feature" data-stagger-item>
 							<Icon name="checkmark" size={36} class="why-choose__feature-icon" />
 							<h3 class="why-choose__feature-title">{feature.title}</h3>
 							<p class="why-choose__feature-desc">{feature.description}</p>

@@ -2,6 +2,7 @@ import { initLenis, destroyLenis } from '../utils/lenis';
 import { initSplitTextReveal } from '../utils/splitText';
 import { initImageTrail } from '../utils/imageTrail';
 import { initMarqueeScrollDirection } from '../utils/marquee';
+import { initAnimations as initGsapAnimations, cleanupAnimations, refreshAnimations } from '../utils/animations';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -23,12 +24,22 @@ function initAnimations() {
   // Initialize smooth scroll first
   initLenis();
 
-  // Wait for fonts to load for accurate text splitting
+  // Wait for fonts to load for accurate text splitting and animations
   document.fonts.ready.then(() => {
+    // Initialize SplitText animations
     const splitCleanup = initSplitTextReveal();
     if (splitCleanup) {
       cleanupFunctions.push(splitCleanup);
     }
+
+    // Initialize all GSAP scroll animations
+    initGsapAnimations();
+    cleanupFunctions.push(cleanupAnimations);
+
+    // Refresh after everything is initialized
+    setTimeout(() => {
+      refreshAnimations();
+    }, 100);
   });
 
   // Initialize image trail effect

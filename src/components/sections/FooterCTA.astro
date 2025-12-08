@@ -17,26 +17,28 @@ interface Props {
 const { title, ctaLabel, ctaHref, description, cnpj, address } = Astro.props as Props;
 ---
 
-<div data-footer-parallax class="footer__wrap">
+<div data-footer-parallax class="footer__wrap" data-section>
 	<footer data-footer-parallax-inner class="footer">
 		<div class="footer-cta__content">
-			<div class="footer-cta__left" data-reveal>
+			<div class="footer-cta__left">
 				<h2 class="footer-cta__title" data-split="heading">{title}</h2>
-				<Button text={ctaLabel} href={ctaHref} theme="primary" class="footer-cta__button" />
+				<div data-animate="fade-in" data-delay="0.3">
+					<Button text={ctaLabel} href={ctaHref} theme="primary" class="footer-cta__button" />
+				</div>
 			</div>
 
-			<div class="footer-cta__center">
-				<div class="footer-cta__logo">
+			<div class="footer-cta__center" data-animate="fade-in" data-delay="0.4">
+				<div class="footer-cta__logo" data-animate="image-reveal">
 					<img src="/images/flowing-boards-badge.jpg" alt="Flowing Boards - Marca especialista em produtos de bambu premium" />
 				</div>
 			</div>
 
-			<div class="footer-cta__right" data-reveal>
-				<p class="footer-cta__text">{description}</p>
-				<div class="footer-cta__divider"></div>
-				<p class="footer-cta__info">{cnpj}</p>
-				<div class="footer-cta__divider"></div>
-				<p class="footer-cta__info">
+			<div class="footer-cta__right" data-animate="stagger">
+				<p class="footer-cta__text" data-stagger-item>{description}</p>
+				<div class="footer-cta__divider" data-stagger-item></div>
+				<p class="footer-cta__info" data-stagger-item>{cnpj}</p>
+				<div class="footer-cta__divider" data-stagger-item></div>
+				<p class="footer-cta__info" data-stagger-item>
 					{address.street}<br>
 					{address.city}<br>
 					{address.zipCode}

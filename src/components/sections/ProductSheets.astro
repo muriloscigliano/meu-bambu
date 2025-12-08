@@ -14,22 +14,22 @@ interface Props {
 const { title, price, description, features, ctaLabel, ctaHref } = Astro.props as Props;
 ---
 
-<section class="product-sheets">
+<section class="product-sheets" data-section>
 	<div class="product-sheets__container">
-		<div class="product-sheets__media" data-reveal>
-			<div class="product-sheets__image-wrap">
+		<div class="product-sheets__media">
+			<div class="product-sheets__image-wrap" data-animate="image-reveal">
 				<img src="/images/floresta-bambu.jpg" alt="Lâminas de bambu flexíveis para móveis e marcenaria - Meu Bambu" loading="lazy" />
 			</div>
 		</div>
 
-		<div class="product-sheets__details" data-reveal>
+		<div class="product-sheets__details">
 			<h2 class="product-sheets__title" data-split="heading">{title}</h2>
-			<p class="product-sheets__price">{price}</p>
-			<p class="product-sheets__desc">{description}</p>
-			
-			<ul class="product-sheets__bullets">
+			<p class="product-sheets__price" data-animate="fade-in">{price}</p>
+			<p class="product-sheets__desc" data-animate="fade-in">{description}</p>
+
+			<ul class="product-sheets__bullets" data-animate="stagger">
 				{features.map((feature) => (
-					<li>
+					<li data-stagger-item>
 						<Icon name="checkmark" size={18} class="checkmark-icon" />
 						{feature}
 					</li>

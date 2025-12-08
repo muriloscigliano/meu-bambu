@@ -12,27 +12,29 @@ interface Props {
 const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = Astro.props as Props;
 ---
 
-<section class="hero">
+<section class="hero" data-section data-hero>
 	<div class="hero__bg-pattern"></div>
-	<div class="hero__container" data-reveal>
+	<div class="hero__container">
 		<h1 class="hero__title" data-split="heading">{title}</h1>
 		{subtitle && <p class="hero__desc" data-split="heading">{subtitle}</p>}
-		<Button text={ctaLabel} href={ctaHref} theme="primary" />
+		<div data-animate="fade-in" data-delay="0.6">
+			<Button text={ctaLabel} href={ctaHref} theme="primary" />
+		</div>
 
-		<div class="hero__divider"></div>
+		<div class="hero__divider" data-animate="fade-in" data-delay="0.8"></div>
 
-		<div class="hero__pills">
-			<span class="pill">
+		<div class="hero__pills" data-animate="stagger" data-delay="1">
+			<span class="pill" data-stagger-item>
 				<Icon name="checkmark" size={18} class="checkmark-icon" />
 				Entrega rápida
 			</span>
 			<span class="pill-divider" aria-hidden="true"></span>
-			<span class="pill">
+			<span class="pill" data-stagger-item>
 				<Icon name="checkmark" size={18} class="checkmark-icon" />
 				Pagamento seguro
 			</span>
 			<span class="pill-divider" aria-hidden="true"></span>
-			<span class="pill">
+			<span class="pill" data-stagger-item>
 				<Icon name="checkmark" size={18} class="checkmark-icon" />
 				Qualidade garantida
 			</span>
