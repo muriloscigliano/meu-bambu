@@ -1,0 +1,249 @@
+---
+export const prerender = false;
+
+import Admin from '../../layouts/Admin.astro';
+import { getAdminUser } from '../../services/api';
+
+// Check admin authentication
+const token = Astro.cookies.get('admin_token')?.value;
+if (!token) {
+	return Astro.redirect('/admin/entrar');
+}
+
+let admin = null;
+let error = null;
+let success = null;
+
+try {
+	admin = await getAdminUser(token);
+} catch (e: any) {
+	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
+		return Astro.redirect('/admin/entrar');
+	}
+	error = e.message;
+}
+---
+
+<Admin title="Configurações | Meu Bambu Admin" activeTab="configuracoes">
+	<div class="dashboard__header">
+		<h1 class="dashboard__title">Configurações</h1>
+		<p class="dashboard__subtitle">Gerencie as configurações da loja</p>
+	</div>
+
+	{error && (
+		<div class="alert alert--error">
+			<p>{error}</p>
+		</div>
+	)}
+
+	{success && (
+		<div class="alert alert--success">
+			<p>{success}</p>
+		</div>
+	)}
+
+	<!-- Store Settings -->
+	<div class="dashboard__card">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Informações da Loja</h2>
+		</div>
+		<form>
+			<div class="form-row">
+				<div class="form-group">
+					<label class="form-label" for="storeName">Nome da Loja</label>
+					<input type="text" id="storeName" class="form-input" value="Meu Bambu" disabled />
+				</div>
+				<div class="form-group">
+					<label class="form-label" for="storeEmail">Email de Contato</label>
+					<input type="email" id="storeEmail" class="form-input" value="contato@meubambu.com.br" disabled />
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group">
+					<label class="form-label" for="storePhone">Telefone</label>
+					<input type="text" id="storePhone" class="form-input" value="(11) 99999-9999" disabled />
+				</div>
+				<div class="form-group">
+					<label class="form-label" for="storeWhatsapp">WhatsApp</label>
+					<input type="text" id="storeWhatsapp" class="form-input" value="(11) 99999-9999" disabled />
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!-- Shipping Settings -->
+	<div class="dashboard__card" style="margin-top: 24px;">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Configurações de Frete</h2>
+		</div>
+		<form>
+			<div class="form-row">
+				<div class="form-group">
+					<label class="form-label" for="freeShipping">Frete Grátis acima de</label>
+					<input type="text" id="freeShipping" class="form-input" value="R$ 250,00" disabled />
+				</div>
+				<div class="form-group">
+					<label class="form-label" for="shippingOrigin">CEP de Origem</label>
+					<input type="text" id="shippingOrigin" class="form-input" value="01310-100" disabled />
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!-- Payment Settings -->
+	<div class="dashboard__card" style="margin-top: 24px;">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Pagamentos</h2>
+		</div>
+		<div class="settings-grid">
+			<div class="settings-item">
+				<div class="settings-item__icon" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</div>
+				<div class="settings-item__info">
+					<h4>PIX</h4>
+					<p>Ativo</p>
+				</div>
+			</div>
+			<div class="settings-item">
+				<div class="settings-item__icon" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</div>
+				<div class="settings-item__info">
+					<h4>Cartão de Crédito</h4>
+					<p>Ativo via Stripe</p>
+				</div>
+			</div>
+			<div class="settings-item">
+				<div class="settings-item__icon" style="background: rgba(98, 83, 62, 0.1); color: var(--color-text-dark);">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</div>
+				<div class="settings-item__info">
+					<h4>Boleto Bancário</h4>
+					<p>Inativo</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Admin Users -->
+	<div class="dashboard__card" style="margin-top: 24px;">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Usuários Administradores</h2>
+		</div>
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Nome</th>
+					<th>Email</th>
+					<th>Função</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div class="customer-row">
+							<div class="customer-row__avatar">A</div>
+							<div class="customer-row__info">
+								<span class="customer-row__name">Administrador</span>
+							</div>
+						</div>
+					</td>
+					<td>admin@meubambu.com.br</td>
+					<td>
+						<span class="status-badge status-badge--processing">Super Admin</span>
+					</td>
+					<td>
+						<span class="status-badge status-badge--delivered">Ativo</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Info Notice -->
+	<div class="settings-notice" style="margin-top: 32px;">
+		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+			<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>
+		<p>As configurações estão em modo de visualização. A edição estará disponível quando o backend estiver conectado.</p>
+	</div>
+</Admin>
+
+<style>
+	.settings-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 16px;
+	}
+
+	.settings-item {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 20px;
+		background: var(--color-bg-primary);
+		border-radius: 12px;
+		border: 1px solid rgba(98, 83, 62, 0.08);
+	}
+
+	.settings-item__icon {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 12px;
+		flex-shrink: 0;
+	}
+
+	.settings-item__info h4 {
+		font-family: var(--font-sans);
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--color-text-secondary);
+		margin: 0 0 4px;
+	}
+
+	.settings-item__info p {
+		font-family: var(--font-sans);
+		font-size: 13px;
+		color: var(--color-text-dark);
+		margin: 0;
+		opacity: 0.6;
+	}
+
+	.settings-notice {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 16px 20px;
+		background: rgba(59, 130, 246, 0.06);
+		border: 1px solid rgba(59, 130, 246, 0.1);
+		border-radius: 12px;
+		color: #2563eb;
+	}
+
+	.settings-notice svg {
+		flex-shrink: 0;
+	}
+
+	.settings-notice p {
+		font-family: var(--font-sans);
+		font-size: 14px;
+		margin: 0;
+	}
+
+	@media (max-width: 768px) {
+		.settings-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

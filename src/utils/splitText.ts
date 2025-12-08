@@ -16,9 +16,6 @@ export function initSplitTextReveal() {
   if (headings.length === 0) return;
 
   headings.forEach((heading) => {
-    // Make element visible (preventing FOUC)
-    gsap.set(heading, { autoAlpha: 1 });
-
     const split = new SplitText(heading, {
       type: 'lines',
       linesClass: 'split-line',
@@ -36,15 +33,21 @@ export function initSplitTextReveal() {
       wrapper.appendChild(line);
     });
 
+    // Position lines off-screen BEFORE making visible (prevents flicker)
+    gsap.set(split.lines, { yPercent: 110 });
+
+    // NOW make element visible - lines are already positioned off-screen
+    gsap.set(heading, { autoAlpha: 1 });
+
     // Animate the lines with ScrollTrigger
     const scrollTrigger = ScrollTrigger.create({
       trigger: heading,
       start: 'top 80%',
       once: true, // Only animate once for better performance
       onEnter: () => {
-        gsap.from(split.lines, {
+        gsap.to(split.lines, {
           duration: 0.8,
-          yPercent: 110,
+          yPercent: 0,
           stagger: 0.1,
           ease: 'power4.out'
         });

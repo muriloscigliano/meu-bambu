@@ -623,6 +623,411 @@ interface Cart {
 
 ---
 
-**Report Prepared By:** AI Assistant  
-**Last Updated:** January 2025  
+## 15. Nuxt Backend API Requirements
+
+### 15.1 System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              ASTRO (meubambu.com.br)                        │
+│  - Homepage / Product showcase                              │
+│  - Customer dashboard (/minha-conta)                        │
+│  - AI Chat widget for cart/checkout                         │
+└──────────────────────┬──────────────────────────────────────┘
+                       │ REST API calls
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│           NUXT BACKEND (api.meubambu.com.br)                │
+│                                                             │
+│  PUBLIC API (for Astro + AI Chat):                          │
+│  - /api/products - Product catalog                          │
+│  - /api/auth - Customer authentication                      │
+│  - /api/orders - Customer orders                            │
+│  - /api/checkout - Cart & payment processing                │
+│  - /api/shipping - Shipping calculations                    │
+│                                                             │
+│  ADMIN PANEL (/admin):                                      │
+│  - Dashboard with sales overview                            │
+│  - Product management (CRUD)                                │
+│  - Order management                                         │
+│  - Customer management                                      │
+│  - Settings                                                 │
+│                                                             │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    DATABASE                                 │
+│  - Products & variants                                      │
+│  - Orders & order items                                     │
+│  - Customers                                                │
+│  - Payment records                                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 15.2 Public API Endpoints
+
+#### Authentication
+```
+POST   /api/auth/login          - Customer login
+POST   /api/auth/register       - Customer registration
+POST   /api/auth/logout         - Logout
+POST   /api/auth/refresh        - Refresh JWT token
+POST   /api/auth/forgot         - Password reset request
+POST   /api/auth/reset          - Password reset confirm
+```
+
+#### Products (Public)
+```
+GET    /api/products            - List all active products
+GET    /api/products/:slug      - Get product by slug
+GET    /api/products/sku/:sku   - Get product by SKU code
+```
+
+#### Customer Profile
+```
+GET    /api/customer/profile         - Get customer profile
+PUT    /api/customer/profile         - Update profile
+GET    /api/customer/payment-methods - List saved payment methods
+DELETE /api/customer/payment-methods/:id - Remove payment method
+```
+
+#### Orders
+```
+GET    /api/orders              - List customer orders
+GET    /api/orders/:id          - Get order details
+POST   /api/orders/:id/cancel   - Cancel order
+POST   /api/orders/:id/refund   - Request refund
+GET    /api/orders/:id/tracking - Get tracking info
+```
+
+#### Checkout (AI Chat Integration)
+```
+POST   /api/checkout/create     - Create checkout session
+POST   /api/checkout/shipping   - Calculate shipping options
+POST   /api/checkout/payment    - Process payment (Stripe)
+POST   /api/checkout/confirm    - Confirm order
+```
+
+#### Shipping
+```
+POST   /api/shipping/calculate  - Calculate shipping by CEP
+```
+
+### 15.3 Admin API Endpoints
+
+#### Admin Authentication
+```
+POST   /api/admin/auth/login    - Admin login
+POST   /api/admin/auth/logout   - Admin logout
+GET    /api/admin/auth/me       - Get current admin user
+```
+
+#### Dashboard
+```
+GET    /api/admin/dashboard/stats       - Sales statistics
+GET    /api/admin/dashboard/recent      - Recent orders
+GET    /api/admin/dashboard/top-products - Top selling products
+```
+
+#### Product Management
+```
+GET    /api/admin/products              - List all products (including inactive)
+POST   /api/admin/products              - Create product
+GET    /api/admin/products/:id          - Get product details
+PUT    /api/admin/products/:id          - Update product
+DELETE /api/admin/products/:id          - Delete product (soft delete)
+POST   /api/admin/products/:id/variants - Add variant
+PUT    /api/admin/products/:id/variants/:variantId - Update variant
+DELETE /api/admin/products/:id/variants/:variantId - Delete variant
+POST   /api/admin/products/:id/images   - Upload product image
+```
+
+#### Order Management
+```
+GET    /api/admin/orders                - List all orders (with filters)
+GET    /api/admin/orders/:id            - Get order details
+PUT    /api/admin/orders/:id/status     - Update order status
+POST   /api/admin/orders/:id/tracking   - Add tracking code
+POST   /api/admin/orders/:id/refund     - Process refund
+POST   /api/admin/orders/:id/note       - Add internal note
+```
+
+#### Customer Management
+```
+GET    /api/admin/customers             - List customers
+GET    /api/admin/customers/:id         - Get customer details
+GET    /api/admin/customers/:id/orders  - Get customer orders
+PUT    /api/admin/customers/:id         - Update customer
+```
+
+#### Settings
+```
+GET    /api/admin/settings              - Get all settings
+PUT    /api/admin/settings              - Update settings
+GET    /api/admin/settings/shipping     - Shipping settings
+PUT    /api/admin/settings/shipping     - Update shipping settings
+```
+
+### 15.4 Database Schema
+
+#### Products Table
+```sql
+CREATE TABLE products (
+  id            UUID PRIMARY KEY,
+  slug          VARCHAR(255) UNIQUE NOT NULL,
+  name          VARCHAR(255) NOT NULL,
+  short_name    VARCHAR(100),
+  description   TEXT,
+  features      JSONB,           -- Array of feature strings
+  images        JSONB,           -- Array of image URLs
+  category      VARCHAR(100),
+  active        BOOLEAN DEFAULT true,
+  created_at    TIMESTAMP DEFAULT NOW(),
+  updated_at    TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Product Variants Table
+```sql
+CREATE TABLE product_variants (
+  id              UUID PRIMARY KEY,
+  product_id      UUID REFERENCES products(id),
+  sku             VARCHAR(50) UNIQUE NOT NULL,  -- e.g., PBN-3MM-200X60
+  thickness       VARCHAR(20),                  -- e.g., "3mm"
+  size            VARCHAR(50),                  -- e.g., "200x60cm"
+  price           DECIMAL(10,2) NOT NULL,
+  compare_at_price DECIMAL(10,2),               -- Original price for discounts
+  stock           INTEGER DEFAULT 0,
+  weight          DECIMAL(10,3),                -- kg
+  length          DECIMAL(10,2),                -- cm
+  width           DECIMAL(10,2),                -- cm
+  height          DECIMAL(10,2),                -- cm
+  active          BOOLEAN DEFAULT true,
+  created_at      TIMESTAMP DEFAULT NOW(),
+  updated_at      TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Customers Table
+```sql
+CREATE TABLE customers (
+  id            UUID PRIMARY KEY,
+  email         VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  name          VARCHAR(255) NOT NULL,
+  phone         VARCHAR(20),
+  cpf           VARCHAR(14),
+  created_at    TIMESTAMP DEFAULT NOW(),
+  updated_at    TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Customer Addresses Table
+```sql
+CREATE TABLE customer_addresses (
+  id            UUID PRIMARY KEY,
+  customer_id   UUID REFERENCES customers(id),
+  name          VARCHAR(255),
+  street        VARCHAR(255),
+  number        VARCHAR(20),
+  complement    VARCHAR(100),
+  neighborhood  VARCHAR(100),
+  city          VARCHAR(100),
+  state         VARCHAR(2),
+  zip_code      VARCHAR(9),
+  is_default    BOOLEAN DEFAULT false,
+  created_at    TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Orders Table
+```sql
+CREATE TABLE orders (
+  id              UUID PRIMARY KEY,
+  order_number    VARCHAR(20) UNIQUE NOT NULL,  -- e.g., MB-2024-0001
+  customer_id     UUID REFERENCES customers(id),
+  status          VARCHAR(20) NOT NULL,          -- pending, processing, shipped, delivered, cancelled
+  subtotal        DECIMAL(10,2) NOT NULL,
+  shipping        DECIMAL(10,2) NOT NULL,
+  discount        DECIMAL(10,2) DEFAULT 0,
+  total           DECIMAL(10,2) NOT NULL,
+  shipping_address JSONB NOT NULL,
+  payment_method  VARCHAR(50),
+  payment_details VARCHAR(100),
+  tracking_code   VARCHAR(50),
+  tracking_url    VARCHAR(255),
+  notes           TEXT,                          -- Internal admin notes
+  cancelled_at    TIMESTAMP,
+  created_at      TIMESTAMP DEFAULT NOW(),
+  updated_at      TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Order Items Table
+```sql
+CREATE TABLE order_items (
+  id            UUID PRIMARY KEY,
+  order_id      UUID REFERENCES orders(id),
+  product_id    UUID REFERENCES products(id),
+  variant_id    UUID REFERENCES product_variants(id),
+  sku           VARCHAR(50) NOT NULL,
+  name          VARCHAR(255) NOT NULL,
+  variant_name  VARCHAR(100),                    -- e.g., "3mm - 200x60cm"
+  quantity      INTEGER NOT NULL,
+  unit_price    DECIMAL(10,2) NOT NULL,
+  total_price   DECIMAL(10,2) NOT NULL,
+  image         VARCHAR(255)
+);
+```
+
+#### Order Status History Table
+```sql
+CREATE TABLE order_status_history (
+  id          UUID PRIMARY KEY,
+  order_id    UUID REFERENCES orders(id),
+  status      VARCHAR(20) NOT NULL,
+  note        TEXT,
+  created_at  TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Payment Methods Table
+```sql
+CREATE TABLE payment_methods (
+  id            UUID PRIMARY KEY,
+  customer_id   UUID REFERENCES customers(id),
+  stripe_id     VARCHAR(100),                    -- Stripe PaymentMethod ID
+  brand         VARCHAR(20),                     -- visa, mastercard, etc.
+  last4         VARCHAR(4),
+  exp_month     INTEGER,
+  exp_year      INTEGER,
+  is_default    BOOLEAN DEFAULT false,
+  created_at    TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Admin Users Table
+```sql
+CREATE TABLE admin_users (
+  id            UUID PRIMARY KEY,
+  email         VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  name          VARCHAR(255) NOT NULL,
+  role          VARCHAR(20) DEFAULT 'admin',     -- admin, super_admin
+  active        BOOLEAN DEFAULT true,
+  created_at    TIMESTAMP DEFAULT NOW(),
+  last_login    TIMESTAMP
+);
+```
+
+### 15.5 Admin Dashboard Pages
+
+#### Dashboard Home (`/admin`)
+- Total sales (today, week, month, all time)
+- Orders count by status
+- Revenue chart (line graph)
+- Recent orders list (last 10)
+- Top selling products
+- Low stock alerts
+
+#### Orders (`/admin/orders`)
+- Orders table with filters (status, date range, customer)
+- Search by order number
+- Bulk status update
+- Export to CSV
+- Order detail view:
+  - Customer info
+  - Items with variants
+  - Payment info
+  - Shipping info
+  - Status history
+  - Add tracking code
+  - Process refund
+  - Add internal notes
+
+#### Products (`/admin/products`)
+- Products table (name, SKU count, price range, stock, status)
+- Create/Edit product form:
+  - Basic info (name, slug, description)
+  - Features list
+  - Image upload
+  - Variants management:
+    - Add/edit/remove variants
+    - SKU auto-generation
+    - Price per variant
+    - Stock per variant
+    - Dimensions & weight
+- Quick stock update
+- Toggle active/inactive
+
+#### Customers (`/admin/customers`)
+- Customers table (name, email, orders count, total spent)
+- Customer detail view:
+  - Profile info
+  - Order history
+  - Saved addresses
+  - Total lifetime value
+
+#### Settings (`/admin/settings`)
+- Store settings (name, contact)
+- Shipping settings:
+  - Free shipping threshold
+  - Shipping rates by region
+- Email templates
+- Payment settings (Stripe keys)
+
+### 15.6 SKU Code Structure
+
+```
+Format: [PRODUCT]-[THICKNESS]-[SIZE]
+
+Products:
+  PBN = Painel Bambu Natural
+  PBP = Painel Bambu Premium
+  LBF = Lâmina Bambu Flexível
+
+Examples:
+  PBN-3MM-200X60  → Painel Natural, 3mm, 200x60cm
+  PBP-5MM-100X60  → Painel Premium, 5mm, 100x60cm
+  LBF-06MM-200X60 → Lâmina Flexível, 0.6mm, 200x60cm
+```
+
+### 15.7 Order Status Flow
+
+```
+pending → processing → shipped → delivered
+    ↓          ↓
+cancelled  cancelled (only before shipped)
+
+Status Descriptions:
+- pending: Aguardando pagamento
+- processing: Pagamento confirmado, preparando envio
+- shipped: Enviado (tracking code added)
+- delivered: Entregue
+- cancelled: Cancelado
+```
+
+### 15.8 Integration Points
+
+#### Stripe Integration
+- Payment processing for cards and PIX
+- Save payment methods for returning customers
+- Webhook for payment confirmation
+- Refund processing
+
+#### Shipping Integration (optional)
+- Correios API for shipping calculation
+- Melhor Envio API (aggregator)
+- Manual shipping rates as fallback
+
+#### Email Integration
+- Order confirmation
+- Shipping notification
+- Password reset
+
+---
+
+**Report Prepared By:** AI Assistant
+**Last Updated:** December 2025
 **Status:** Ready for Implementation

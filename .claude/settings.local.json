@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "mcp__ide__getDiagnostics",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix Vercel deployment - remove conflicting output settings\n\nRemove buildCommand, outputDirectory, devCommand, installCommand from\nvercel.json as they conflict with the Astro Vercel adapter''s automatic\nconfiguration. This was causing 404 errors for static assets (images,\nfonts, scripts) on the deployed site.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(gh pr create --title \"Fix Vercel deployment - remove conflicting output settings\" --body \"$(cat <<''EOF''\n## Summary\n- Remove `buildCommand`, `outputDirectory`, `devCommand`, `installCommand` from vercel.json\n- These settings were conflicting with the Astro Vercel adapter''s automatic configuration\n- This was causing 404 errors for static assets (images, fonts, scripts) on the deployed site\n\n## Test plan\n- [ ] Verify deployment completes successfully\n- [ ] Check that images load correctly (floresta-bambu.jpg, flowing-boards-badge.jpg)\n- [ ] Check that fonts load correctly (Rumiko Sans)\n- [ ] Check that GSAP animations work properly\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\nEOF\n)\" --base main)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,308 @@
+---
+export const prerender = false;
+
+import Admin from '../../../layouts/Admin.astro';
+import { getAdminUser, getAdminOrder, updateOrderStatus, addTrackingCode } from '../../../services/api';
+
+const { id } = Astro.params;
+
+// Check admin authentication
+const token = Astro.cookies.get('admin_token')?.value;
+if (!token) {
+	return Astro.redirect('/admin/entrar');
+}
+
+let admin = null;
+let order: any = null;
+let error = null;
+let success = null;
+
+// Handle POST actions
+if (Astro.request.method === 'POST') {
+	const formData = await Astro.request.formData();
+	const action = formData.get('action');
+
+	try {
+		if (action === 'update_status') {
+			const newStatus = formData.get('status') as string;
+			const note = formData.get('note') as string;
+			await updateOrderStatus(token, id!, newStatus, note);
+			success = 'Status atualizado com sucesso!';
+		} else if (action === 'add_tracking') {
+			const trackingCode = formData.get('trackingCode') as string;
+			const trackingUrl = formData.get('trackingUrl') as string;
+			await addTrackingCode(token, id!, trackingCode, trackingUrl);
+			success = 'Código de rastreio adicionado!';
+		}
+	} catch (e: any) {
+		error = e.message;
+	}
+}
+
+try {
+	admin = await getAdminUser(token);
+	order = await getAdminOrder(token, id!);
+} catch (e: any) {
+	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
+		return Astro.redirect('/admin/entrar');
+	}
+	error = e.message;
+}
+
+const formatCurrency = (value: number) => {
+	return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+};
+
+const formatDate = (dateStr: string) => {
+	return new Date(dateStr).toLocaleDateString('pt-BR', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+	});
+};
+
+const getStatusLabel = (status: string) => {
+	const labels: Record<string, string> = {
+		pending: 'Pendente',
+		processing: 'Processando',
+		shipped: 'Enviado',
+		delivered: 'Entregue',
+		cancelled: 'Cancelado',
+	};
+	return labels[status] || status;
+};
+
+const getPaymentMethodLabel = (method: string) => {
+	const labels: Record<string, string> = {
+		pix: 'PIX',
+		credit_card: 'Cartão de Crédito',
+		boleto: 'Boleto Bancário',
+	};
+	return labels[method] || method;
+};
+
+const canUpdateStatus = (currentStatus: string) => {
+	return !['delivered', 'cancelled'].includes(currentStatus);
+};
+---
+
+<Admin title={`Pedido ${order?.orderNumber || ''} | Meu Bambu Admin`} activeTab="pedidos">
+	<a href="/admin/pedidos" class="back-link">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+			<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>
+		Voltar para pedidos
+	</a>
+
+	{error && (
+		<div class="alert alert--error">
+			<p>{error}</p>
+		</div>
+	)}
+
+	{success && (
+		<div class="alert alert--success">
+			<p>{success}</p>
+		</div>
+	)}
+
+	{order && (
+		<>
+			<!-- Order Header -->
+			<div class="order-details__header">
+				<div class="order-details__info">
+					<h1>{order.orderNumber}</h1>
+					<p class="order-details__meta">Criado em {formatDate(order.createdAt)}</p>
+				</div>
+				<div class="order-details__actions">
+					<span class={`status-badge status-badge--${order.status}`}>
+						{getStatusLabel(order.status)}
+					</span>
+				</div>
+			</div>
+
+			<div class="dashboard-grid--equal" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+				<!-- Customer Info -->
+				<div class="dashboard__card">
+					<div class="dashboard__card-header">
+						<h2 class="dashboard__card-title">Cliente</h2>
+					</div>
+					<div class="customer-detail">
+						<div class="customer-row" style="margin-bottom: 16px;">
+							<div class="customer-row__avatar" style="width: 48px; height: 48px; font-size: 18px;">
+								{order.customer.name.charAt(0).toUpperCase()}
+							</div>
+							<div class="customer-row__info">
+								<span class="customer-row__name" style="font-size: 16px;">{order.customer.name}</span>
+								<span class="customer-row__email">{order.customer.email}</span>
+							</div>
+						</div>
+						<a href={`/admin/clientes/${order.customer.id}`} class="btn-secondary btn-sm" style="width: 100%; text-align: center; text-decoration: none; display: block;">
+							Ver perfil do cliente
+						</a>
+					</div>
+				</div>
+
+				<!-- Shipping Address -->
+				<div class="dashboard__card">
+					<div class="dashboard__card-header">
+						<h2 class="dashboard__card-title">Endereço de Entrega</h2>
+					</div>
+					<div class="info-block__value">
+						<strong>{order.shippingAddress.name}</strong><br />
+						{order.shippingAddress.street}, {order.shippingAddress.number}
+						{order.shippingAddress.complement && ` - ${order.shippingAddress.complement}`}<br />
+						{order.shippingAddress.neighborhood}<br />
+						{order.shippingAddress.city} - {order.shippingAddress.state}<br />
+						CEP: {order.shippingAddress.zipCode}
+					</div>
+				</div>
+			</div>
+
+			<div class="dashboard-grid--equal" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-top: 24px;">
+				<!-- Order Items -->
+				<div class="dashboard__card">
+					<div class="dashboard__card-header">
+						<h2 class="dashboard__card-title">Itens do Pedido</h2>
+					</div>
+					<div class="order-items">
+						{order.items.map((item: any) => (
+							<div class="order-product">
+								<img src={item.image || '/images/painel-bambu.jpg'} alt={item.name} class="order-product__image" />
+								<div class="order-product__info">
+									<h4 class="order-product__name">{item.name}</h4>
+									<p class="order-product__variant">{item.variantName} • SKU: {item.sku}</p>
+									<p class="order-product__price">
+										{item.quantity}x {formatCurrency(item.unitPrice)} = <strong>{formatCurrency(item.totalPrice)}</strong>
+									</p>
+								</div>
+							</div>
+						))}
+					</div>
+
+					<div class="order-summary">
+						<div class="order-summary__row">
+							<span>Subtotal</span>
+							<span>{formatCurrency(order.subtotal)}</span>
+						</div>
+						<div class="order-summary__row">
+							<span>Frete</span>
+							<span>{order.shipping === 0 ? 'Grátis' : formatCurrency(order.shipping)}</span>
+						</div>
+						{order.discount > 0 && (
+							<div class="order-summary__row" style="color: #059669;">
+								<span>Desconto</span>
+								<span>-{formatCurrency(order.discount)}</span>
+							</div>
+						)}
+						<div class="order-summary__row order-summary__row--total">
+							<span>Total</span>
+							<span>{formatCurrency(order.total)}</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Actions Sidebar -->
+				<div>
+					<!-- Payment Info -->
+					<div class="dashboard__card" style="margin-bottom: 24px;">
+						<div class="dashboard__card-header">
+							<h2 class="dashboard__card-title">Pagamento</h2>
+						</div>
+						<div class="info-block__value">
+							<strong>{getPaymentMethodLabel(order.paymentMethod)}</strong>
+							{order.paymentDetails && <span style="opacity: 0.6;"> ({order.paymentDetails})</span>}
+						</div>
+					</div>
+
+					<!-- Tracking -->
+					<div class="dashboard__card" style="margin-bottom: 24px;">
+						<div class="dashboard__card-header">
+							<h2 class="dashboard__card-title">Rastreio</h2>
+						</div>
+
+						{order.trackingCode ? (
+							<div class="info-block__value">
+								<strong>Código:</strong> {order.trackingCode}<br />
+								{order.trackingUrl && (
+									<a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" style="color: var(--color-accent);">
+										Rastrear encomenda
+									</a>
+								)}
+							</div>
+						) : (
+							<form method="POST">
+								<input type="hidden" name="action" value="add_tracking" />
+								<div class="form-group" style="margin-bottom: 12px;">
+									<input
+										type="text"
+										name="trackingCode"
+										class="form-input"
+										placeholder="Código de rastreio"
+										required
+									/>
+								</div>
+								<div class="form-group" style="margin-bottom: 12px;">
+									<input
+										type="url"
+										name="trackingUrl"
+										class="form-input"
+										placeholder="URL de rastreio (opcional)"
+									/>
+								</div>
+								<button type="submit" class="btn-primary btn-sm" style="width: 100%;">
+									Adicionar Rastreio
+								</button>
+							</form>
+						)}
+					</div>
+
+					<!-- Update Status -->
+					{canUpdateStatus(order.status) && (
+						<div class="dashboard__card">
+							<div class="dashboard__card-header">
+								<h2 class="dashboard__card-title">Atualizar Status</h2>
+							</div>
+							<form method="POST">
+								<input type="hidden" name="action" value="update_status" />
+								<div class="form-group" style="margin-bottom: 12px;">
+									<select name="status" class="form-input">
+										<option value="pending" selected={order.status === 'pending'}>Pendente</option>
+										<option value="processing" selected={order.status === 'processing'}>Processando</option>
+										<option value="shipped" selected={order.status === 'shipped'}>Enviado</option>
+										<option value="delivered" selected={order.status === 'delivered'}>Entregue</option>
+										<option value="cancelled" selected={order.status === 'cancelled'}>Cancelado</option>
+									</select>
+								</div>
+								<div class="form-group" style="margin-bottom: 12px;">
+									<textarea
+										name="note"
+										class="form-input"
+										placeholder="Nota interna (opcional)"
+										rows="2"
+										style="resize: vertical;"
+									></textarea>
+								</div>
+								<button type="submit" class="btn-primary btn-sm" style="width: 100%;">
+									Atualizar Status
+								</button>
+							</form>
+						</div>
+					)}
+				</div>
+			</div>
+		</>
+	)}
+</Admin>
+
+<style>
+	.customer-detail {
+		padding: 4px 0;
+	}
+
+	textarea.form-input {
+		min-height: 60px;
+	}
+</style>

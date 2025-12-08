@@ -1,0 +1,264 @@
+---
+export const prerender = false;
+
+import Admin from '../../layouts/Admin.astro';
+import { getAdminUser, getDashboardStats, getRecentOrders, getTopProducts, getLowStockItems } from '../../services/api';
+
+// Check admin authentication
+const token = Astro.cookies.get('admin_token')?.value;
+if (!token) {
+	return Astro.redirect('/admin/entrar');
+}
+
+let admin = null;
+let stats = null;
+let recentOrders: any[] = [];
+let topProducts: any[] = [];
+let lowStockItems: any[] = [];
+let error = null;
+
+try {
+	admin = await getAdminUser(token);
+	[stats, recentOrders, topProducts, lowStockItems] = await Promise.all([
+		getDashboardStats(token),
+		getRecentOrders(token, 5),
+		getTopProducts(token, 5),
+		getLowStockItems(token),
+	]);
+} catch (e: any) {
+	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
+		return Astro.redirect('/admin/entrar');
+	}
+	error = e.message;
+}
+
+const formatCurrency = (value: number) => {
+	return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+};
+
+const formatDate = (dateStr: string) => {
+	return new Date(dateStr).toLocaleDateString('pt-BR', {
+		day: '2-digit',
+		month: 'short',
+	});
+};
+
+const getStatusLabel = (status: string) => {
+	const labels: Record<string, string> = {
+		pending: 'Pendente',
+		processing: 'Processando',
+		shipped: 'Enviado',
+		delivered: 'Entregue',
+		cancelled: 'Cancelado',
+	};
+	return labels[status] || status;
+};
+---
+
+<Admin title="Dashboard | Meu Bambu Admin" activeTab="dashboard">
+	<div class="dashboard__header">
+		<h1 class="dashboard__title">Dashboard</h1>
+		<p class="dashboard__subtitle">Bem-vindo, {admin?.name || 'Administrador'}</p>
+	</div>
+
+	{error && (
+		<div class="alert alert--error">
+			<p>{error}</p>
+		</div>
+	)}
+
+	<!-- Stats Grid -->
+	{stats && (
+		<div class="stats-grid">
+			<div class="stat-card">
+				<div class="stat-card__header">
+					<div class="stat-card__icon stat-card__icon--sales">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+							<path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+					<div class={`stat-card__trend stat-card__trend--${stats.salesTrend >= 0 ? 'up' : 'down'}`}>
+						{stats.salesTrend >= 0 ? (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						) : (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						)}
+						<span>{Math.abs(stats.salesTrend)}%</span>
+					</div>
+				</div>
+				<p class="stat-card__value">{formatCurrency(stats.totalSales)}</p>
+				<p class="stat-card__label">Vendas totais</p>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-card__header">
+					<div class="stat-card__icon stat-card__icon--orders">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+							<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+					<div class={`stat-card__trend stat-card__trend--${stats.ordersTrend >= 0 ? 'up' : 'down'}`}>
+						{stats.ordersTrend >= 0 ? (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						) : (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						)}
+						<span>{Math.abs(stats.ordersTrend)}%</span>
+					</div>
+				</div>
+				<p class="stat-card__value">{stats.totalOrders}</p>
+				<p class="stat-card__label">Pedidos totais</p>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-card__header">
+					<div class="stat-card__icon stat-card__icon--products">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+							<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+				</div>
+				<p class="stat-card__value">{stats.activeProducts}</p>
+				<p class="stat-card__label">Produtos ativos</p>
+			</div>
+
+			<div class="stat-card">
+				<div class="stat-card__header">
+					<div class="stat-card__icon stat-card__icon--customers">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+							<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</div>
+					<div class={`stat-card__trend stat-card__trend--${stats.customersTrend >= 0 ? 'up' : 'down'}`}>
+						{stats.customersTrend >= 0 ? (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						) : (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						)}
+						<span>{Math.abs(stats.customersTrend)}%</span>
+					</div>
+				</div>
+				<p class="stat-card__value">{stats.totalCustomers}</p>
+				<p class="stat-card__label">Clientes</p>
+			</div>
+		</div>
+	)}
+
+	<!-- Dashboard Grid -->
+	<div class="dashboard-grid">
+		<!-- Recent Orders -->
+		<div class="dashboard__card">
+			<div class="dashboard__card-header">
+				<h2 class="dashboard__card-title">Pedidos Recentes</h2>
+				<a href="/admin/pedidos" class="view-all-link">
+					Ver todos
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</a>
+			</div>
+
+			{recentOrders.length === 0 ? (
+				<div class="empty-state" style="padding: 40px 0;">
+					<p class="empty-state__text" style="margin-bottom: 0;">Nenhum pedido ainda</p>
+				</div>
+			) : (
+				<div class="recent-orders">
+					{recentOrders.map(order => (
+						<div class="recent-orders__item">
+							<div class="recent-orders__info">
+								<span class="recent-orders__number">{order.orderNumber}</span>
+								<span class="recent-orders__customer">{order.customerName}</span>
+							</div>
+							<div class="recent-orders__right">
+								<span class={`status-badge status-badge--${order.status}`}>
+									{getStatusLabel(order.status)}
+								</span>
+								<span class="recent-orders__total">{formatCurrency(order.total)}</span>
+							</div>
+						</div>
+					))}
+				</div>
+			)}
+		</div>
+
+		<!-- Low Stock Alerts -->
+		<div class="dashboard__card">
+			<div class="dashboard__card-header">
+				<h2 class="dashboard__card-title">Alertas de Estoque</h2>
+			</div>
+
+			{lowStockItems.length === 0 ? (
+				<div class="empty-state" style="padding: 40px 0;">
+					<div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #059669;">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<span style="font-family: var(--font-sans); font-size: 14px; font-weight: 500;">Estoque ok</span>
+					</div>
+				</div>
+			) : (
+				<div class="low-stock-list">
+					{lowStockItems.map(item => (
+						<div class="low-stock-alert">
+							<div class="low-stock-alert__icon">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</div>
+							<div class="low-stock-alert__info">
+								<p class="low-stock-alert__name">{item.name}</p>
+								<p class="low-stock-alert__stock">Restam apenas {item.stock} unidades</p>
+							</div>
+						</div>
+					))}
+				</div>
+			)}
+		</div>
+	</div>
+
+	<!-- Top Products -->
+	<div class="dashboard__card" style="margin-top: 24px;">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Produtos Mais Vendidos</h2>
+			<a href="/admin/produtos" class="view-all-link">
+				Ver todos
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</a>
+		</div>
+
+		{topProducts.length === 0 ? (
+			<div class="empty-state" style="padding: 40px 0;">
+				<p class="empty-state__text" style="margin-bottom: 0;">Nenhuma venda ainda</p>
+			</div>
+		) : (
+			<div class="top-products">
+				{topProducts.map((product, index) => (
+					<div class="top-products__item">
+						<span class="top-products__rank">{index + 1}</span>
+						<img src={product.image} alt={product.name} class="top-products__image" />
+						<div class="top-products__info">
+							<span class="top-products__name">{product.name}</span>
+							<span class="top-products__sku">{product.sku}</span>
+						</div>
+						<span class="top-products__sales">{product.salesCount} vendas</span>
+					</div>
+				))}
+			</div>
+		)}
+	</div>
+</Admin>
