@@ -119,9 +119,6 @@ const siteUrl = 'https://meubambu.com.br';
 			]
 		})} />
 
-		<!-- Vercel Web Analytics & Speed Insights -->
-		<script is:inline defer src="https://vercel.com/analytics/script.js"></script>
-		<script is:inline defer src="https://vercel.com/insights/script.js"></script>
 	</head>
 	<body>
 		<a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
@@ -188,6 +185,12 @@ const siteUrl = 'https://meubambu.com.br';
 				document.addEventListener('astro:before-preparation', cleanup);
 				window.addEventListener('beforeunload', cleanup);
 			}
+		</script>
+
+		<!-- Vercel Analytics -->
+		<script>
+			import { inject } from '@vercel/analytics';
+			inject();
 		</script>
 	</body>
 </html>
