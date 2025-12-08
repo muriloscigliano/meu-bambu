@@ -1,0 +1,108 @@
+---
+export const prerender = false;
+
+import Dashboard from '../../layouts/Dashboard.astro';
+import { getOrders } from '../../services/api';
+
+// Check authentication
+const token = Astro.cookies.get('auth_token')?.value;
+if (!token) {
+	return Astro.redirect('/entrar?redirect=/minha-conta');
+}
+
+// Fetch orders from API
+let orders: any[] = [];
+let error = null;
+
+try {
+	orders = await getOrders(token);
+} catch (e) {
+	error = 'Erro ao carregar pedidos. Tente novamente.';
+	console.error('Failed to fetch orders:', e);
+}
+
+const formatDate = (date: string) => {
+	return new Date(date).toLocaleDateString('pt-BR', {
+		day: '2-digit',
+		month: 'short',
+		year: 'numeric'
+	});
+};
+
+const formatCurrency = (value: number) => {
+	return new Intl.NumberFormat('pt-BR', {
+		style: 'currency',
+		currency: 'BRL'
+	}).format(value);
+};
+
+const getStatusLabel = (status: string) => {
+	const labels: Record<string, string> = {
+		pending: 'Aguardando pagamento',
+		processing: 'Processando',
+		shipped: 'Enviado',
+		delivered: 'Entregue',
+		cancelled: 'Cancelado'
+	};
+	return labels[status] || status;
+};
+---
+
+<Dashboard title="Meus Pedidos | Meu Bambu" activeTab="pedidos">
+	<div class="dashboard__header">
+		<h1 class="dashboard__title">Meus Pedidos</h1>
+		<p class="dashboard__subtitle">Acompanhe o status dos seus pedidos</p>
+	</div>
+
+	<div class="dashboard__card">
+		{error && (
+			<div class="error-message">
+				<p>{error}</p>
+			</div>
+		)}
+
+		{!error && orders.length === 0 && (
+			<div class="empty-state">
+				<svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				<h3 class="empty-state__title">Nenhum pedido ainda</h3>
+				<p class="empty-state__text">Você ainda não fez nenhum pedido. Que tal explorar nossos produtos?</p>
+				<a href="/" class="empty-state__btn">Ver produtos</a>
+			</div>
+		)}
+
+		{!error && orders.length > 0 && (
+			<div class="orders-list">
+				{orders.map(order => (
+					<a href={`/minha-conta/pedidos/${order.id}`} class="order-item">
+						<div class="order-item__info">
+							<span class="order-item__number">Pedido #{order.orderNumber}</span>
+							<span class="order-item__date">{formatDate(order.createdAt)}</span>
+						</div>
+						<div class="order-item__status">
+							<span class={`status-badge status-badge--${order.status}`}>
+								{getStatusLabel(order.status)}
+							</span>
+							<span class="order-item__total">{formatCurrency(order.total)}</span>
+							<svg class="order-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</div>
+					</a>
+				))}
+			</div>
+		)}
+	</div>
+</Dashboard>
+
+<style>
+	.error-message {
+		padding: 16px;
+		background: #fee2e2;
+		border-radius: 8px;
+		color: #991b1b;
+		font-family: var(--font-sans);
+		font-size: 15px;
+	}
+</style>
