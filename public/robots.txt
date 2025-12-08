@@ -1,0 +1,18 @@
+# Robots.txt for meubambu.com.br
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Disallow admin and dashboard areas from indexing
+Disallow: /admin/
+Disallow: /minha-conta/
+Disallow: /api/
+
+# Disallow auth pages
+Disallow: /entrar
+Disallow: /cadastrar
+Disallow: /redefinir-senha
+
+# Sitemap location
+Sitemap: https://meubambu.com.br/sitemap-index.xml

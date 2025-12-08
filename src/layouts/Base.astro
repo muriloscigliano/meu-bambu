@@ -36,7 +36,25 @@ const siteUrl = 'https://meubambu.com.br';
 		<meta name="author" content="Meu Bambu - Flowing Boards" />
 		<meta name="keywords" content="painéis de bambu, bambu núcleo vertical, painéis bambu brasil, lâminas bambu, móveis bambu, marcenaria bambu, bambu sustentável, painéis ecológicos" />
 		{url && <link rel="canonical" href={url} />}
-		{noIndex && <meta name="robots" content="noindex,nofollow" />}
+		{noIndex ? <meta name="robots" content="noindex,nofollow" /> : <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />}
+
+		<!-- Mobile App / PWA -->
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+		<meta name="apple-mobile-web-app-title" content="Meu Bambu" />
+		<meta name="format-detection" content="telephone=no" />
+
+		<!-- Favicon variants -->
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+
+		<!-- Preconnect to external domains for performance -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />

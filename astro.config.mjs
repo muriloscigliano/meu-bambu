@@ -66,7 +66,14 @@ export default defineConfig({
     sitemap({
       changefreq: 'weekly',
       priority: 0.7,
-      lastmod: new Date()
+      lastmod: new Date(),
+      filter: (page) =>
+        !page.includes('/admin') &&
+        !page.includes('/minha-conta') &&
+        !page.includes('/entrar') &&
+        !page.includes('/cadastrar') &&
+        !page.includes('/redefinir-senha') &&
+        !page.includes('/api/')
     }),
     
     // Advanced compression (HTML, CSS, JS, Images)
