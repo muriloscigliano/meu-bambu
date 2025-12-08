@@ -1,0 +1,142 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  name: string;
+  animation?: 'spin' | 'pulse' | 'bounce' | 'shake' | 'ping' | 'float' | 'scale' | 'none';
+  size?: number | string;
+  class?: string;
+  hoverAnimation?: 'scale' | 'rotate' | 'bounce' | 'shake' | 'none';
+}
+
+const {
+  name,
+  animation = 'none',
+  size = 24,
+  class: className = '',
+  hoverAnimation = 'none'
+} = Astro.props;
+
+const animationClass = animation !== 'none' ? `icon-${animation}` : '';
+const hoverClass = hoverAnimation !== 'none' ? `icon-hover-${hoverAnimation}` : '';
+---
+
+<span class:list={['animated-icon', animationClass, hoverClass, className]}>
+  <Icon name={name} width={size} height={size} />
+</span>
+
+<style>
+  .animated-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+
+  /* Continuous Animations */
+  .icon-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  .icon-pulse {
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .icon-bounce {
+    animation: bounce 1s ease infinite;
+  }
+
+  .icon-shake {
+    animation: shake 0.5s ease-in-out infinite;
+  }
+
+  .icon-ping {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .icon-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .icon-scale {
+    animation: scale 1.5s ease-in-out infinite;
+  }
+
+  /* Hover Animations */
+  .icon-hover-scale:hover {
+    transform: scale(1.2);
+  }
+
+  .icon-hover-rotate:hover {
+    transform: rotate(15deg);
+  }
+
+  .icon-hover-bounce:hover {
+    animation: bounce 0.5s ease;
+  }
+
+  .icon-hover-shake:hover {
+    animation: shake 0.3s ease-in-out;
+  }
+
+  /* Keyframes */
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(0.95);
+    }
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-25%);
+    }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  @keyframes ping {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    75%, 100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes scale {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.15);
+    }
+  }
+</style>

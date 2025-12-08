@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 import compress from 'astro-compress';
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
@@ -62,6 +63,13 @@ export default defineConfig({
 
   compressHTML: true,
   integrations: [
+    // Icons (Solar Outline)
+    icon({
+      include: {
+        solar: ['*'] // Include all Solar icons
+      }
+    }),
+
     // SEO and Indexing
     sitemap({
       changefreq: 'weekly',

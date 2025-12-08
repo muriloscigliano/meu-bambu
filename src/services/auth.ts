@@ -5,14 +5,22 @@
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { db, customers, adminUsers, sessions, passwordResets } from '../db';
+import { db, isDatabaseAvailable, customers, adminUsers, sessions, passwordResets } from '../db';
 import { eq } from 'drizzle-orm';
 import { sendWelcomeEmail, sendPasswordResetEmail } from './email';
 import crypto from 'crypto';
 
-const JWT_SECRET = import.meta.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = import.meta.env.JWT_SECRET || process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const JWT_EXPIRES_IN = '7d';
 const SALT_ROUNDS = 12;
+
+// Helper to ensure DB is available
+function requireDatabase() {
+	if (!db || !isDatabaseAvailable()) {
+		throw new Error('Serviço temporariamente indisponível. Tente novamente mais tarde.');
+	}
+	return db;
+}
 
 // ============================================
 // Types
@@ -41,8 +49,10 @@ export async function registerCustomer(data: {
 	password: string;
 	phone?: string;
 }): Promise<AuthResponse> {
+	const database = requireDatabase();
+
 	// Check if email already exists
-	const existing = await db.query.customers.findFirst({
+	const existing = await database.query.customers.findFirst({
 		where: eq(customers.email, data.email.toLowerCase()),
 	});
 
@@ -54,7 +64,7 @@ export async function registerCustomer(data: {
 	const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
 
 	// Create customer
-	const [customer] = await db
+	const [customer] = await database
 		.insert(customers)
 		.values({
 			name: data.name,
@@ -93,8 +103,10 @@ export async function loginCustomer(data: {
 	email: string;
 	password: string;
 }): Promise<AuthResponse> {
+	const database = requireDatabase();
+
 	// Find customer
-	const customer = await db.query.customers.findFirst({
+	const customer = await database.query.customers.findFirst({
 		where: eq(customers.email, data.email.toLowerCase()),
 	});
 
@@ -135,8 +147,10 @@ export async function loginAdmin(data: {
 	email: string;
 	password: string;
 }): Promise<AuthResponse> {
+	const database = requireDatabase();
+
 	// Find admin
-	const admin = await db.query.adminUsers.findFirst({
+	const admin = await database.query.adminUsers.findFirst({
 		where: eq(adminUsers.email, data.email.toLowerCase()),
 	});
 
@@ -151,7 +165,7 @@ export async function loginAdmin(data: {
 	}
 
 	// Update last login
-	await db
+	await database
 		.update(adminUsers)
 		.set({ lastLogin: new Date() })
 		.where(eq(adminUsers.id, admin.id));
@@ -182,8 +196,10 @@ export async function loginAdmin(data: {
 // ============================================
 
 export async function requestPasswordReset(email: string): Promise<void> {
+	const database = requireDatabase();
+
 	// Find customer
-	const customer = await db.query.customers.findFirst({
+	const customer = await database.query.customers.findFirst({
 		where: eq(customers.email, email.toLowerCase()),
 	});
 
@@ -197,7 +213,7 @@ export async function requestPasswordReset(email: string): Promise<void> {
 	const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
 	// Save token
-	await db.insert(passwordResets).values({
+	await database.insert(passwordResets).values({
 		email: email.toLowerCase(),
 		token,
 		expiresAt,
@@ -214,8 +230,10 @@ export async function requestPasswordReset(email: string): Promise<void> {
 }
 
 export async function resetPassword(token: string, newPassword: string): Promise<void> {
+	const database = requireDatabase();
+
 	// Find valid token
-	const resetRecord = await db.query.passwordResets.findFirst({
+	const resetRecord = await database.query.passwordResets.findFirst({
 		where: eq(passwordResets.token, token),
 	});
 
@@ -232,7 +250,7 @@ export async function resetPassword(token: string, newPassword: string): Promise
 	}
 
 	// Find customer
-	const customer = await db.query.customers.findFirst({
+	const customer = await database.query.customers.findFirst({
 		where: eq(customers.email, resetRecord.email),
 	});
 
@@ -242,13 +260,13 @@ export async function resetPassword(token: string, newPassword: string): Promise
 
 	// Update password
 	const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
-	await db
+	await database
 		.update(customers)
 		.set({ passwordHash, updatedAt: new Date() })
 		.where(eq(customers.id, customer.id));
 
 	// Mark token as used
-	await db
+	await database
 		.update(passwordResets)
 		.set({ usedAt: new Date() })
 		.where(eq(passwordResets.id, resetRecord.id));
@@ -282,7 +300,9 @@ export function getTokenFromHeader(authHeader: string | null): string | null {
 // ============================================
 
 export async function getCustomerProfile(customerId: string) {
-	const customer = await db.query.customers.findFirst({
+	const database = requireDatabase();
+
+	const customer = await database.query.customers.findFirst({
 		where: eq(customers.id, customerId),
 	});
 
@@ -298,7 +318,9 @@ export async function updateCustomerProfile(
 	customerId: string,
 	data: { name?: string; phone?: string; cpf?: string }
 ) {
-	const [updated] = await db
+	const database = requireDatabase();
+
+	const [updated] = await database
 		.update(customers)
 		.set({ ...data, updatedAt: new Date() })
 		.where(eq(customers.id, customerId))
@@ -322,9 +344,10 @@ export async function createAdminUser(data: {
 	password: string;
 	role?: 'admin' | 'super_admin';
 }): Promise<void> {
+	const database = requireDatabase();
 	const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
 
-	await db.insert(adminUsers).values({
+	await database.insert(adminUsers).values({
 		name: data.name,
 		email: data.email.toLowerCase(),
 		passwordHash,

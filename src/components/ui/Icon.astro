@@ -1,0 +1,35 @@
+---
+/**
+ * Icon Component - Wrapper for Solar icons with optional styling
+ *
+ * Usage:
+ * <Icon name="solar:home-outline" />
+ * <Icon name="solar:cart-large-outline" size={32} class="text-accent" />
+ */
+import { Icon as AstroIcon } from 'astro-icon/components';
+
+interface Props {
+  name: string;
+  size?: number | string;
+  class?: string;
+  'aria-label'?: string;
+  'aria-hidden'?: boolean;
+}
+
+const {
+  name,
+  size = 24,
+  class: className = '',
+  'aria-label': ariaLabel,
+  'aria-hidden': ariaHidden = !ariaLabel
+} = Astro.props;
+---
+
+<AstroIcon
+  name={name}
+  width={size}
+  height={size}
+  class={className}
+  aria-label={ariaLabel}
+  aria-hidden={ariaHidden}
+/>

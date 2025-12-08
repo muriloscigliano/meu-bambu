@@ -54,6 +54,12 @@ interface PasswordResetEmailData {
 	resetUrl: string;
 }
 
+interface EmailVerificationData {
+	customerName: string;
+	customerEmail: string;
+	verificationUrl: string;
+}
+
 /**
  * Send order confirmation email
  */
@@ -303,6 +309,113 @@ export async function sendPasswordResetEmail(data: PasswordResetEmailData) {
 		from: FROM_EMAIL,
 		to: data.customerEmail,
 		subject: 'Redefinir sua senha - Meu Bambu',
+		html,
+	});
+}
+
+/**
+ * Send email verification after registration
+ */
+export async function sendEmailVerification(data: EmailVerificationData) {
+	const html = `
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		</head>
+		<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
+			<div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+				<div style="background-color: #62533e; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+					<h1 style="color: #fff; margin: 0; font-size: 24px;">Meu Bambu</h1>
+				</div>
+
+				<div style="background-color: #fff; padding: 30px; border-radius: 0 0 8px 8px;">
+					<h2 style="color: #333; margin-top: 0;">Confirme seu e-mail</h2>
+					<p style="color: #666;">Olá ${data.customerName},</p>
+					<p style="color: #666;">Obrigado por criar sua conta no Meu Bambu! Para começar a usar sua conta, confirme seu e-mail clicando no botão abaixo:</p>
+
+					<div style="text-align: center; margin: 30px 0;">
+						<a href="${data.verificationUrl}" style="display: inline-block; background-color: #62533e; color: #fff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 16px;">Confirmar E-mail</a>
+					</div>
+
+					<p style="color: #999; font-size: 14px;">Este link expira em 24 horas.</p>
+
+					<hr style="border: none; border-top: 1px solid #e5e5e5; margin: 20px 0;">
+
+					<p style="color: #999; font-size: 12px;">Se o botão não funcionar, copie e cole este link no navegador:<br>
+					<a href="${data.verificationUrl}" style="color: #62533e; word-break: break-all;">${data.verificationUrl}</a></p>
+
+					<p style="color: #999; font-size: 12px; margin-top: 20px;">Se você não criou uma conta no Meu Bambu, ignore este e-mail.</p>
+				</div>
+
+				<div style="text-align: center; padding: 20px; color: #999; font-size: 14px;">
+					<p>Meu Bambu - Painéis de Bambu Premium</p>
+					<p>Joanópolis, SP - Brasil</p>
+				</div>
+			</div>
+		</body>
+		</html>
+	`;
+
+	return resend.emails.send({
+		from: FROM_EMAIL,
+		to: data.customerEmail,
+		subject: 'Confirme seu e-mail - Meu Bambu',
+		html,
+	});
+}
+
+/**
+ * Send order delivered confirmation
+ */
+export async function sendOrderDelivered(data: { customerName: string; customerEmail: string; orderNumber: string }) {
+	const html = `
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		</head>
+		<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
+			<div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+				<div style="background-color: #62533e; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+					<h1 style="color: #fff; margin: 0; font-size: 24px;">Meu Bambu</h1>
+				</div>
+
+				<div style="background-color: #fff; padding: 30px; border-radius: 0 0 8px 8px;">
+					<div style="text-align: center; margin-bottom: 20px;">
+						<span style="font-size: 48px;">✅</span>
+					</div>
+					<h2 style="color: #333; margin-top: 0; text-align: center;">Pedido Entregue!</h2>
+					<p style="color: #666;">Olá ${data.customerName},</p>
+					<p style="color: #666;">Seu pedido <strong>#${data.orderNumber}</strong> foi entregue com sucesso!</p>
+
+					<p style="color: #666;">Esperamos que você aproveite seus painéis de bambu. Se tiver alguma dúvida sobre instalação ou uso, estamos à disposição.</p>
+
+					<div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+						<p style="color: #666; margin: 0 0 10px 0;">Gostou dos produtos?</p>
+						<p style="color: #666; margin: 0;">Compartilhe sua experiência nas redes sociais com <strong style="color: #62533e;">#MeuBambu</strong></p>
+					</div>
+
+					<div style="text-align: center; margin-top: 30px;">
+						<a href="https://meubambu.com.br" style="display: inline-block; background-color: #62533e; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 500;">Ver Mais Produtos</a>
+					</div>
+				</div>
+
+				<div style="text-align: center; padding: 20px; color: #999; font-size: 14px;">
+					<p>Meu Bambu - Painéis de Bambu Premium</p>
+					<p>Joanópolis, SP - Brasil</p>
+				</div>
+			</div>
+		</body>
+		</html>
+	`;
+
+	return resend.emails.send({
+		from: FROM_EMAIL,
+		to: data.customerEmail,
+		subject: `Pedido #${data.orderNumber} entregue! - Meu Bambu`,
 		html,
 	});
 }
