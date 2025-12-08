@@ -6,7 +6,9 @@
 const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'https://api.meubambu.com.br';
 
 // Mock mode for testing - set to true to use fake data
+// Auth uses real database, other features still use mock data
 const MOCK_MODE = true;
+const USE_REAL_AUTH = true; // Use Neon database for authentication
 
 // Test credentials
 const TEST_USER = {
@@ -220,6 +222,20 @@ export interface AuthResponse {
 }
 
 export async function login(data: LoginRequest): Promise<AuthResponse> {
+	if (USE_REAL_AUTH) {
+		// Use real database authentication
+		const { loginCustomer } = await import('./auth');
+		const result = await loginCustomer(data);
+		return {
+			token: result.token,
+			user: {
+				id: result.user.id,
+				name: result.user.name,
+				email: result.user.email,
+			},
+		};
+	}
+
 	if (MOCK_MODE) {
 		// Simulate network delay
 		await new Promise(resolve => setTimeout(resolve, 500));
@@ -244,6 +260,20 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 }
 
 export async function register(data: RegisterRequest): Promise<AuthResponse> {
+	if (USE_REAL_AUTH) {
+		// Use real database authentication
+		const { registerCustomer } = await import('./auth');
+		const result = await registerCustomer(data);
+		return {
+			token: result.token,
+			user: {
+				id: result.user.id,
+				name: result.user.name,
+				email: result.user.email,
+			},
+		};
+	}
+
 	if (MOCK_MODE) {
 		// Simulate network delay
 		await new Promise(resolve => setTimeout(resolve, 500));
@@ -827,6 +857,21 @@ const MOCK_ADMIN_USERS = [
 ];
 
 export async function adminLogin(credentials: { email: string; password: string }): Promise<{ token: string; user: AdminUser }> {
+	if (USE_REAL_AUTH) {
+		// Use real database authentication
+		const { loginAdmin } = await import('./auth');
+		const result = await loginAdmin(credentials);
+		return {
+			token: result.token,
+			user: {
+				id: result.user.id,
+				email: result.user.email,
+				name: result.user.name,
+				role: result.user.role as 'admin' | 'super_admin',
+			},
+		};
+	}
+
 	if (MOCK_MODE) {
 		await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -852,6 +897,23 @@ export async function adminLogin(credentials: { email: string; password: string 
 }
 
 export async function getAdminUser(token: string): Promise<AdminUser> {
+	if (USE_REAL_AUTH) {
+		// Verify JWT token
+		const { verifyToken } = await import('./auth');
+		const user = verifyToken(token);
+
+		if (!user || user.type !== 'admin') {
+			throw new Error('Token inválido');
+		}
+
+		return {
+			id: user.id,
+			email: user.email,
+			name: user.name,
+			role: (user.role as 'admin' | 'super_admin') || 'admin',
+		};
+	}
+
 	if (MOCK_MODE) {
 		await new Promise(resolve => setTimeout(resolve, 100));
 
