@@ -16,19 +16,26 @@ import Button from './Button.astro';
 				</g>
 			</svg>
 		</a>
-		<Button text="COMPRAR" href="#comprar" theme="light" />
+		<div class="topbar__actions">
+			<a href="/minha-conta" class="topbar__account" aria-label="Minha Conta">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+					<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</a>
+			<Button text="COMPRAR" href="#comprar" theme="light" />
+		</div>
 	</nav>
 </header>
 
 <style>
-.topbar { 
+.topbar {
 }
-.topbar__container { 
-	max-width: var(--container-max); 
-	margin-inline: auto; 
-	display: flex; 
-	align-items: flex-end; 
-	justify-content: space-between; 
+.topbar__container {
+	max-width: var(--container-max);
+	margin-inline: auto;
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
 	padding-inline: 2.25rem;
 	padding-bottom: 24px;
 }
@@ -36,6 +43,25 @@ import Button from './Button.astro';
 	width: 191px;
 	height: 75px;
 	display: block;
+}
+.topbar__actions {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+.topbar__account {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	color: var(--color-text-secondary);
+	transition: all 0.2s ease;
+}
+.topbar__account:hover {
+	background: rgba(98, 83, 62, 0.1);
+	color: var(--color-accent);
 }
 </style>
 
