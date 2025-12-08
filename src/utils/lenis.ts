@@ -5,17 +5,27 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
-// Device detection for optimizations
-const isIOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
-const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-
 let lenis: Lenis | null = null;
 let rafCallback: ((time: number) => void) | null = null;
 let scrollCallback: (() => void) | null = null;
 
 /**
+ * Check if device is mobile/touch
+ * Lenis should be disabled on mobile - native scroll is better
+ */
+function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  // Check for touch capability and screen width
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isNarrow = window.innerWidth < 1024;
+
+  return hasTouch && isNarrow;
+}
+
+/**
  * Initialize Lenis smooth scroll with GSAP integration
- * Follows Astro best practices with proper cleanup
+ * Disabled on mobile devices for better native scroll experience
  */
 export function initLenis() {
   // Prevent re-initialization
@@ -23,15 +33,17 @@ export function initLenis() {
     return lenis;
   }
 
-  // Initialize Lenis with device-specific optimizations
+  // Skip Lenis on mobile - native scroll is better
+  if (isMobileDevice()) {
+    return null;
+  }
+
+  // Initialize Lenis for desktop only
   lenis = new Lenis({
-    lerp: isMobile ? 0.15 : 0.1, // Faster on mobile for better responsiveness
+    lerp: 0.1,
     wheelMultiplier: 1,
-    touchMultiplier: isIOS ? 1.5 : 2, // Better touch response on iOS
     gestureOrientation: 'vertical',
     smoothWheel: true,
-    syncTouch: false, // Disable on touch devices for native feel
-    syncTouchLerp: 0.1,
     infinite: false
   });
 
@@ -50,13 +62,6 @@ export function initLenis() {
   // Disable GSAP's lag smoothing for smoother animations
   gsap.ticker.lagSmoothing(0);
 
-  // Refresh ScrollTrigger when Lenis resizes
-  const refreshListener = () => {
-    lenis?.resize();
-  };
-  ScrollTrigger.addEventListener('refresh', refreshListener);
-
-  // Return lenis instance
   return lenis;
 }
 
