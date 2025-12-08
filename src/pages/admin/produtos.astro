@@ -1,0 +1,196 @@
+---
+export const prerender = false;
+
+import Admin from '../../layouts/Admin.astro';
+import { getAdminUser, getProducts } from '../../services/api';
+
+// Check admin authentication
+const token = Astro.cookies.get('admin_token')?.value;
+if (!token) {
+	return Astro.redirect('/admin/entrar');
+}
+
+let admin = null;
+let products: any[] = [];
+let error = null;
+
+try {
+	admin = await getAdminUser(token);
+	products = await getProducts();
+} catch (e: any) {
+	if (e.message?.includes('Token') || e.message?.includes('inválido')) {
+		return Astro.redirect('/admin/entrar');
+	}
+	error = e.message;
+}
+
+const formatCurrency = (value: number) => {
+	return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+};
+
+const getTotalStock = (variants: any[]) => {
+	return variants.reduce((sum, v) => sum + v.stock, 0);
+};
+
+const getStockLevel = (stock: number) => {
+	if (stock <= 10) return 'low';
+	if (stock <= 30) return 'medium';
+	return 'high';
+};
+
+const getPriceRange = (variants: any[]) => {
+	const prices = variants.map(v => v.price);
+	const min = Math.min(...prices);
+	const max = Math.max(...prices);
+	if (min === max) return formatCurrency(min);
+	return `${formatCurrency(min)} - ${formatCurrency(max)}`;
+};
+---
+
+<Admin title="Produtos | Meu Bambu Admin" activeTab="produtos">
+	<div class="dashboard__header">
+		<h1 class="dashboard__title">Produtos</h1>
+		<p class="dashboard__subtitle">{products.length} produtos cadastrados</p>
+	</div>
+
+	{error && (
+		<div class="alert alert--error">
+			<p>{error}</p>
+		</div>
+	)}
+
+	<!-- Quick Actions -->
+	<div class="quick-actions">
+		<button class="quick-action-btn quick-action-btn--primary" disabled title="Em breve">
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			Novo Produto
+		</button>
+	</div>
+
+	<!-- Products Table -->
+	<div class="dashboard__card">
+		{products.length === 0 ? (
+			<div class="empty-state">
+				<svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				<h3 class="empty-state__title">Nenhum produto cadastrado</h3>
+				<p class="empty-state__text">Adicione seu primeiro produto para começar a vender</p>
+			</div>
+		) : (
+			<table class="admin-table">
+				<thead>
+					<tr>
+						<th>Produto</th>
+						<th>Variantes</th>
+						<th>Preço</th>
+						<th>Estoque</th>
+						<th>Status</th>
+						<th>Ações</th>
+					</tr>
+				</thead>
+				<tbody>
+					{products.map(product => {
+						const totalStock = getTotalStock(product.variants);
+						const stockLevel = getStockLevel(totalStock);
+						return (
+							<tr>
+								<td>
+									<div class="product-row">
+										<img src={product.images[0] || '/images/painel-bambu.jpg'} alt={product.name} class="product-row__image" />
+										<div class="product-row__info">
+											<p class="product-row__name">{product.name}</p>
+											<span class="product-row__variants">{product.category}</span>
+										</div>
+									</div>
+								</td>
+								<td>
+									{product.variants.length} variantes
+								</td>
+								<td class="table-cell--bold">
+									{getPriceRange(product.variants)}
+								</td>
+								<td>
+									<span class={`stock-indicator stock-indicator--${stockLevel}`}>
+										<span class="stock-indicator__dot"></span>
+										{totalStock} un.
+									</span>
+								</td>
+								<td>
+									<span class={`status-badge ${product.active ? 'status-badge--delivered' : 'status-badge--cancelled'}`}>
+										{product.active ? 'Ativo' : 'Inativo'}
+									</span>
+								</td>
+								<td>
+									<div class="table-actions">
+										<button class="table-action-btn table-action-btn--view" title="Ver detalhes" disabled>
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/>
+												<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"/>
+											</svg>
+										</button>
+										<button class="table-action-btn table-action-btn--edit" title="Editar" disabled>
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round"/>
+											</svg>
+										</button>
+									</div>
+								</td>
+							</tr>
+						);
+					})}
+				</tbody>
+			</table>
+		)}
+	</div>
+
+	<!-- Variants Detail Section -->
+	<div class="dashboard__card" style="margin-top: 24px;">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Todas as Variantes</h2>
+		</div>
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>SKU</th>
+					<th>Produto</th>
+					<th>Espessura</th>
+					<th>Tamanho</th>
+					<th>Preço</th>
+					<th>Estoque</th>
+				</tr>
+			</thead>
+			<tbody>
+				{products.flatMap(product =>
+					product.variants.map((variant: any) => {
+						const stockLevel = getStockLevel(variant.stock);
+						return (
+							<tr>
+								<td class="table-cell--bold" style="font-family: monospace;">{variant.sku}</td>
+								<td>{product.shortName}</td>
+								<td>{variant.thickness}</td>
+								<td>{variant.size}</td>
+								<td class="table-cell--bold">
+									{formatCurrency(variant.price)}
+									{variant.compareAtPrice && (
+										<span style="text-decoration: line-through; opacity: 0.5; margin-left: 8px; font-weight: 400;">
+											{formatCurrency(variant.compareAtPrice)}
+										</span>
+									)}
+								</td>
+								<td>
+									<span class={`stock-indicator stock-indicator--${stockLevel}`}>
+										<span class="stock-indicator__dot"></span>
+										{variant.stock} un.
+									</span>
+								</td>
+							</tr>
+						);
+					})
+				)}
+			</tbody>
+		</table>
+	</div>
+</Admin>
