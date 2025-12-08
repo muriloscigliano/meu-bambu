@@ -7,11 +7,8 @@ import compress from 'astro-compress';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://meubambu.com.br',
-  output: 'static',
-  adapter: vercel({
-    // Static site configuration for Vercel
-    includeFiles: []
-  }),
+  output: 'server', // Server mode for dashboard pages with prerender = true for static pages
+  adapter: vercel(),
 
   // Enhanced image optimization
   image: {

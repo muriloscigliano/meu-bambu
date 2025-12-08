@@ -1,0 +1,179 @@
+---
+export const prerender = false;
+
+import Dashboard from '../../layouts/Dashboard.astro';
+import { getPaymentMethods, removePaymentMethod } from '../../services/api';
+
+// Check authentication
+const token = Astro.cookies.get('auth_token')?.value;
+if (!token) {
+	return Astro.redirect('/entrar?redirect=/minha-conta/pagamentos');
+}
+
+// Handle POST (remove payment method)
+if (Astro.request.method === 'POST') {
+	const formData = await Astro.request.formData();
+	const action = formData.get('action');
+	const paymentMethodId = formData.get('paymentMethodId') as string;
+
+	if (action === 'remove' && paymentMethodId) {
+		try {
+			await removePaymentMethod(token, paymentMethodId);
+			return Astro.redirect('/minha-conta/pagamentos?success=removed');
+		} catch (e) {
+			console.error('Failed to remove payment method:', e);
+		}
+	}
+}
+
+let paymentMethods: any[] = [];
+let error = null;
+
+try {
+	paymentMethods = await getPaymentMethods(token);
+} catch (e) {
+	error = 'Erro ao carregar métodos de pagamento.';
+	console.error('Failed to fetch payment methods:', e);
+}
+
+const success = Astro.url.searchParams.get('success');
+
+const getCardBrand = (brand: string) => {
+	const brands: Record<string, string> = {
+		visa: 'VISA',
+		mastercard: 'MC',
+		amex: 'AMEX',
+		elo: 'ELO',
+		hipercard: 'HIPER'
+	};
+	return brands[brand.toLowerCase()] || brand.toUpperCase();
+};
+---
+
+<Dashboard title="Pagamentos | Meu Bambu" activeTab="pagamentos">
+	<div class="dashboard__header">
+		<h1 class="dashboard__title">Métodos de Pagamento</h1>
+		<p class="dashboard__subtitle">Gerencie seus cartões salvos</p>
+	</div>
+
+	{error && (
+		<div class="alert alert--error">
+			<p>{error}</p>
+		</div>
+	)}
+
+	{success === 'removed' && (
+		<div class="alert alert--success">
+			<p>Método de pagamento removido com sucesso!</p>
+		</div>
+	)}
+
+	<div class="dashboard__card">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Cartões salvos</h2>
+		</div>
+
+		{paymentMethods.length === 0 && (
+			<div class="empty-state">
+				<svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				<h3 class="empty-state__title">Nenhum cartão salvo</h3>
+				<p class="empty-state__text">Seus cartões serão salvos automaticamente após a primeira compra.</p>
+			</div>
+		)}
+
+		{paymentMethods.length > 0 && (
+			<div class="payment-methods">
+				{paymentMethods.map(method => (
+					<div class="payment-card">
+						<div class="payment-card__info">
+							<div class="payment-card__icon">
+								{getCardBrand(method.brand)}
+							</div>
+							<div class="payment-card__details">
+								<span class="payment-card__number">
+									•••• •••• •••• {method.last4}
+								</span>
+								<span class="payment-card__expiry">
+									Expira em {method.expMonth}/{method.expYear}
+								</span>
+							</div>
+						</div>
+						<div class="payment-card__actions">
+							<form method="POST">
+								<input type="hidden" name="action" value="remove" />
+								<input type="hidden" name="paymentMethodId" value={method.id} />
+								<button
+									type="submit"
+									class="payment-card__btn payment-card__btn--remove"
+									onclick="return confirm('Remover este cartão?')"
+								>
+									Remover
+								</button>
+							</form>
+						</div>
+					</div>
+				))}
+			</div>
+		)}
+	</div>
+
+	<div class="dashboard__card">
+		<div class="dashboard__card-header">
+			<h2 class="dashboard__card-title">Informações importantes</h2>
+		</div>
+		<div class="info-content">
+			<ul>
+				<li>Seus dados de pagamento são processados de forma segura pelo nosso parceiro de pagamentos.</li>
+				<li>Não armazenamos os dados completos do seu cartão em nossos servidores.</li>
+				<li>Você pode remover um cartão salvo a qualquer momento.</li>
+				<li>Para adicionar um novo cartão, basta utilizá-lo na próxima compra.</li>
+			</ul>
+		</div>
+	</div>
+</Dashboard>
+
+<style>
+	.alert {
+		padding: 16px;
+		border-radius: 8px;
+		font-family: var(--font-sans);
+		font-size: 15px;
+		margin-bottom: 24px;
+	}
+
+	.alert--error {
+		background: #fee2e2;
+		color: #991b1b;
+	}
+
+	.alert--success {
+		background: #d1fae5;
+		color: #065f46;
+	}
+
+	.alert p {
+		margin: 0;
+	}
+
+	.info-content {
+		font-family: var(--font-sans);
+		font-size: 14px;
+		color: var(--color-text-primary);
+		line-height: 1.6;
+	}
+
+	.info-content ul {
+		margin: 0;
+		padding-left: 20px;
+	}
+
+	.info-content li {
+		margin-bottom: 8px;
+	}
+
+	.info-content li:last-child {
+		margin-bottom: 0;
+	}
+</style>

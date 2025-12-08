@@ -1,0 +1,95 @@
+---
+import '../styles/global.css';
+import '../styles/dashboard.css';
+
+interface Props {
+	title?: string;
+	activeTab?: 'pedidos' | 'perfil' | 'pagamentos';
+}
+
+const {
+	title = 'Minha Conta | Meu Bambu',
+	activeTab = 'pedidos'
+} = Astro.props;
+
+const navItems = [
+	{ id: 'pedidos', label: 'Meus Pedidos', href: '/minha-conta', icon: 'orders' },
+	{ id: 'perfil', label: 'Meu Perfil', href: '/minha-conta/perfil', icon: 'profile' },
+	{ id: 'pagamentos', label: 'Pagamentos', href: '/minha-conta/pagamentos', icon: 'payment' },
+];
+---
+
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex,nofollow" />
+		<title>{title}</title>
+		<link rel="stylesheet" href="/fonts/rumiko-sans.css" />
+	</head>
+	<body class="dashboard-body">
+		<div class="dashboard">
+			<!-- Sidebar -->
+			<aside class="dashboard__sidebar">
+				<a href="/" class="dashboard__logo">
+					<svg fill="none" viewBox="0 0 191 75" xmlns="http://www.w3.org/2000/svg" height="50" width="130">
+						<text fill="#62533e" font-family="Rumiko Sans, sans-serif" font-size="32" font-style="italic" font-weight="900" x="8" y="50">MEU</text>
+						<text fill="#D28F3D" font-family="Rumiko Sans, sans-serif" font-size="20" font-style="italic" font-weight="700" x="8" y="70">BAMBU</text>
+					</svg>
+				</a>
+
+				<nav class="dashboard__nav">
+					{navItems.map(item => (
+						<a
+							href={item.href}
+							class={`dashboard__nav-item ${activeTab === item.id ? 'dashboard__nav-item--active' : ''}`}
+						>
+							{item.icon === 'orders' && (
+								<svg class="dashboard__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+									<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							)}
+							{item.icon === 'profile' && (
+								<svg class="dashboard__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+									<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							)}
+							{item.icon === 'payment' && (
+								<svg class="dashboard__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+									<path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							)}
+							{item.label}
+						</a>
+					))}
+				</nav>
+
+				<div class="dashboard__sidebar-footer">
+					<button class="dashboard__logout" id="logout-btn">
+						<svg class="dashboard__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+							<path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						Sair
+					</button>
+				</div>
+			</aside>
+
+			<!-- Main Content -->
+			<main class="dashboard__main">
+				<slot />
+			</main>
+		</div>
+
+		<script>
+			document.getElementById('logout-btn')?.addEventListener('click', async () => {
+				try {
+					await fetch('/api/auth/logout', { method: 'POST' });
+					window.location.href = '/';
+				} catch (error) {
+					console.error('Logout failed:', error);
+				}
+			});
+		</script>
+	</body>
+</html>
