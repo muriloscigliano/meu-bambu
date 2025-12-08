@@ -10,7 +10,8 @@ import { eq } from 'drizzle-orm';
 import { sendWelcomeEmail, sendPasswordResetEmail } from './email';
 import crypto from 'crypto';
 
-const JWT_SECRET = import.meta.env.JWT_SECRET || process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+// Use process.env for serverless compatibility
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const JWT_EXPIRES_IN = '7d';
 const SALT_ROUNDS = 12;
 
