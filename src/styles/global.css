@@ -217,6 +217,15 @@ h1, h2, h3, .font-display {
 	border-color: var(--color-border-pill);
 }
 
+.chip-option:focus-visible {
+	outline: 3px solid var(--color-accent);
+	outline-offset: 2px;
+}
+
+.chip-option:hover {
+	border-color: var(--color-accent);
+}
+
 
 /* Section defaults */
 section {
@@ -293,4 +302,41 @@ html:not(.animations-ready) [data-split="heading"] {
 	visibility: visible !important;
 	animation: fallback-fade-in 0.5s ease forwards;
 	animation-delay: 1.5s;
+}
+
+/* ================================
+   Reduced Motion Support
+   Respects user's motion preferences
+   ================================ */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	/* Show all animated elements immediately */
+	[data-animate="fade-in"],
+	[data-stagger-item],
+	[data-header-item],
+	[data-animate="logo-spin"] {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	[data-animate="image-reveal"] {
+		clip-path: inset(0 0% 0 0) !important;
+	}
+
+	[data-split="heading"] {
+		visibility: visible !important;
+	}
+
+	/* Disable marquee animation */
+	.marquee__track {
+		animation: none !important;
+	}
 }

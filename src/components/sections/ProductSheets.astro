@@ -18,14 +18,14 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 	<div class="product-sheets__container">
 		<figure class="product-sheets__media">
 			<div class="product-sheets__image-wrap" data-animate="image-reveal">
-				<img src="/images/floresta-bambu.jpg" alt="Lâminas de bambu flexíveis para móveis e marcenaria - Meu Bambu" loading="lazy" />
+				<img src="/images/floresta-bambu.jpg" alt="Lâminas de bambu flexíveis para móveis e marcenaria - Meu Bambu" loading="lazy" width="728" height="430" />
 			</div>
 		</figure>
 
 		<article class="product-sheets__details">
 			<header>
 				<h2 id="product-sheets-title" class="product-sheets__title" data-split="heading">{title}</h2>
-				<p class="product-sheets__price" data-split="heading">{price}</p>
+				<p class="product-sheets__price" data-animate="fade-in">{price}</p>
 			</header>
 			<p class="product-sheets__desc" data-animate="fade-in">{description}</p>
 
@@ -68,15 +68,80 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 		(function() {
 			const sheetsRoot = document.currentScript?.closest('.product-sheets');
 			if (!sheetsRoot) return;
+
+			// Handle click selection
 			sheetsRoot.addEventListener('click', (e) => {
 				const target = e.target;
 				if (!(target instanceof HTMLElement)) return;
 				const btn = target.closest('button.chip-option');
 				if (!btn) return;
+				selectRadio(btn);
+			});
+
+			// Handle keyboard navigation (arrow keys)
+			sheetsRoot.addEventListener('keydown', (e) => {
+				const target = e.target;
+				if (!(target instanceof HTMLElement)) return;
+				if (!target.matches('button.chip-option')) return;
+
+				const group = target.closest('[role="radiogroup"]');
+				if (!group) return;
+
+				const buttons = Array.from(group.querySelectorAll('button.chip-option'));
+				const currentIndex = buttons.indexOf(target);
+				let nextIndex = currentIndex;
+
+				switch (e.key) {
+					case 'ArrowRight':
+					case 'ArrowDown':
+						nextIndex = (currentIndex + 1) % buttons.length;
+						e.preventDefault();
+						break;
+					case 'ArrowLeft':
+					case 'ArrowUp':
+						nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+						e.preventDefault();
+						break;
+					case 'Home':
+						nextIndex = 0;
+						e.preventDefault();
+						break;
+					case 'End':
+						nextIndex = buttons.length - 1;
+						e.preventDefault();
+						break;
+					default:
+						return;
+				}
+
+				const nextButton = buttons[nextIndex];
+				if (nextButton) {
+					selectRadio(nextButton);
+					nextButton.focus();
+				}
+			});
+
+			function selectRadio(btn) {
 				const group = btn.closest('[role="radiogroup"]');
 				if (!group) return;
-				group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-checked', 'false'));
+				group.querySelectorAll('button.chip-option').forEach((b) => {
+					b.setAttribute('aria-checked', 'false');
+					b.setAttribute('tabindex', '-1');
+				});
 				btn.setAttribute('aria-checked', 'true');
+				btn.setAttribute('tabindex', '0');
+			}
+
+			// Set initial tabindex (only checked item is tabbable)
+			sheetsRoot.querySelectorAll('[role="radiogroup"]').forEach((group) => {
+				const buttons = group.querySelectorAll('button.chip-option');
+				buttons.forEach((btn) => {
+					if (btn.getAttribute('aria-checked') === 'true') {
+						btn.setAttribute('tabindex', '0');
+					} else {
+						btn.setAttribute('tabindex', '-1');
+					}
+				});
 			});
 		})();
 	</script>

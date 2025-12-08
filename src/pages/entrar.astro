@@ -54,7 +54,7 @@ if (Astro.request.method === 'POST') {
 				<p class="auth-subtitle">Bem-vindo de volta!</p>
 
 				{error && (
-					<div class="auth-error">
+					<div class="auth-error" role="alert" aria-live="polite">
 						<p>{error}</p>
 					</div>
 				)}

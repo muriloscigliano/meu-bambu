@@ -38,6 +38,11 @@ export function initLenis() {
     return null;
   }
 
+  // Respect user's reduced motion preference
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return null;
+  }
+
   // Initialize Lenis for desktop only
   lenis = new Lenis({
     lerp: 0.1,

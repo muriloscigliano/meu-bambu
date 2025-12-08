@@ -19,7 +19,7 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 		<article class="product-panels__details">
 			<header>
 				<h2 id="product-panels-title" class="product-panels__title" data-split="heading" set:html={title.replace(' ', '<br>')}></h2>
-				<p class="product-panels__price" data-split="heading">{price}</p>
+				<p class="product-panels__price" data-animate="fade-in">{price}</p>
 			</header>
 			<p class="product-panels__desc" data-animate="fade-in">{description}</p>
 
@@ -65,7 +65,7 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 
 		<figure class="product-panels__media">
 			<div class="product-panels__image-wrap" data-animate="image-reveal">
-				<img src="/images/floresta-bambu.jpg" alt="Painéis de bambu premium com núcleo vertical - Meu Bambu" loading="lazy" />
+				<img src="/images/floresta-bambu.jpg" alt="Painéis de bambu premium com núcleo vertical - Meu Bambu" loading="lazy" width="728" height="430" />
 			</div>
 		</figure>
 	</div>
@@ -74,15 +74,80 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 		(function() {
 			const panelsRoot = document.currentScript?.closest('.product-panels');
 			if (!panelsRoot) return;
+
+			// Handle click selection
 			panelsRoot.addEventListener('click', (e) => {
 				const target = e.target;
 				if (!(target instanceof HTMLElement)) return;
 				const btn = target.closest('button.chip-option');
 				if (!btn) return;
+				selectRadio(btn);
+			});
+
+			// Handle keyboard navigation (arrow keys)
+			panelsRoot.addEventListener('keydown', (e) => {
+				const target = e.target;
+				if (!(target instanceof HTMLElement)) return;
+				if (!target.matches('button.chip-option')) return;
+
+				const group = target.closest('[role="radiogroup"]');
+				if (!group) return;
+
+				const buttons = Array.from(group.querySelectorAll('button.chip-option'));
+				const currentIndex = buttons.indexOf(target);
+				let nextIndex = currentIndex;
+
+				switch (e.key) {
+					case 'ArrowRight':
+					case 'ArrowDown':
+						nextIndex = (currentIndex + 1) % buttons.length;
+						e.preventDefault();
+						break;
+					case 'ArrowLeft':
+					case 'ArrowUp':
+						nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+						e.preventDefault();
+						break;
+					case 'Home':
+						nextIndex = 0;
+						e.preventDefault();
+						break;
+					case 'End':
+						nextIndex = buttons.length - 1;
+						e.preventDefault();
+						break;
+					default:
+						return;
+				}
+
+				const nextButton = buttons[nextIndex];
+				if (nextButton) {
+					selectRadio(nextButton);
+					nextButton.focus();
+				}
+			});
+
+			function selectRadio(btn) {
 				const group = btn.closest('[role="radiogroup"]');
 				if (!group) return;
-				group.querySelectorAll('button.chip-option').forEach((b) => b.setAttribute('aria-checked', 'false'));
+				group.querySelectorAll('button.chip-option').forEach((b) => {
+					b.setAttribute('aria-checked', 'false');
+					b.setAttribute('tabindex', '-1');
+				});
 				btn.setAttribute('aria-checked', 'true');
+				btn.setAttribute('tabindex', '0');
+			}
+
+			// Set initial tabindex (only checked item is tabbable)
+			panelsRoot.querySelectorAll('[role="radiogroup"]').forEach((group) => {
+				const buttons = group.querySelectorAll('button.chip-option');
+				buttons.forEach((btn) => {
+					if (btn.getAttribute('aria-checked') === 'true') {
+						btn.setAttribute('tabindex', '0');
+					} else {
+						btn.setAttribute('tabindex', '-1');
+					}
+				});
 			});
 		})();
 	</script>

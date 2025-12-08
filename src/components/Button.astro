@@ -73,6 +73,11 @@ const isLink = type === 'link' && href;
 	transform: scale(0.96);
 }
 
+.btn:focus-visible {
+	outline: 3px solid var(--color-accent);
+	outline-offset: 3px;
+}
+
 .btn__text {
 	color: currentColor;
 	white-space: nowrap;
