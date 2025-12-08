@@ -12,8 +12,8 @@ let total = 0;
 let page = 1;
 let totalPages = 1;
 let error = null;
-const statusFilter = 'all';
-const searchQuery = '';
+let statusFilter: string = 'all';
+let searchQuery: string = '';
 
 const formatCurrency = (value: number) => {
 	return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
