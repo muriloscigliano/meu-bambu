@@ -122,16 +122,72 @@ const siteUrl = 'https://meubambu.com.br';
 		<!-- Vercel Web Analytics & Speed Insights -->
 		<script is:inline defer src="https://vercel.com/analytics/script.js"></script>
 		<script is:inline defer src="https://vercel.com/insights/script.js"></script>
-
-        <!-- Client init: GSAP + Lenis -->
-        <script type="module">
-          import '../scripts/client-init.ts';
-        </script>
 	</head>
 	<body>
 		<a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
 		<main id="main-content">
 			<slot />
 		</main>
+
+		<!-- Client init: GSAP + Lenis -->
+		<script>
+			import { initLenis, destroyLenis } from '../utils/lenis';
+			import { initSplitTextReveal } from '../utils/splitText';
+			import { initImageTrail } from '../utils/imageTrail';
+			import { initMarqueeScrollDirection } from '../utils/marquee';
+			import { gsap } from 'gsap';
+			import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+			// Register GSAP plugins
+			gsap.registerPlugin(ScrollTrigger);
+
+			// Store cleanup functions
+			let cleanupFunctions: (() => void)[] = [];
+
+			function initAnimations() {
+				cleanupFunctions.forEach(cleanup => cleanup());
+				cleanupFunctions = [];
+
+				initLenis();
+
+				document.fonts.ready.then(() => {
+					const splitCleanup = initSplitTextReveal();
+					if (splitCleanup) {
+						cleanupFunctions.push(splitCleanup);
+					}
+				});
+
+				const trailCleanup = initImageTrail({
+					minWidth: 992,
+					moveDistance: 15,
+					stopDuration: 350,
+					trailLength: 6
+				});
+				if (trailCleanup) {
+					cleanupFunctions.push(trailCleanup);
+				}
+
+				initMarqueeScrollDirection();
+			}
+
+			function cleanup() {
+				cleanupFunctions.forEach(fn => fn());
+				cleanupFunctions = [];
+				destroyLenis();
+				ScrollTrigger.killAll();
+				gsap.ticker.lagSmoothing(500, 16);
+			}
+
+			if (typeof window !== 'undefined') {
+				if (document.readyState === 'loading') {
+					document.addEventListener('DOMContentLoaded', initAnimations);
+				} else {
+					initAnimations();
+				}
+
+				document.addEventListener('astro:before-preparation', cleanup);
+				window.addEventListener('beforeunload', cleanup);
+			}
+		</script>
 	</body>
 </html>
