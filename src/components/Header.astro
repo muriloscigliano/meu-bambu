@@ -2,9 +2,9 @@
 import Button from './Button.astro';
 ---
 
-<header class="topbar">
+<header class="topbar" data-header>
 	<nav class="topbar__container" aria-label="Navegação principal">
-		<a href="/" class="topbar__logo" aria-label="Meu Bambu - Página inicial">
+		<a href="/" class="topbar__logo" data-header-item aria-label="Meu Bambu - Página inicial">
 			<svg width="191" height="75" viewBox="0 0 191 75" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 				<g>
 					<text x="8" y="50" font-family="Rumiko Sans, sans-serif" font-size="32" font-weight="900" font-style="italic" fill="#62533e" text-transform="uppercase" letter-spacing="-0.02em">
@@ -16,7 +16,7 @@ import Button from './Button.astro';
 				</g>
 			</svg>
 		</a>
-		<div class="topbar__actions">
+		<div class="topbar__actions" data-header-item>
 			<a href="/minha-conta" class="topbar__account" aria-label="Minha Conta">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 					<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"/>

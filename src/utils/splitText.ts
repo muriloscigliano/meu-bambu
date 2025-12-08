@@ -8,7 +8,7 @@ const scrollTriggerInstances: ScrollTrigger[] = [];
 
 /**
  * Initialize text reveal animations using SplitText
- * Follows Astro best practices with proper cleanup and resize handling
+ * Hero elements animate immediately, others use ScrollTrigger
  */
 export function initSplitTextReveal() {
   const headings = document.querySelectorAll('[data-split="heading"]');
@@ -19,7 +19,7 @@ export function initSplitTextReveal() {
     const split = new SplitText(heading, {
       type: 'lines',
       linesClass: 'split-line',
-      tag: 'span'  // Use span instead of div for better semantics
+      tag: 'span'
     });
 
     // Store instance for cleanup
@@ -39,23 +39,41 @@ export function initSplitTextReveal() {
     // NOW make element visible - lines are already positioned off-screen
     gsap.set(heading, { autoAlpha: 1 });
 
-    // Animate the lines with ScrollTrigger
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: heading,
-      start: 'top 80%',
-      once: true, // Only animate once for better performance
-      onEnter: () => {
-        gsap.to(split.lines, {
-          duration: 0.8,
-          yPercent: 0,
-          stagger: 0.1,
-          ease: 'power4.out'
-        });
-      }
-    });
+    // Check if this heading is inside the hero section
+    const isInHero = heading.closest('[data-hero]') !== null;
+    const delay = parseFloat(heading.getAttribute('data-delay') || '0');
 
-    // Store ScrollTrigger instance for cleanup
-    scrollTriggerInstances.push(scrollTrigger);
+    if (isInHero) {
+      // Hero elements animate immediately on page load with staggered delay
+      const isTitle = heading.classList.contains('hero__title');
+      const baseDelay = isTitle ? 0.2 : 0.4; // Title first, then subtitle
+
+      gsap.to(split.lines, {
+        duration: 1,
+        yPercent: 0,
+        stagger: 0.08,
+        delay: delay || baseDelay,
+        ease: 'power4.out'
+      });
+    } else {
+      // Other elements use ScrollTrigger
+      const scrollTrigger = ScrollTrigger.create({
+        trigger: heading,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          gsap.to(split.lines, {
+            duration: 0.8,
+            yPercent: 0,
+            stagger: 0.1,
+            delay: delay,
+            ease: 'power4.out'
+          });
+        }
+      });
+
+      scrollTriggerInstances.push(scrollTrigger);
+    }
   });
 
   // Handle window resize - revert splits and reinitialize

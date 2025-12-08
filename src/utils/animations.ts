@@ -17,6 +17,7 @@ const triggers: ScrollTrigger[] = [];
 export function initAnimations() {
   // Wait for fonts to load for accurate measurements
   document.fonts.ready.then(() => {
+    initHeaderAnimations();
     initHeroAnimations();
     initFadeInAnimations();
     initStaggerAnimations();
@@ -24,6 +25,29 @@ export function initAnimations() {
     initParallaxAnimations();
     initCounterAnimations();
     initButtonAnimations();
+  });
+}
+
+/**
+ * Header entrance animation - slides down on page load
+ */
+function initHeaderAnimations() {
+  const header = document.querySelector('[data-header]');
+  if (!header) return;
+
+  const headerItems = header.querySelectorAll('[data-header-item]');
+
+  // Set initial state
+  gsap.set(headerItems, { opacity: 0, y: -20 });
+
+  // Animate header items
+  gsap.to(headerItems, {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    stagger: 0.15,
+    delay: 0.1,
+    ease: 'power3.out'
   });
 }
 
