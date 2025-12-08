@@ -77,6 +77,25 @@ export const passwordResets = pgTable('password_resets', {
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// ============================================
+// Abandoned Carts / Leads
+// Captures potential customers who start checkout but don't complete
+// ============================================
+export const abandonedCarts = pgTable('abandoned_carts', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	email: varchar('email', { length: 255 }).notNull(),
+	name: varchar('name', { length: 255 }).notNull(),
+	phone: varchar('phone', { length: 20 }),
+	cartData: text('cart_data'), // JSON string of cart items
+	cartTotal: varchar('cart_total', { length: 20 }),
+	status: varchar('status', { length: 20 }).default('abandoned').notNull(), // abandoned, recovered, converted
+	convertedToCustomerId: uuid('converted_to_customer_id').references(() => customers.id),
+	remindersSent: varchar('reminders_sent', { length: 10 }).default('0'), // Count of reminder emails sent
+	lastReminderAt: timestamp('last_reminder_at'),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Type exports for use in application
 export type Customer = typeof customers.$inferSelect;
 export type NewCustomer = typeof customers.$inferInsert;
@@ -86,3 +105,5 @@ export type AdminUser = typeof adminUsers.$inferSelect;
 export type NewAdminUser = typeof adminUsers.$inferInsert;
 export type Session = typeof sessions.$inferSelect;
 export type PasswordReset = typeof passwordResets.$inferSelect;
+export type AbandonedCart = typeof abandonedCarts.$inferSelect;
+export type NewAbandonedCart = typeof abandonedCarts.$inferInsert;

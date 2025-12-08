@@ -5,7 +5,8 @@
 
 import { Resend } from 'resend';
 
-const resend = new Resend(import.meta.env.RESEND_API_KEY);
+// Use process.env for serverless compatibility
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM_EMAIL = 'Meu Bambu <noreply@meubambu.com.br>';
 
@@ -416,6 +417,127 @@ export async function sendOrderDelivered(data: { customerName: string; customerE
 		from: FROM_EMAIL,
 		to: data.customerEmail,
 		subject: `Pedido #${data.orderNumber} entregue! - Meu Bambu`,
+		html,
+	});
+}
+
+/**
+ * Send abandoned cart reminder email
+ */
+interface AbandonedCartEmailData {
+	customerName: string;
+	customerEmail: string;
+	cartItems: Array<{
+		name: string;
+		variant?: string;
+		price: number;
+		quantity: number;
+		image?: string;
+	}>;
+	cartTotal: number;
+	reminderNumber: number; // 1, 2, or 3
+}
+
+export async function sendAbandonedCartEmail(data: AbandonedCartEmailData) {
+	// Different subject lines based on reminder number
+	const subjects = [
+		`${data.customerName}, você esqueceu algo no carrinho 🛒`,
+		`Seus produtos ainda estão esperando por você!`,
+		`Última chance: finalize sua compra com desconto especial`,
+	];
+
+	const subject = subjects[Math.min(data.reminderNumber - 1, 2)];
+
+	const itemsHtml = data.cartItems
+		.map(
+			(item) => `
+			<tr>
+				<td style="padding: 12px; border-bottom: 1px solid #e5e5e5;">
+					<strong>${item.name}</strong>
+					${item.variant ? `<br><span style="color: #666; font-size: 14px;">${item.variant}</span>` : ''}
+				</td>
+				<td style="padding: 12px; border-bottom: 1px solid #e5e5e5; text-align: center;">${item.quantity}</td>
+				<td style="padding: 12px; border-bottom: 1px solid #e5e5e5; text-align: right;">R$ ${item.price.toFixed(2)}</td>
+			</tr>
+		`
+		)
+		.join('');
+
+	// Special offer on 3rd reminder
+	const offerHtml = data.reminderNumber >= 3
+		? `
+			<div style="background-color: #d28f3d; color: #fff; padding: 15px 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+				<strong style="font-size: 18px;">🎁 OFERTA ESPECIAL</strong>
+				<p style="margin: 10px 0 0 0;">Use o cupom <strong>VOLTE10</strong> e ganhe 10% de desconto!</p>
+			</div>
+		`
+		: '';
+
+	const html = `
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		</head>
+		<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
+			<div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+				<div style="background-color: #62533e; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+					<h1 style="color: #fff; margin: 0; font-size: 24px;">Meu Bambu</h1>
+				</div>
+
+				<div style="background-color: #fff; padding: 30px; border-radius: 0 0 8px 8px;">
+					<h2 style="color: #333; margin-top: 0;">Seu carrinho está te esperando!</h2>
+					<p style="color: #666;">Olá ${data.customerName},</p>
+					<p style="color: #666;">Notamos que você deixou alguns itens no carrinho. Não se preocupe, guardamos tudo para você!</p>
+
+					${offerHtml}
+
+					<div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+						<h3 style="margin-top: 0; color: #333;">Seus itens</h3>
+						<table style="width: 100%; border-collapse: collapse;">
+							<thead>
+								<tr style="background-color: #62533e; color: #fff;">
+									<th style="padding: 12px; text-align: left;">Produto</th>
+									<th style="padding: 12px; text-align: center;">Qtd</th>
+									<th style="padding: 12px; text-align: right;">Preço</th>
+								</tr>
+							</thead>
+							<tbody>
+								${itemsHtml}
+							</tbody>
+						</table>
+
+						<div style="margin-top: 20px; text-align: right;">
+							<p style="margin: 10px 0; font-size: 18px; color: #333;">Total: <strong>R$ ${data.cartTotal.toFixed(2)}</strong></p>
+						</div>
+					</div>
+
+					<div style="text-align: center; margin-top: 30px;">
+						<a href="https://meubambu.com.br/checkout" style="display: inline-block; background-color: #d28f3d; color: #fff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">Finalizar Compra</a>
+					</div>
+
+					<p style="color: #999; font-size: 14px; margin-top: 30px; text-align: center;">
+						Nossos painéis de bambu são únicos no Brasil - com núcleo vertical para maior resistência e durabilidade.
+					</p>
+				</div>
+
+				<div style="text-align: center; padding: 20px; color: #999; font-size: 14px;">
+					<p>Meu Bambu - Painéis de Bambu Premium</p>
+					<p>Joanópolis, SP - Brasil</p>
+					<p style="font-size: 12px; margin-top: 15px;">
+						<a href="https://meubambu.com.br/descadastrar?email=${encodeURIComponent(data.customerEmail)}" style="color: #999;">Não desejo receber mais e-mails</a>
+					</p>
+				</div>
+			</div>
+		</body>
+		</html>
+	`;
+
+	return resend.emails.send({
+		from: FROM_EMAIL,
+		to: data.customerEmail,
+		subject,
 		html,
 	});
 }
