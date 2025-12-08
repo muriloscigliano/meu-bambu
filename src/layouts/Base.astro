@@ -11,14 +11,15 @@ interface Props {
 }
 
 const {
-	title = 'Meu Bambu — Tábuas de bambu premium',
-	description = 'Tábuas de corte em bambu sustentáveis, resistentes e lindas. Compre online no Brasil.',
+	title = 'Meu Bambu — Painéis de Bambu Premium com Núcleo Vertical',
+	description = 'Os únicos painéis de bambu no Brasil com núcleo vertical. Mais fortes, estáveis e duradouros. Ideal para móveis, marcenaria e design sustentável. Compre online com entrega para todo o Brasil.',
 	image = '/og-image.jpg',
 	canonical,
 	noIndex = false,
 } = Astro.props as Props;
 
 const url = canonical ?? (typeof Astro.url !== 'undefined' ? Astro.url.toString() : undefined);
+const siteUrl = 'https://meubambu.com.br';
 ---
 
 <html lang="pt-BR" prefix="og: http://ogp.me/ns#">
@@ -30,35 +31,97 @@ const url = canonical ?? (typeof Astro.url !== 'undefined' ? Astro.url.toString(
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<meta name="color-scheme" content="light dark" />
+		<meta name="theme-color" content="#62533e" />
+		<meta name="author" content="Meu Bambu - Flowing Boards" />
+		<meta name="keywords" content="painéis de bambu, bambu núcleo vertical, painéis bambu brasil, lâminas bambu, móveis bambu, marcenaria bambu, bambu sustentável, painéis ecológicos" />
 		{url && <link rel="canonical" href={url} />}
 		{noIndex && <meta name="robots" content="noindex,nofollow" />}
 
+		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="pt_BR" />
+		<meta property="og:site_name" content="Meu Bambu" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		{url && <meta property="og:url" content={url} />}
-		<meta property="og:image" content={image} />
+		<meta property="og:image" content={siteUrl + image} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Painéis de Bambu Premium Meu Bambu" />
 
+		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={image} />
+		<meta name="twitter:image" content={siteUrl + image} />
+		<meta name="twitter:image:alt" content="Painéis de Bambu Premium Meu Bambu" />
 
 		<link rel="stylesheet" href="/fonts/rumiko-sans.css" />
 
-		<!-- JSON-LD for SEO -->
-		<script type="application/ld+json" set:html={JSON.stringify({
+		<!-- JSON-LD Structured Data for SEO -->
+		<script is:inline type="application/ld+json" set:html={JSON.stringify({
 			"@context": "https://schema.org",
-			"@type": "WebSite",
-			"name": "Meu Bambu",
-			"url": url || "https://meubambu.com.br",
-			"description": description,
-			"inLanguage": "pt-BR"
+			"@graph": [
+				{
+					"@type": "WebSite",
+					"@id": siteUrl + "/#website",
+					"url": siteUrl,
+					"name": "Meu Bambu",
+					"description": "Painéis de bambu premium com núcleo vertical para móveis, marcenaria e design sustentável",
+					"inLanguage": "pt-BR",
+					"publisher": {
+						"@id": siteUrl + "/#organization"
+					}
+				},
+				{
+					"@type": "Organization",
+					"@id": siteUrl + "/#organization",
+					"name": "Meu Bambu",
+					"alternateName": "Flowing Boards",
+					"url": siteUrl,
+					"logo": {
+						"@type": "ImageObject",
+						"url": siteUrl + "/images/flowing-boards-badge.jpg"
+					},
+					"sameAs": [],
+					"contactPoint": {
+						"@type": "ContactPoint",
+						"contactType": "Customer Service",
+						"availableLanguage": "Portuguese"
+					}
+				},
+				{
+					"@type": "LocalBusiness",
+					"@id": siteUrl + "/#localbusiness",
+					"name": "Meu Bambu",
+					"image": siteUrl + "/og-image.jpg",
+					"description": "Fornecedor de painéis e lâminas de bambu premium com núcleo vertical",
+					"address": {
+						"@type": "PostalAddress",
+						"streetAddress": "Rua joaquim antônio de lima, 454",
+						"addressLocality": "Joanópolis",
+						"addressRegion": "SP",
+						"postalCode": "12980-000",
+						"addressCountry": "BR"
+					},
+					"geo": {
+						"@type": "GeoCoordinates",
+						"latitude": -22.9289,
+						"longitude": -46.2764
+					},
+					"url": siteUrl,
+					"priceRange": "$$",
+					"areaServed": {
+						"@type": "Country",
+						"name": "Brasil"
+					}
+				}
+			]
 		})} />
 
 		<!-- Vercel Web Analytics & Speed Insights -->
-		<script defer src="https://vercel.com/analytics/script.js"></script>
-		<script defer src="https://vercel.com/insights/script.js"></script>
+		<script is:inline defer src="https://vercel.com/analytics/script.js"></script>
+		<script is:inline defer src="https://vercel.com/insights/script.js"></script>
 
         <!-- Client init: GSAP + Lenis -->
         <script type="module">
@@ -66,7 +129,8 @@ const url = canonical ?? (typeof Astro.url !== 'undefined' ? Astro.url.toString(
         </script>
 	</head>
 	<body>
-		<main>
+		<a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+		<main id="main-content">
 			<slot />
 		</main>
 	</body>

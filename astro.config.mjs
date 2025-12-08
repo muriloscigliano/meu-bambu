@@ -90,7 +90,7 @@ export default defineConfig({
       SVG: true
     })
   ],
-  
+
   // Enhanced prefetch settings for better performance
   prefetch: {
     prefetchAll: false, // Conservative prefetching

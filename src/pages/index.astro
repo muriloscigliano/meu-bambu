@@ -9,6 +9,8 @@ import PerfectFor from "../components/sections/PerfectFor.astro";
 import WhyChoose from "../components/sections/WhyChoose.astro";
 import FooterCTA from "../components/sections/FooterCTA.astro";
 
+const siteUrl = 'https://meubambu.com.br';
+
 // Page metadata
 const page = {
 	title: 'Meu Bambu — Painéis de bambu premium',
@@ -110,6 +112,60 @@ const footerCTA = {
 ---
 
 <Base title={page.title} description={page.description}>
+	<!-- Product Structured Data -->
+	<script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "ItemList",
+		"itemListElement": [
+			{
+				"@type": "Product",
+				"position": 1,
+				"name": "Painéis de Bambu Premium",
+				"description": "Painéis de bambu com núcleo vertical, mais resistentes que os tradicionais horizontais. Perfeitos para móveis, marcenaria e design.",
+				"image": siteUrl + "/images/paineis.png",
+				"brand": {
+					"@type": "Brand",
+					"name": "Meu Bambu"
+				},
+				"offers": {
+					"@type": "Offer",
+					"price": "199.00",
+					"priceCurrency": "BRL",
+					"availability": "https://schema.org/InStock",
+					"seller": {
+						"@type": "Organization",
+						"name": "Meu Bambu"
+					}
+				},
+				"category": "Materiais de Construção",
+				"material": "Bambu"
+			},
+			{
+				"@type": "Product",
+				"position": 2,
+				"name": "Lâminas de Bambu Flexíveis",
+				"description": "Bambu ultrafino e flexível, ideal para curvas, detalhes sofisticados e acabamentos criativos em móveis e marcenaria.",
+				"image": siteUrl + "/images/laminas.png",
+				"brand": {
+					"@type": "Brand",
+					"name": "Meu Bambu"
+				},
+				"offers": {
+					"@type": "Offer",
+					"price": "349.00",
+					"priceCurrency": "BRL",
+					"availability": "https://schema.org/InStock",
+					"seller": {
+						"@type": "Organization",
+						"name": "Meu Bambu"
+					}
+				},
+				"category": "Materiais de Construção",
+				"material": "Bambu"
+			}
+		]
+	})} />
+
 	<Header />
 	<Hero 
 		title={hero.title}
@@ -124,13 +180,6 @@ const footerCTA = {
 		features={productPanels.features}
 		ctaLabel={productPanels.ctaLabel}
 		ctaHref={productPanels.ctaHref}
-	/>
-	<Marquee 
-		items={['BAMBU SUSTENTÁVEL', 'DESIGN PREMIUM', 'NÚCLEO VERTICAL']}
-		direction="left"
-		speed={20}
-		scrollSpeed={10}
-		duplicate={3}
 	/>
 	<ProductSheets 
 		title={productSheets.title}
@@ -147,6 +196,13 @@ const footerCTA = {
 		ctaLabel={perfectFor.ctaLabel}
 		ctaHref={perfectFor.ctaHref}
 		useCases={perfectFor.useCases}
+	/>
+	<Marquee 
+		items={['BAMBU PREMIUM', 'DESIGN SUSTENTÁVEL', 'NÚCLEO VERTICAL']}
+		direction="left"
+		speed={20}
+		scrollSpeed={10}
+		duplicate={3}
 	/>
 	<WhyChoose 
 		title={whyChoose.title}

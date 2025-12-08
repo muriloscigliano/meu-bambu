@@ -1,4 +1,6 @@
 ---
+import Icon from '../Icon.astro';
+
 interface Props {
 	title: string;
 	description: string;
@@ -29,10 +31,7 @@ const rightFeatures = features.slice(midPoint);
 				{leftFeatures.map((feature, index) => (
 					<>
 						<div class="why-choose__feature">
-							<svg class="why-choose__feature-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
-								<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
+							<Icon name="checkmark" size={36} class="why-choose__feature-icon" />
 							<h3 class="why-choose__feature-title">{feature.title}</h3>
 							<p class="why-choose__feature-desc">{feature.description}</p>
 						</div>
@@ -47,10 +46,7 @@ const rightFeatures = features.slice(midPoint);
 				{rightFeatures.map((feature, index) => (
 					<>
 						<div class="why-choose__feature">
-							<svg class="why-choose__feature-icon" width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<circle cx="16" cy="16" r="15" stroke="currentColor" stroke-width="2"/>
-								<path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
+							<Icon name="checkmark" size={36} class="why-choose__feature-icon" />
 							<h3 class="why-choose__feature-title">{feature.title}</h3>
 							<p class="why-choose__feature-desc">{feature.description}</p>
 						</div>
@@ -94,13 +90,13 @@ const rightFeatures = features.slice(midPoint);
 </script>
 
 <style>
-.why-choose { 
-	position: relative; 
-	isolation: isolate; 
+.why-choose {
+	position: relative;
+	isolation: isolate;
 	min-height: var(--section-min-height);
 	display: flex;
 	align-items: center;
-	background: #202318;
+	background: var(--color-bg-darker);
 	/* border-top: 1px solid rgba(255, 255, 255, 0.1);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
 	padding-block: 90px;
@@ -178,7 +174,7 @@ const rightFeatures = features.slice(midPoint);
 	font-weight: 400;
 	font-size: 16px;
 	line-height: 1.5;
-	color: #D28F3D;
+	color: var(--color-accent);
 	margin: 0;
 	max-width: 560px;
 	letter-spacing: 0.03em;
@@ -226,7 +222,7 @@ const rightFeatures = features.slice(midPoint);
 .why-choose__feature-icon {
 	width: 36px;
 	height: 36px;
-	color: #D28F3D;
+	color: var(--color-accent);
 }
 
 .why-choose__feature-title {

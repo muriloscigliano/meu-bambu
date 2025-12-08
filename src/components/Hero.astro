@@ -1,5 +1,6 @@
 ---
 import Button from './Button.astro';
+import Icon from './Icon.astro';
 
 interface Props {
 	title: string;
@@ -13,7 +14,7 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 
 <section class="hero">
 	<div class="hero__bg-pattern"></div>
-	<article class="hero__container" data-reveal>
+	<div class="hero__container" data-reveal>
 		<h1 class="hero__title" data-split="heading">{title}</h1>
 		{subtitle && <p class="hero__desc" data-split="heading">{subtitle}</p>}
 		<Button text={ctaLabel} href={ctaHref} theme="primary" />
@@ -22,31 +23,21 @@ const { title, subtitle, ctaHref = '#comprar', ctaLabel = 'Comprar agora' } = As
 
 		<div class="hero__pills">
 			<span class="pill">
-				<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-					<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
+				<Icon name="checkmark" size={18} class="checkmark-icon" />
 				Entrega rápida
 			</span>
-			<span class="pill-divider"></span>
+			<span class="pill-divider" aria-hidden="true"></span>
 			<span class="pill">
-				<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-					<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
+				<Icon name="checkmark" size={18} class="checkmark-icon" />
 				Pagamento seguro
 			</span>
-			<span class="pill-divider"></span>
+			<span class="pill-divider" aria-hidden="true"></span>
 			<span class="pill">
-				<svg class="checkmark-icon" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/>
-					<path d="M6 9L8 11L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
+				<Icon name="checkmark" size={18} class="checkmark-icon" />
 				Qualidade garantida
 			</span>
 		</div>
-		</div>
-	</article>
+	</div>
 </section>
 
 <style>

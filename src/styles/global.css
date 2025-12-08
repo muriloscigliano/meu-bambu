@@ -10,6 +10,7 @@
 	--color-bg-primary: #eee8db;
 	--color-bg-secondary: #e5dbc8;
 	--color-bg-dark: #24261d;
+	--color-bg-darker: #202318;
 	--color-text-primary: #000000;
 	--color-text-secondary: #62533e;
 	--color-text-dark: #4b4234;
@@ -50,6 +51,44 @@ main {
 	position: relative;
 	z-index: 1;
 	background: var(--color-bg-primary);
+}
+
+/* Accessibility: Focus styles for keyboard navigation */
+*:focus {
+	outline: none;
+}
+
+*:focus-visible {
+	outline: 3px solid var(--color-accent);
+	outline-offset: 2px;
+}
+
+a:focus-visible,
+button:focus-visible {
+	outline: 3px solid var(--color-accent);
+	outline-offset: 4px;
+}
+
+/* Skip to main content link - only visible when focused */
+.skip-link {
+	position: absolute;
+	top: -100px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 9999;
+	background: var(--color-bg-dark);
+	color: var(--color-text-light);
+	padding: 12px 24px;
+	text-decoration: none;
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 16px;
+	border-radius: 4px;
+	transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+	top: 20px;
 }
 
 /* SplitText Animation Setup */
