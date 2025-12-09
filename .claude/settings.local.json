@@ -26,7 +26,8 @@
       "Bash(identify:*)",
       "Bash(sips:*)",
       "Bash(ls:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
