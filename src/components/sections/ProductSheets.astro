@@ -152,17 +152,22 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 					const thickness = sheetsRoot.querySelector('[aria-label="Selecione a espessura"] [aria-checked="true"]')?.getAttribute('data-value') || '0.6mm';
 					const size = sheetsRoot.querySelector('[aria-label="Selecione o tamanho"] [aria-checked="true"]')?.getAttribute('data-value') || '200x60cm';
 
-					// Open Freely widget and add to cart
-					if (window.Freely) {
-						window.Freely.addToCart('lamina-bambu-06mm', {
-							variant: size,
-							quantity: 1
-						});
+					// Debug: log what's available
+					console.log('Selected:', { thickness, size, productId: 'lamina-bambu-06mm' });
+					console.log('window.Freely:', window.Freely);
+					console.log('window.FreelyConfig:', window.FreelyConfig);
+
+					// Try to find and click the Freely widget button
+					const freelyBtn = document.querySelector('[data-freely-trigger], #freely-widget button, .freely-launcher');
+					if (freelyBtn) {
+						console.log('Found Freely button:', freelyBtn);
+						freelyBtn.click();
+					} else if (window.Freely && typeof window.Freely.open === 'function') {
+						console.log('Using Freely.open()');
 						window.Freely.open();
 					} else {
-						// Fallback: open WhatsApp with product details
-						const msg = encodeURIComponent(`Olá! Quero comprar: Lâmina de Bambu ${thickness} - ${size}`);
-						window.open(`https://wa.me/5511999999999?text=${msg}`, '_blank');
+						// Show alert for now so you can test
+						alert(`Produto: Lâmina de Bambu ${thickness} - ${size}\n\nO widget Freely ainda não está disponível. Verifique o console.`);
 					}
 				});
 			}
