@@ -59,7 +59,7 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 			</div>
 
 			<div data-animate="fade-in">
-				<Button text={ctaLabel} href={ctaHref} theme="dark" />
+				<Button text={ctaLabel} type="button" theme="dark" class="product-panels__buy-btn" />
 			</div>
 		</article>
 
@@ -149,6 +149,37 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 					}
 				});
 			});
+
+			// Buy button - open Freely widget with selected variant
+			const buyBtn = panelsRoot.querySelector('.product-panels__buy-btn');
+			if (buyBtn) {
+				buyBtn.addEventListener('click', () => {
+					// Get selected thickness and size
+					const thickness = panelsRoot.querySelector('[aria-label="Selecione a espessura"] [aria-checked="true"]')?.getAttribute('data-value') || '3mm';
+					const size = panelsRoot.querySelector('[aria-label="Selecione o tamanho"] [aria-checked="true"]')?.getAttribute('data-value') || '200x60cm';
+
+					// Product ID based on thickness (synced with Freely)
+					const productIds = {
+						'3mm': 'painel-bambu-3mm',
+						'5mm': 'painel-bambu-5mm',
+						'15mm': 'painel-bambu-15mm'
+					};
+					const productId = productIds[thickness] || 'painel-bambu-3mm';
+
+					// Open Freely widget and add to cart
+					if (window.Freely) {
+						window.Freely.addToCart(productId, {
+							variant: size,
+							quantity: 1
+						});
+						window.Freely.open();
+					} else {
+						// Fallback: open WhatsApp with product details
+						const msg = encodeURIComponent(`Olá! Quero comprar: Painel de Bambu ${thickness} - ${size}`);
+						window.open(`https://wa.me/5511999999999?text=${msg}`, '_blank');
+					}
+				});
+			}
 		})();
 	</script>
 </section>

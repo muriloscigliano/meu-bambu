@@ -59,7 +59,7 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 			</div>
 
 			<div data-animate="fade-in">
-				<Button text={ctaLabel} href={ctaHref} theme="dark" />
+				<Button text={ctaLabel} type="button" theme="dark" class="product-sheets__buy-btn" />
 			</div>
 		</article>
 	</div>
@@ -143,6 +143,29 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 					}
 				});
 			});
+
+			// Buy button - open Freely widget
+			const buyBtn = sheetsRoot.querySelector('.product-sheets__buy-btn');
+			if (buyBtn) {
+				buyBtn.addEventListener('click', () => {
+					// Get selected options
+					const thickness = sheetsRoot.querySelector('[aria-label="Selecione a espessura"] [aria-checked="true"]')?.getAttribute('data-value') || '0.6mm';
+					const size = sheetsRoot.querySelector('[aria-label="Selecione o tamanho"] [aria-checked="true"]')?.getAttribute('data-value') || '200x60cm';
+
+					// Open Freely widget and add to cart
+					if (window.Freely) {
+						window.Freely.addToCart('lamina-bambu-06mm', {
+							variant: size,
+							quantity: 1
+						});
+						window.Freely.open();
+					} else {
+						// Fallback: open WhatsApp with product details
+						const msg = encodeURIComponent(`Olá! Quero comprar: Lâmina de Bambu ${thickness} - ${size}`);
+						window.open(`https://wa.me/5511999999999?text=${msg}`, '_blank');
+					}
+				});
+			}
 		})();
 	</script>
 </section>
