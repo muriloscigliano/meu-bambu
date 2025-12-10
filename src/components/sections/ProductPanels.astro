@@ -158,24 +158,21 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 					const thickness = panelsRoot.querySelector('[aria-label="Selecione a espessura"] [aria-checked="true"]')?.getAttribute('data-value') || '3mm';
 					const size = panelsRoot.querySelector('[aria-label="Selecione o tamanho"] [aria-checked="true"]')?.getAttribute('data-value') || '200x60cm';
 
-					// Product ID based on thickness (synced with Freely)
-					const productIds = {
-						'3mm': 'painel-bambu-3mm',
-						'5mm': 'painel-bambu-5mm',
-						'15mm': 'painel-bambu-15mm'
-					};
-					const productId = productIds[thickness] || 'painel-bambu-3mm';
+					// Build product slug: painel-bambu-{thickness}-{size without 'cm'}
+					// e.g., "3mm" + "200x60cm" = "painel-bambu-3mm-200x60"
+					const sizeSlug = size.replace('cm', '');
+					const productSlug = `painel-bambu-${thickness}-${sizeSlug}`;
 
 					// Debug logging
-					console.log('[Freely] Selected product:', { thickness, size, productId });
+					console.log('[Freely] Selected product:', { thickness, size, productSlug });
 					console.log('[Freely] window.Freely:', window.Freely);
 
 					// Check if Freely is available
 					if (window.Freely) {
-						// Add product to cart with variant info
+						// Add product to cart
 						if (typeof window.Freely.addToCart === 'function') {
-							console.log('[Freely] Adding to cart:', productId);
-							window.Freely.addToCart(productId);
+							console.log('[Freely] Adding to cart:', productSlug);
+							window.Freely.addToCart(productSlug);
 						}
 						// Open the widget
 						if (typeof window.Freely.open === 'function') {

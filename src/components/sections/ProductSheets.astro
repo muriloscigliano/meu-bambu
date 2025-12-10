@@ -151,18 +151,22 @@ const { title, price, description, features, ctaLabel, ctaHref } = Astro.props a
 					// Get selected options
 					const thickness = sheetsRoot.querySelector('[aria-label="Selecione a espessura"] [aria-checked="true"]')?.getAttribute('data-value') || '0.6mm';
 					const size = sheetsRoot.querySelector('[aria-label="Selecione o tamanho"] [aria-checked="true"]')?.getAttribute('data-value') || '200x60cm';
-					const productId = 'lamina-bambu-06mm';
+
+					// Build product slug: lamina-bambu-06mm-{size without 'cm'}
+					// e.g., "0.6mm" + "200x60cm" = "lamina-bambu-06mm-200x60"
+					const sizeSlug = size.replace('cm', '');
+					const productSlug = `lamina-bambu-06mm-${sizeSlug}`;
 
 					// Debug logging
-					console.log('[Freely] Selected product:', { thickness, size, productId });
+					console.log('[Freely] Selected product:', { thickness, size, productSlug });
 					console.log('[Freely] window.Freely:', window.Freely);
 
 					// Check if Freely is available
 					if (window.Freely) {
-						// Add product to cart with variant info
+						// Add product to cart
 						if (typeof window.Freely.addToCart === 'function') {
-							console.log('[Freely] Adding to cart:', productId);
-							window.Freely.addToCart(productId);
+							console.log('[Freely] Adding to cart:', productSlug);
+							window.Freely.addToCart(productSlug);
 						}
 						// Open the widget
 						if (typeof window.Freely.open === 'function') {
