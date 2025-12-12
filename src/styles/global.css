@@ -110,11 +110,11 @@ button:focus-visible {
 .split-line-mask {
 	display: block;
 	overflow: hidden;
-	/* Use padding to give space for accents without affecting line height visually */
-	padding-top: 0.15em;
-	padding-bottom: 0.12em;
-	margin-top: -0.15em;
-	margin-bottom: -0.12em;
+	/* Use padding to give space for accents/ascenders without affecting line height visually */
+	padding-top: 0.25em;
+	padding-bottom: 0.15em;
+	margin-top: -0.25em;
+	margin-bottom: -0.15em;
 }
 
 .split-line {

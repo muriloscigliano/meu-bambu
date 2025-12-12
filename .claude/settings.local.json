@@ -27,7 +27,8 @@
       "Bash(sips:*)",
       "Bash(ls:*)",
       "Bash(grep:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
