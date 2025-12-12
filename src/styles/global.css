@@ -109,19 +109,22 @@ button:focus-visible {
 /* Custom SplitText masking that preserves accents */
 .split-line-mask {
 	display: block;
-	overflow: clip;
-	/* Use generous padding to fully hide text including ascenders/descenders */
-	padding-top: 0.35em;
-	padding-bottom: 0.2em;
-	margin-top: -0.35em;
-	margin-bottom: -0.2em;
+	overflow: hidden;
+	/* Line-height 1.1 ensures full character height is contained */
+	line-height: 1.1;
 }
 
 .split-line {
 	display: block;
 	will-change: transform;
-	/* Ensure line sits within the mask */
-	line-height: inherit;
+	/* Match the mask line-height */
+	line-height: 1.1;
+}
+
+/* Compensate for increased line-height on parent elements */
+[data-split="heading"] {
+	/* Negative margin to maintain original visual spacing */
+	margin-block: -0.05em;
 }
 
 .heading {
