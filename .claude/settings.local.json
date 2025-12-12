@@ -28,7 +28,8 @@
       "Bash(ls:*)",
       "Bash(grep:*)",
       "Bash(curl:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
