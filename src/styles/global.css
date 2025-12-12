@@ -109,17 +109,19 @@ button:focus-visible {
 /* Custom SplitText masking that preserves accents */
 .split-line-mask {
 	display: block;
-	overflow: hidden;
-	/* Use padding to give space for accents/ascenders without affecting line height visually */
-	padding-top: 0.25em;
-	padding-bottom: 0.15em;
-	margin-top: -0.25em;
-	margin-bottom: -0.15em;
+	overflow: clip;
+	/* Use generous padding to fully hide text including ascenders/descenders */
+	padding-top: 0.35em;
+	padding-bottom: 0.2em;
+	margin-top: -0.35em;
+	margin-bottom: -0.2em;
 }
 
 .split-line {
 	display: block;
 	will-change: transform;
+	/* Ensure line sits within the mask */
+	line-height: inherit;
 }
 
 .heading {
