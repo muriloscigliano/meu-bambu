@@ -211,9 +211,15 @@ A auditoria npm atual mostra 3 vulnerabilidades de alta severidade em `path-to-r
 
 Privado - Todos os direitos reservados
 
+## Colaboradores
+
+- **Murilo Scigliano de Souza Alves** - Desenvolvedor e Designer
+- **Claude Code** (Anthropic) - Assistente de IA para desenvolvimento
+
 ---
 
-**Desenvolvido para:** Meu Bambu / Flowing Boards
+**Desenvolvido para:** Meu Bambu / Flowing Boards  
+**Desenvolvido por:** Murilo Scigliano de Souza Alves  
 **Localização:** Joanópolis, SP - Brasil
 
 ---
@@ -431,7 +437,13 @@ Current npm audit shows 3 high severity vulnerabilities in `path-to-regexp` (tra
 
 Private - All rights reserved
 
+## Collaborators
+
+- **Murilo Scigliano de Souza Alves** - Developer and Designer
+- **Claude Code** (Anthropic) - AI Development Assistant
+
 ---
 
-**Developed for:** Meu Bambu / Flowing Boards
+**Developed for:** Meu Bambu / Flowing Boards  
+**Developed by:** Murilo Scigliano de Souza Alves  
 **Location:** Joanopolis, SP - Brazil
